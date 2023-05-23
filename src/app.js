@@ -4,6 +4,7 @@ const imagekitAuthRouter = require("./routes/imagekit/imagekit.routes");
 const mailRouter = require("./routes/mail/mail.route");
 const userRouter = require("./routes/user/user.routes");
 const emisRouter = require("./routes/emis/emis.routes");
+const companyRouter = require("./routes/company/company.routes")
 const errorMiddleware = require("./middlewares/errors");
 const cors = require("cors");
 const path = require("path");
@@ -19,6 +20,7 @@ app.use("/user", userRouter);
 app.use("/imagekit", imagekitAuthRouter);
 app.use("/mail", mailRouter);
 app.use("/emis", emisRouter);
+app.use("/company", companyRouter);
 
 
 // if(process.env.NODE_ENV == 'development'){
