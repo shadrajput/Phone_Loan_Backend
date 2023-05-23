@@ -1,21 +1,21 @@
 const catchAsyncErrors = require("../../middlewares/catchAsyncErrors");
 const ErrorHandler = require("../../utils/ErrorHandler");
-const { admin } = require("../../../models")
+const { emi } = require("../../../models")
 const formidable = require("formidable")
 
 
-// 1 . Add Admin
-const AddAdmin = async (req, res, next) => {
+// 1 . Add EMI
+const AddEmi = async (req, res, next) => {
     const form = new formidable.IncomingForm();
     form.parse(req, async function (err, fields, files) {
-        console.log(fields)
         try {
-            const AdminInfo = (fields);
+            const EMISInfo = (fields);
+            console.log(EMISInfo)
             if (err) {
                 return res.status(500).json({ success: false, message: err.message });
             }
 
-            const data = await admin.create(AdminInfo);
+            const data = await emi.create(EMISInfo);
 
             res.status(201).json({
                 data: data,
@@ -31,63 +31,64 @@ const AddAdmin = async (req, res, next) => {
 }
 
 // 2 . Get all EMIS
-const getallAdmin = catchAsyncErrors(async (req, res, next) => {
+const getallEmis = catchAsyncErrors(async (req, res, next) => {
 
-    const AllAdmin = await admin.findAll()
+    const AllNews = await emi.findAll()
 
     res.status(200).json({
-        AllAdmin: AllAdmin,
+        AllNews: AllNews,
         success: true,
-        message: "All Admin"
+        message: "All EMI"
     })
 })
 
-// // 3 . Get Single Admin
-const getSingleAdmin = catchAsyncErrors(async (req, res, next) => {
+// 3 . Get Single EMI
+const getSingleEmi = catchAsyncErrors(async (req, res, next) => {
 
     const { id } = req.params
 
-    const SingleAdmin = await admin.findOne({
+    const SingleEMI = await emi.findOne({
         where: {
             id: Number(id)
         }
     })
 
     res.status(200).json({
-        SingleAdmin: SingleAdmin,
+        SingleEMI: SingleEMI,
         success: true,
-        message: "One Admin Details"
+        message: "One EMI Details"
     })
 })
 
-// // 4 . Update Admin
-const updateAdminDetails = catchAsyncErrors(async (req, res, next) => {
+// 4 . Update EMI
+const updateEmiDetails = catchAsyncErrors(async (req, res, next) => {
     const { id } = req.params
-    const updateAdminDetails = await admin.update(req.body , {
+
+    const updateEmiDetails = await emi.update(req.body, {
         where: {
             id: Number(id)
         },
     })
 
     res.status(200).json({
-        updateAdminDetails: updateAdminDetails,
+        updateEmiDetails: updateEmiDetails,
         success: true,
-        message: "Admin details updated"
+        message: "News details updated"
     })
 })
 
-// // 5 . Delete EMI
+// 5 . Delete EMI
 
-const deleteAdminDetails = catchAsyncErrors(async (req, res, next) => {
+const deleteEmiDetails = catchAsyncErrors(async (req, res, next) => {
     const { id } = req.params
-    const DeleteAdminDetails = await admin.destroy({
+    const DeleteEmiDetails = await emi.destroy({
         where: {
             id: Number(id)
         }
     })
 
     res.status(200).json({
-        DeleteAdminDetails : DeleteAdminDetails,
+        DeleteEmiDetails : DeleteEmiDetails,
         success: true,
         message: "News deleted successfully"
     })
@@ -97,9 +98,9 @@ const deleteAdminDetails = catchAsyncErrors(async (req, res, next) => {
 
 
 module.exports = {
-    AddAdmin,
-    getallAdmin,
-    getSingleAdmin,
-    updateAdminDetails,
-    deleteAdminDetails
+    AddEmi,
+    getallEmis,
+    getSingleEmi,
+    updateEmiDetails,
+    deleteEmiDetails
 };
