@@ -8,7 +8,7 @@ const { AddInstallment,
 
 const router = express.Router();
 
-router.post("/addinstallemnt", AddInstallment)
+router.post("/addinstallment", AddInstallment)
 router.get("/",getallInstallment)
 router.get("/details/:id", getSingleInstallment)
 router.put("/update/:id", updateInstallmentDetails)
