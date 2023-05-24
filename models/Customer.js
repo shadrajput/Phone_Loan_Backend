@@ -34,30 +34,30 @@ module.exports = (sequelize, DataTypes) =>{
       type: DataTypes.INTEGER,
       unique: true,
       allowNull: false,
-      validate: {
-        min:{
-          args: 10,
-          msg: "Please enter valid mobile number"
-        },
-        max:{
-          args: 10,
-          msg: "Please enter valid mobile number"
-        },
-      }
+      // validate: {
+      //   min:{
+      //     args: 10,
+      //     msg: "Please enter valid mobile number"
+      //   },
+      //   max:{
+      //     args: 10,
+      //     msg: "Please enter valid mobile number"
+      //   },
+      // }
     },
     alternate_no:{
       type: DataTypes.INTEGER,
       allowNull: true,
-      validate: {
-        min:{
-          args: 10,
-          msg: "Please enter valid mobile number"
-        },
-        max:{
-          args: 10,
-          msg: "Please enter valid mobile number"
-        },
-      }
+      // validate: {
+      //   min:{
+      //     args: 10,
+      //     msg: "Please enter valid mobile number"
+      //   },
+      //   max:{
+      //     args: 10,
+      //     msg: "Please enter valid mobile number"
+      //   },
+      // }
     },
     reference_name:{
       type: DataTypes.STRING,
@@ -69,16 +69,16 @@ module.exports = (sequelize, DataTypes) =>{
     reference_mobile:{
       type: DataTypes.INTEGER,
       allowNull: true,
-      validate: {
-        min:{
-          args: 10,
-          msg: "Please enter valid mobile number"
-        },
-        max:{
-          args: 10,
-          msg: "Please enter valid mobile number"
-        },
-      }
+      // validate: {
+      //   min:{
+      //     args: 10,
+      //     msg: "Please enter valid mobile number"
+      //   },
+      //   max:{
+      //     args: 10,
+      //     msg: "Please enter valid mobile number"
+      //   },
+      // }
     },
     document_id:{
       type: DataTypes.INTEGER,

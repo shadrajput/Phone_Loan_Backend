@@ -3,8 +3,12 @@ const adminRouter = require("./routes/admin/admin.routes");
 const imagekitAuthRouter = require("./routes/imagekit/imagekit.routes");
 const mailRouter = require("./routes/mail/mail.route");
 const userRouter = require("./routes/user/user.routes");
-const emisRouter = require("./routes/emis/emis.routes");
-const companyRouter = require("./routes/company/company.routes")
+const installmentRouter = require("./routes/installment/installment.route");
+const phoneRouter = require("./routes/phone/phone.route");
+const companyRouter = require("./routes/company/company.route")
+const customerRouter = require("./routes/customer/customer.route")
+const documentRouter = require("./routes/document/document.route")
+const specificationRouter = require("./routes/specification/specification.route")
 const errorMiddleware = require("./middlewares/errors");
 const cors = require("cors");
 const path = require("path");
@@ -19,8 +23,12 @@ app.use("/admin", adminRouter);
 app.use("/user", userRouter);
 app.use("/imagekit", imagekitAuthRouter);
 app.use("/mail", mailRouter);
-app.use("/emis", emisRouter);
+app.use("/installment", installmentRouter);
 app.use("/company", companyRouter);
+app.use("/phone", phoneRouter);
+app.use("/specification", specificationRouter);
+app.use("/customer", customerRouter);
+app.use("/document", documentRouter);
 
 
 // if(process.env.NODE_ENV == 'development'){

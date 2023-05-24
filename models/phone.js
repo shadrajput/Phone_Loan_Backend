@@ -13,12 +13,15 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false,
             validate: {
                 notEmpty: true,
-                isAlpha: {
-                    args: true,
-                    msg: 'Please enter only letters'
-                }
             }
         },
+        company_id:{
+            type: DataTypes.INTEGER,
+            references: {
+              model: 'companies',
+              key: 'id'
+            }
+          }
     })
 
     return Phone
