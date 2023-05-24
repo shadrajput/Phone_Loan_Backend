@@ -17,13 +17,18 @@ const AddDocument = async (req, res, next) => {
             }
 
             let adhar_front = "";
-            adhar_front = await uploadphoto(files, adhar_front);
-            console.log(adhar_front)
+            adhar_front = await upload_Adhar_front(files, adhar_front);
+            let adhar_back = "";
+            adhar_back = await upload_Adhar_back(files, adhar_back);
+            let pancard = "";
+            pancard = await upload_pancard(files, pancard);
+            let lightbill = "";
+            lightbill = await upload_lightbill(files, lightbill);
             const data = await document.create({
-                adhar_front: documentInfo.adhar_front,
-                adhar_back: documentInfo.adhar_back,
-                pancard: documentInfo.pancard,
-                lightbill: documentInfo.lightbill
+                adhar_front: adhar_front,
+                adhar_back: adhar_back,
+                pancard: pancard,
+                lightbill: lightbill
             });
 
             res.status(201).json({
@@ -31,6 +36,7 @@ const AddDocument = async (req, res, next) => {
                 success: true,
                 message: "Documents added successfully",
             });
+
         } catch (error) {
             next(error)
         }
@@ -104,10 +110,35 @@ const AddDocument = async (req, res, next) => {
 
 // })
 
+
 // Image Upload
-async function uploaduploadLogo(files) {
+async function upload_Adhar_front(files) {
     try {
         return await uploadImage(files.adhar_front, "document");
+    } catch (error) {
+        throw new Error(error.message);
+    }
+}
+
+async function upload_Adhar_back(files) {
+    try {
+        return await uploadImage(files.adhar_back, "document");
+    } catch (error) {
+        throw new Error(error.message);
+    }
+}
+
+async function upload_pancard(files) {
+    try {
+        return await uploadImage(files.pancard, "document");
+    } catch (error) {
+        throw new Error(error.message);
+    }
+}
+
+async function upload_lightbill(files) {
+    try {
+        return await uploadImage(files.lightbill, "document");
     } catch (error) {
         throw new Error(error.message);
     }

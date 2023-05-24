@@ -31,7 +31,7 @@ module.exports = (sequelize, DataTypes) =>{
       }
     },
     mobile:{
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING,
       unique: true,
       allowNull: false,
       // validate: {
@@ -46,7 +46,7 @@ module.exports = (sequelize, DataTypes) =>{
       // }
     },
     alternate_no:{
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING,
       allowNull: true,
       // validate: {
       //   min:{
@@ -67,7 +67,7 @@ module.exports = (sequelize, DataTypes) =>{
       }
     },
     reference_mobile:{
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING,
       allowNull: true,
       // validate: {
       //   min:{

@@ -1,19 +1,19 @@
 const express = require("express");
 const {
     AddCustomer,
-    // getallEmis,
-    // getSingleEmi,
-    // updateEmiDetails,
-    // deleteEmiDetails 
+    getallCustomers,
+    getSingleCustomer,
+    updateCustomerDetails,
+    deleteCustomerDetails 
 } = require("../../routes/customer/customer.controller")
 
 const router = express.Router();
 
 router.post("/addcustomer", AddCustomer)
-// router.get("/" , getallEmis)
-// router.get("/details/:id" , getSingleEmi)
-// router.put("/update/:id" , updateEmiDetails)
-// router.delete("/delete/:id" , deleteEmiDetails)
+router.get("/", getallCustomers)
+router.get("/details/:id" , getSingleCustomer)
+router.put("/update/:id" , updateCustomerDetails)
+router.delete("/delete/:id" , deleteCustomerDetails)
 
 
 

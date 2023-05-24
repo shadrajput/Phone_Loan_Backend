@@ -9,7 +9,7 @@ const AddCustomer = async (req, res, next) => {
     const form = new formidable.IncomingForm();
     form.parse(req, async function (err, fields, files) {
         try {
-           
+
             const CustomerInfo = (fields);
             console.log(CustomerInfo)
             if (err) {
@@ -17,13 +17,13 @@ const AddCustomer = async (req, res, next) => {
             }
 
             const data = await customer.create({
-                first_name : CustomerInfo.first_name,
-                last_name : CustomerInfo.last_name,
-                mobile : CustomerInfo.mobile,
-                alternate_no : CustomerInfo.alternate_no,
-                reference_name : CustomerInfo.reference_name,
-                reference_mobile : CustomerInfo.reference_mobile,
-                document_id : "1"
+                first_name: CustomerInfo.first_name,
+                last_name: CustomerInfo.last_name,
+                mobile: CustomerInfo.mobile,
+                alternate_no: CustomerInfo.alternate_no,
+                reference_name: CustomerInfo.reference_name,
+                reference_mobile: CustomerInfo.reference_mobile,
+                document_id: "1"
             });
 
             res.status(201).json({
@@ -39,77 +39,78 @@ const AddCustomer = async (req, res, next) => {
 
 }
 
-// // 2 . Get all EMIS
-// const getallEmis = catchAsyncErrors(async (req, res, next) => {
+// // 2 . Get all Customers
+const getallCustomers = catchAsyncErrors(async (req, res, next) => {
 
-//     const AllNews = await emi.findAll()
+    const AllCustomer = await customer.findAll()
 
-//     res.status(200).json({
-//         AllNews: AllNews,
-//         success: true,
-//         message: "All EMI"
-//     })
-// })
+    res.status(200).json({
+        AllNews: AllCustomer,
+        success: true,
+        message: "All Customer"
+    })
+})
 
-// // 3 . Get Single EMI
-// const getSingleEmi = catchAsyncErrors(async (req, res, next) => {
+// // 3 . Get Single Customer
+const getSingleCustomer = catchAsyncErrors(async (req, res, next) => {
 
-//     const { id } = req.params
+    const { id } = req.params
 
-//     const SingleEMI = await emi.findOne({
-//         where: {
-//             id: Number(id)
-//         }
-//     })
+    const SingleCustomer = await customer.findOne({
+        where: {
+            id: Number(id)
+        }
+    })
 
-//     res.status(200).json({
-//         SingleEMI: SingleEMI,
-//         success: true,
-//         message: "One EMI Details"
-//     })
-// })
+    res.status(200).json({
+        SingleEMI: SingleCustomer,
+        success: true,
+        message: "One Customer Details"
+    })
+})
 
 // // 4 . Update EMI
-// const updateEmiDetails = catchAsyncErrors(async (req, res, next) => {
-//     const { id } = req.params
+const updateCustomerDetails = catchAsyncErrors(async (req, res, next) => {
+    const { id } = req.params
 
-//     const updateEmiDetails = await emi.update(req.body, {
-//         where: {
-//             id: Number(id)
-//         },
-//     })
+    const updateCustomerDetails = await customer.update(req.body, {
+        where: {
+            id: Number(id)
+        },
+    })
 
-//     res.status(200).json({
-//         updateEmiDetails: updateEmiDetails,
-//         success: true,
-//         message: "News details updated"
-//     })
-// })
+    res.status(200).json({
+        updateCustomerDetails: updateCustomerDetails,
+        success: true,
+        message: "Customer details updated"
+    })
+})
 
 // // 5 . Delete EMI
 
-// const deleteEmiDetails = catchAsyncErrors(async (req, res, next) => {
-//     const { id } = req.params
-//     const DeleteEmiDetails = await emi.destroy({
-//         where: {
-//             id: Number(id)
-//         }
-//     })
+const deleteCustomerDetails = catchAsyncErrors(async (req, res, next) => {
+    const { id } = req.params
 
-//     res.status(200).json({
-//         DeleteEmiDetails : DeleteEmiDetails,
-//         success: true,
-//         message: "News deleted successfully"
-//     })
+    const DeleteCustomerDetails = await customer.destroy({
+        where: {
+            id: Number(id)
+        }
+    })
 
-// })
+    res.status(200).json({
+        DeleteEmiDetails : DeleteCustomerDetails,
+        success: true,
+        message: "Customer deleted successfully"
+    })
+
+})
 
 
 
 module.exports = {
     AddCustomer,
-    // getallEmis,
-    // getSingleEmi,
-    // updateEmiDetails,
-    // deleteEmiDetails
+    getallCustomers,
+    getSingleCustomer,
+    updateCustomerDetails,
+    deleteCustomerDetails
 };
