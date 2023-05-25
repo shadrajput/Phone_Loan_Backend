@@ -3,7 +3,7 @@ const { sequelize, DataTypes } = require("sequelize");
 module.exports = (sequelize, DataTypes) =>{
   const User = sequelize.define("user", {
     id: {
-      type: DataTypes.INTEGER(11),
+      type: DataTypes.INTEGER,
       allowNull: false,
       primaryKey: true,
       autoIncrement: true,
@@ -25,7 +25,11 @@ module.exports = (sequelize, DataTypes) =>{
         },
       }
     }
-  })
+  },
+  {
+    tableName: 'user' // We need to choose the model name
+  }
+)
 
   return User
 }

@@ -3,7 +3,7 @@ const { sequelize, DataTypes } = require("sequelize");
 module.exports = (sequelize, DataTypes) =>{
   const Customer = sequelize.define("customer", {
     id: {
-      type: DataTypes.INTEGER(11),
+      type: DataTypes.INTEGER,
       allowNull: false,
       primaryKey: true,
       autoIncrement: true,
@@ -31,33 +31,12 @@ module.exports = (sequelize, DataTypes) =>{
       }
     },
     mobile:{
-      type: DataTypes.INTEGER,
-      unique: true,
+      type: DataTypes.STRING,
       allowNull: false,
-      validate: {
-        min:{
-          args: 10,
-          msg: "Please enter valid mobile number"
-        },
-        max:{
-          args: 10,
-          msg: "Please enter valid mobile number"
-        },
-      }
     },
     alternate_no:{
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING,
       allowNull: true,
-      validate: {
-        min:{
-          args: 10,
-          msg: "Please enter valid mobile number"
-        },
-        max:{
-          args: 10,
-          msg: "Please enter valid mobile number"
-        },
-      }
     },
     reference_name:{
       type: DataTypes.STRING,
@@ -83,11 +62,21 @@ module.exports = (sequelize, DataTypes) =>{
     document_id:{
       type: DataTypes.INTEGER,
       references: {
-        model: 'documents',
+        model: 'document',
+        key: 'id'
+      }
+    },
+    user_id:{
+      type: DataTypes.INTEGER,
+      references: {
+        model: 'user',
         key: 'id'
       }
     }
-  })
+    
+  },{
+  tableName: 'customer' // We need to choose the model name
+})
 
   return Customer
 }
