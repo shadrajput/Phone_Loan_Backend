@@ -10,6 +10,7 @@ const customerRouter = require("./routes/customer/customer.route")
 const documentRouter = require("./routes/document/document.route")
 const purchaseRouter = require("./routes/purchase/purchase.route")
 const receiptRouter = require("./routes/receipt/receipt.route")
+const transactionRouter = require("./routes/transaction/transection.route")
 const emiRouter = require("./routes/emi/emi.route")
 const specificationRouter = require("./routes/specification/specification.route")
 const errorMiddleware = require("./middlewares/errors");
@@ -34,6 +35,7 @@ app.use("/customer", customerRouter);
 app.use("/document", documentRouter);
 app.use("/purchase", purchaseRouter);
 app.use("/receipt", receiptRouter);
+app.use("/transaction", transactionRouter);
 app.use("/emi", emiRouter);
 
 

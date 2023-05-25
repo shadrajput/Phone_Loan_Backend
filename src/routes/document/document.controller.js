@@ -45,70 +45,92 @@ const AddDocument = async (req, res, next) => {
 
 }
 
-// // 2 . Get all EMIS
-// const getallEmis = catchAsyncErrors(async (req, res, next) => {
+// // 2 . Get all Document
+const getallDocument = catchAsyncErrors(async (req, res, next) => {
 
-//     const AllNews = await emi.findAll()
+    const AllDocument = await document.findAll()
 
-//     res.status(200).json({
-//         AllNews: AllNews,
-//         success: true,
-//         message: "All EMI"
-//     })
-// })
+    res.status(200).json({
+        AllDocument: AllDocument,
+        success: true,
+        message: "All Document"
+    })
+})
 
-// // 3 . Get Single EMI
-// const getSingleEmi = catchAsyncErrors(async (req, res, next) => {
+// // 3 . Get Single Document
+const getSingleDocument = catchAsyncErrors(async (req, res, next) => {
 
-//     const { id } = req.params
+    const { id } = req.params
 
-//     const SingleEMI = await emi.findOne({
-//         where: {
-//             id: Number(id)
+    const SingleDocument = await document.findOne({
+        where: {
+            id: Number(id)
+        }
+    })
+
+    res.status(200).json({
+        SingleDocument: SingleDocument,
+        success: true,
+        message: "One Document Details"
+    })
+})
+
+// // 4 . Update Document
+// const updateDocumentDetails = catchAsyncErrors(async (req, res, next) => {
+//     const form = new formidable.IncomingForm();
+//     form.parse(req, async function (err, fields, files) {
+//         let { id } = req.params
+
+//         if (err) {
+//             return res.status(500).json({ success: false, message: err.message });
 //         }
-//     })
 
-//     res.status(200).json({
-//         SingleEMI: SingleEMI,
-//         success: true,
-//         message: "One EMI Details"
+//         let adhar_front = "";
+//         adhar_front = await upload_Adhar_front(files, adhar_front);
+//         let adhar_back = "";
+//         adhar_back = await upload_Adhar_back(files, adhar_back);
+//         let pancard = "";
+//         pancard = await upload_pancard(files, pancard);
+//         let lightbill = "";
+//         lightbill = await upload_lightbill(files, lightbill);
+
+//         const updateDocumentDetails = await document.update(
+//             adhar_front,
+//             adhar_back,
+//             pancard,
+//             lightbill,
+//             {
+//                 where: {
+//                     id: Number(id)
+//                 },
+
+//             })
+
+//         res.status(200).json({
+//             updateDocumentDetails: updateDocumentDetails,
+//             success: true,
+//             message: "Document details updated"
+//         })
 //     })
 // })
 
-// // 4 . Update EMI
-// const updateEmiDetails = catchAsyncErrors(async (req, res, next) => {
-//     const { id } = req.params
 
-//     const updateEmiDetails = await emi.update(req.body, {
-//         where: {
-//             id: Number(id)
-//         },
-//     })
+// // 5 . Delete Document
+const deleteDocumentDetails = catchAsyncErrors(async (req, res, next) => {
+    const { id } = req.params
+    const DeleteDocumentDetails = await document.destroy({
+        where: {
+            id: Number(id)
+        }
+    })
 
-//     res.status(200).json({
-//         updateEmiDetails: updateEmiDetails,
-//         success: true,
-//         message: "News details updated"
-//     })
-// })
+    res.status(200).json({
+        DeleteDocumentDetails : DeleteDocumentDetails,
+        success: true,
+        message: "Document deleted successfully"
+    })
 
-// // 5 . Delete EMI
-
-// const deleteEmiDetails = catchAsyncErrors(async (req, res, next) => {
-//     const { id } = req.params
-//     const DeleteEmiDetails = await emi.destroy({
-//         where: {
-//             id: Number(id)
-//         }
-//     })
-
-//     res.status(200).json({
-//         DeleteEmiDetails : DeleteEmiDetails,
-//         success: true,
-//         message: "News deleted successfully"
-//     })
-
-// })
+})
 
 
 // Image Upload
@@ -148,8 +170,8 @@ async function upload_lightbill(files) {
 
 module.exports = {
     AddDocument,
-    // getallEmis,
-    // getSingleEmi,
-    // updateEmiDetails,
-    // deleteEmiDetails
+    getallDocument,
+    getSingleDocument,
+    // updateDocumentDetails,
+    deleteDocumentDetails
 };

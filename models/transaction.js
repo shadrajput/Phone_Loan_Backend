@@ -17,31 +17,24 @@ module.exports = (sequelize, DataTypes) => {
         },
         is_by_cheque: {
             type: DataTypes.BOOLEAN,
-            allowNull: false,
         },
         is_by_cash: {
             type: DataTypes.BOOLEAN,
-            allowNull: false,
         },
         is_by_upi: {
             type: DataTypes.BOOLEAN,
-            allowNull: false,
         },
         cheque_no: {
             type: DataTypes.INTEGER,
-            allowNull: false,
         },
         cheque_date: {
             type: DataTypes.DATE,
-            allowNull: false,
         },
         upi_no: {
             type: DataTypes.INTEGER,
-            allowNull: false,
         },
         amount: {
             type: DataTypes.INTEGER,
-            allowNull: false,
         },
 
 

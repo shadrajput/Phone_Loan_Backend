@@ -1,19 +1,19 @@
 const express = require("express");
 const {
     AddDocument,
-    // getallEmis,
-    // getSingleEmi,
-    // updateEmiDetails,
-    // deleteEmiDetails 
+    getallDocument,
+    getSingleDocument,
+    // updateDocumentDetails,
+    deleteDocumentDetails 
 } = require("../../routes/document/document.controller")
 
 const router = express.Router();
 
 router.post("/adddocument", AddDocument)
-// router.get("/" , getallEmis)
-// router.get("/details/:id" , getSingleEmi)
-// router.put("/update/:id" , updateEmiDetails)
-// router.delete("/delete/:id" , deleteEmiDetails)
+router.get("/" , getallDocument)
+router.get("/details/:id" , getSingleDocument)
+// router.put("/update/:id" , updateDocumentDetails)
+router.delete("/delete/:id" , deleteDocumentDetails)
 
 
 
