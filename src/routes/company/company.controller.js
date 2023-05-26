@@ -31,52 +31,52 @@ const AddCompany = async (req, res, next) => {
 
 }
 
-// 2 . Get all EMIS
-// const getallEmis = catchAsyncErrors(async (req, res, next) => {
+// 2 . Get all Company
+const getallCompany = catchAsyncErrors(async (req, res, next) => {
 
-//     const AllNews = await emi.findAll()
+    const AllNews = await company.findAll({ include : Phones })
 
-//     res.status(200).json({
-//         AllNews: AllNews,
-//         success: true,
-//         message: "All EMI"
-//     })
-// })
+    res.status(200).json({
+        AllNews: AllNews,
+        success: true,
+        message: "All Company"
+    })
+})
 
-// 3 . Get Single EMI
-// const getSingleEmi = catchAsyncErrors(async (req, res, next) => {
+// 3 . Get Single Company
+const getSingleCompany = catchAsyncErrors(async (req, res, next) => {
 
-//     const { id } = req.params
+    const { id } = req.params
 
-//     const SingleEMI = await emi.findOne({
-//         where: {
-//             id: Number(id)
-//         }
-//     })
+    const SingleCompany = await company.findOne({
+        where: {
+            id: Number(id)
+        }
+    })
 
-//     res.status(200).json({
-//         SingleEMI: SingleEMI,
-//         success: true,
-//         message: "One EMI Details"
-//     })
-// })
+    res.status(200).json({
+        SingleEMI: SingleCompany,
+        success: true,
+        message: "One Company Details"
+    })
+})
 
-// 4 . Update EMI
-// const updateEmiDetails = catchAsyncErrors(async (req, res, next) => {
-//     const { id } = req.params
+// 4 . Update Company
+const updateCompanyDetails = catchAsyncErrors(async (req, res, next) => {
+    const { id } = req.params
 
-//     const updateEmiDetails = await emi.update(req.body, {
-//         where: {
-//             id: Number(id)
-//         },
-//     })
+    const updateCompanyDetails = await company.update(req.body, {
+        where: {
+            id: Number(id)
+        },
+    })
 
-//     res.status(200).json({
-//         updateEmiDetails: updateEmiDetails,
-//         success: true,
-//         message: "News details updated"
-//     })
-// })
+    res.status(200).json({
+        updateCompanyDetails: updateCompanyDetails,
+        success: true,
+        message: "Company details updated"
+    })
+})
 
 // 5 . Delete EMI
 // const deleteEmiDetails = catchAsyncErrors(async (req, res, next) => {
@@ -99,4 +99,7 @@ const AddCompany = async (req, res, next) => {
 
 module.exports = {
     AddCompany,
+    getallCompany,
+    getSingleCompany,
+    updateCompanyDetails
 };

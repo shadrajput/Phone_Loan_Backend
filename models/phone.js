@@ -15,14 +15,18 @@ module.exports = (sequelize, DataTypes) => {
                 notEmpty: true,
             }
         },
-        company_id:{
+        company_id: {
             type: DataTypes.INTEGER,
             references: {
-              model: 'companies',
-              key: 'id'
+                model: 'companies',
+                key: 'id'
             }
-          }
+        }
     })
+
+    Phone.associate = function (models) {
+        Phone.belongsTo(models.company , {foreignKey : 'company_id'})
+    };
 
     return Phone
 }
