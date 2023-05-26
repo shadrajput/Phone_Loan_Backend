@@ -7,34 +7,31 @@ const { customer } = require("../../../models")
 // 1 . Add Customer
 const AddCustomer = async (req, res, next) => {
     const form = new formidable.IncomingForm();
+
     form.parse(req, async function (err, fields, files) {
-        try {
 
-            const CustomerInfo = (fields);
-            console.log(CustomerInfo)
-            if (err) {
-                return res.status(500).json({ success: false, message: err.message });
-            }
+        const CustomerInfo = (fields);
 
-            const data = await customer.create({
-                first_name: CustomerInfo.first_name,
-                last_name: CustomerInfo.last_name,
-                mobile: CustomerInfo.mobile,
-                alternate_no: CustomerInfo.alternate_no,
-                reference_name: CustomerInfo.reference_name,
-                reference_mobile: CustomerInfo.reference_mobile,
-                document_id: "1"
-            });
-
-            res.status(201).json({
-                data: data,
-                success: true,
-                message: "Customer added successfully",
-            });
-        } catch (error) {
-            next(error)
+        const Mobile = CustomerInfo.mobile
+        if (err) {
+            return res.status(500).json({ success: false, message: err.message });
         }
 
+        const data = await customer.create({
+            first_name: CustomerInfo.first_name,
+            last_name: CustomerInfo.last_name,
+            mobile: CustomerInfo.mobile,
+            alternate_no: CustomerInfo.alternate_no,
+            reference_name: CustomerInfo.reference_name,
+            reference_mobile: CustomerInfo.reference_mobile,
+            document_id: "1"
+        });
+
+        res.status(201).json({
+            data: data,
+            success: true,
+            message: "Customer added successfully",
+        });
     });
 
 }
@@ -98,7 +95,7 @@ const deleteCustomerDetails = catchAsyncErrors(async (req, res, next) => {
     })
 
     res.status(200).json({
-        DeleteEmiDetails : DeleteCustomerDetails,
+        DeleteEmiDetails: DeleteCustomerDetails,
         success: true,
         message: "Customer deleted successfully"
     })
