@@ -2,14 +2,14 @@ const catchAsyncErrors = require("../../middlewares/catchAsyncErrors");
 const ErrorHandler = require("../../utils/ErrorHandler");
 const formidable = require("formidable")
 const { specification } = require("../../../models")
-
+const { phone } = require("../../../models")
 
 // 1 . Add Company
 const AddSpecification = async (req, res, next) => {
     const form = new formidable.IncomingForm();
     form.parse(req, async function (err, fields, files) {
         try {
-            
+
             const Specification = (fields);
 
             if (err) {
@@ -17,10 +17,10 @@ const AddSpecification = async (req, res, next) => {
             }
 
             const data = await specification.create({
-                ram : Specification.ram,
-                storage : Specification.storage,
-                price : Specification.price,
-                phone_id : "1"
+                ram: Specification.ram,
+                storage: Specification.storage,
+                price: Specification.price,
+                phone_id: "1"
             });
 
             res.status(201).json({
@@ -39,7 +39,7 @@ const AddSpecification = async (req, res, next) => {
 // 2 . Get all Specification
 const getallSpecification = catchAsyncErrors(async (req, res, next) => {
 
-    const AllSpecification = await specification.findAll()
+    const AllSpecification = await specification.findAll({ include: [phone] })
 
     res.status(200).json({
         AllSpecification: AllSpecification,
@@ -56,7 +56,8 @@ const getSingleSpecification = catchAsyncErrors(async (req, res, next) => {
     const SingleSpecification = await specification.findOne({
         where: {
             id: Number(id)
-        }
+        },
+        include: [phone]
     })
 
     res.status(200).json({
@@ -93,7 +94,7 @@ const deleteSpecificationDetails = catchAsyncErrors(async (req, res, next) => {
     })
 
     res.status(200).json({
-        DeleteSpecificationDetails : DeleteSpecificationDetails,
+        DeleteSpecificationDetails: DeleteSpecificationDetails,
         success: true,
         message: "Specification deleted successfully"
     })

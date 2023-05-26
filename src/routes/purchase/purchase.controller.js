@@ -2,6 +2,7 @@ const catchAsyncErrors = require("../../middlewares/catchAsyncErrors");
 const ErrorHandler = require("../../utils/ErrorHandler");
 const formidable = require("formidable")
 const { purchase } = require("../../../models")
+const { phone } = require("../../../models")
 
 
 // 1 . Add Purchase
@@ -40,7 +41,7 @@ const AddPurchase = async (req, res, next) => {
 // 2 . Get all Purchase
 const getallPurchase = catchAsyncErrors(async (req, res, next) => {
 
-    const AllPurchase = await purchase.findAll()
+    const AllPurchase = await purchase.findAll({include : [phone]})
 
     res.status(200).json({
         AllPurchase: AllPurchase,

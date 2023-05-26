@@ -1,6 +1,6 @@
 const { sequelize, DataTypes } = require("sequelize");
 
-module.exports = (sequelize, DataTypes) =>{
+module.exports = (sequelize, DataTypes) => {
   const Specification = sequelize.define("specification", {
     id: {
       type: DataTypes.INTEGER(11),
@@ -8,22 +8,22 @@ module.exports = (sequelize, DataTypes) =>{
       primaryKey: true,
       autoIncrement: true,
     },
-    ram:{
+    ram: {
       type: DataTypes.INTEGER,
       unique: true,
       allowNull: false,
     },
-    storage:{
+    storage: {
       type: DataTypes.INTEGER,
-      unique : true ,
+      unique: true,
       allowNull: true,
     },
-    price:{
+    price: {
       type: DataTypes.INTEGER,
-      unique : true ,
+      unique: true,
       allowNull: true,
     },
-    phone_id:{
+    phone_id: {
       type: DataTypes.INTEGER,
       references: {
         model: 'phones',
@@ -31,6 +31,10 @@ module.exports = (sequelize, DataTypes) =>{
       }
     }
   })
+
+  Specification.associate = function (models) {
+    Specification.belongsTo(models.phone, { foreignKey: 'phone_id' })
+  };
 
   return Specification
 }

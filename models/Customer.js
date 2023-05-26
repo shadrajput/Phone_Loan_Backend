@@ -48,16 +48,6 @@ module.exports = (sequelize, DataTypes) =>{
     reference_mobile:{
       type: DataTypes.STRING,
       allowNull: true,
-      // validate: {
-      //   min:{
-      //     args: 10,
-      //     msg: "Please enter valid mobile number"
-      //   },
-      //   max:{
-      //     args: 10,
-      //     msg: "Please enter valid mobile number"
-      //   },
-      // }
     },
     document_id:{
       type: DataTypes.INTEGER,
@@ -77,6 +67,10 @@ module.exports = (sequelize, DataTypes) =>{
   },{
   tableName: 'customer' // We need to choose the model name
 })
+
+Customer.associate = function (models) {
+  Customer.hasMany(models.purchase , {foreignKey : 'customer_id'})
+};
 
   return Customer
 }

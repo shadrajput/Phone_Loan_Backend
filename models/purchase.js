@@ -39,5 +39,10 @@ module.exports = (sequelize, DataTypes) => {
         },
     })
 
+    Purchase.associate = function (models) {
+        Purchase.belongsTo(models.phone, { foreignKey: 'phone_id' })
+        Purchase.belongsTo(models.customer, { foreignKey: 'customer_id' })
+      };
+
     return Purchase
 }
