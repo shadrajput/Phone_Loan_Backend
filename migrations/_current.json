@@ -1,0 +1,195 @@
+{
+    "tables": {
+        "customer": {
+            "tableName": "customer",
+            "schema": {
+                "id": {
+                    "allowNull": false,
+                    "primaryKey": true,
+                    "autoIncrement": true,
+                    "field": "id",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "first_name": {
+                    "allowNull": false,
+                    "validate": {
+                        "notEmpty": true,
+                        "isAlpha": {
+                            "args": true,
+                            "msg": "Please enter only letters"
+                        }
+                    },
+                    "field": "first_name",
+                    "seqType": "Sequelize.STRING"
+                },
+                "last_name": {
+                    "allowNull": false,
+                    "validate": {
+                        "notEmpty": true,
+                        "isAlpha": {
+                            "args": true,
+                            "msg": "Please enter only letters"
+                        }
+                    },
+                    "field": "last_name",
+                    "seqType": "Sequelize.STRING"
+                },
+                "mobile": {
+                    "allowNull": false,
+                    "field": "mobile",
+                    "seqType": "Sequelize.STRING"
+                },
+                "alternate_no": {
+                    "allowNull": true,
+                    "field": "alternate_no",
+                    "seqType": "Sequelize.STRING"
+                },
+                "reference_name": {
+                    "allowNull": true,
+                    "validate": {
+                        "is": {}
+                    },
+                    "field": "reference_name",
+                    "seqType": "Sequelize.STRING"
+                },
+                "reference_mobile": {
+                    "allowNull": true,
+                    "validate": {
+                        "min": {
+                            "args": 10,
+                            "msg": "Please enter valid mobile number"
+                        },
+                        "max": {
+                            "args": 10,
+                            "msg": "Please enter valid mobile number"
+                        }
+                    },
+                    "field": "reference_mobile",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "document_id": {
+                    "references": {
+                        "model": "document",
+                        "key": "id"
+                    },
+                    "field": "document_id",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "user_id": {
+                    "references": {
+                        "model": "user",
+                        "key": "id"
+                    },
+                    "field": "user_id",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "createdAt": {
+                    "allowNull": false,
+                    "field": "createdAt",
+                    "seqType": "Sequelize.DATE"
+                },
+                "updatedAt": {
+                    "allowNull": false,
+                    "field": "updatedAt",
+                    "seqType": "Sequelize.DATE"
+                }
+            },
+            "indexes": []
+        },
+        "document": {
+            "tableName": "document",
+            "schema": {
+                "id": {
+                    "allowNull": false,
+                    "primaryKey": true,
+                    "autoIncrement": true,
+                    "field": "id",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "adhar_front": {
+                    "allowNull": false,
+                    "defaultValue": {
+                        "value": "default"
+                    },
+                    "field": "adhar_front",
+                    "seqType": "Sequelize.STRING"
+                },
+                "adhar_back": {
+                    "allowNull": false,
+                    "defaultValue": {
+                        "value": "default"
+                    },
+                    "field": "adhar_back",
+                    "seqType": "Sequelize.STRING"
+                },
+                "pancard": {
+                    "allowNull": false,
+                    "defaultValue": {
+                        "value": "default"
+                    },
+                    "field": "pancard",
+                    "seqType": "Sequelize.STRING"
+                },
+                "light_bill": {
+                    "allowNull": true,
+                    "field": "light_bill",
+                    "seqType": "Sequelize.STRING"
+                },
+                "createdAt": {
+                    "allowNull": false,
+                    "field": "createdAt",
+                    "seqType": "Sequelize.DATE"
+                },
+                "updatedAt": {
+                    "allowNull": false,
+                    "field": "updatedAt",
+                    "seqType": "Sequelize.DATE"
+                }
+            },
+            "indexes": []
+        },
+        "user": {
+            "tableName": "user",
+            "schema": {
+                "id": {
+                    "allowNull": false,
+                    "primaryKey": true,
+                    "autoIncrement": true,
+                    "field": "id",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "username": {
+                    "allowNull": false,
+                    "validate": {
+                        "notEmpty": true
+                    },
+                    "field": "username",
+                    "seqType": "Sequelize.STRING"
+                },
+                "password": {
+                    "allowNull": false,
+                    "validate": {
+                        "min": {
+                            "args": 3,
+                            "msg": "Please enter alleast 3 characters"
+                        }
+                    },
+                    "field": "password",
+                    "seqType": "Sequelize.STRING"
+                },
+                "createdAt": {
+                    "allowNull": false,
+                    "field": "createdAt",
+                    "seqType": "Sequelize.DATE"
+                },
+                "updatedAt": {
+                    "allowNull": false,
+                    "field": "updatedAt",
+                    "seqType": "Sequelize.DATE"
+                }
+            },
+            "indexes": []
+        }
+    },
+    "revision": 2
+}
