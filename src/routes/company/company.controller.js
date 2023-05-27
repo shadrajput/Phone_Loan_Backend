@@ -1,7 +1,7 @@
 const catchAsyncErrors = require("../../middlewares/catchAsyncErrors");
 const ErrorHandler = require("../../utils/ErrorHandler");
 const formidable = require("formidable")
-const { company } = require("../../../models")
+const { company, phone } = require("../../../models")
 
 
 // 1 . Add Company
@@ -34,12 +34,11 @@ const AddCompany = async (req, res, next) => {
 // 2 . Get all Company
 const getallCompany = catchAsyncErrors(async (req, res, next) => {
 
-    const AllNews = await company.findAll({ include : Phones })
+    const all_companies = await company.findAll({ include: phone })
 
     res.status(200).json({
-        AllNews: AllNews,
+        all_companies: all_companies,
         success: true,
-        message: "All Company"
     })
 })
 
