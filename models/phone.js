@@ -18,20 +18,21 @@ module.exports = (sequelize, DataTypes) => {
         company_id: {
             type: DataTypes.INTEGER,
             references: {
-                model: 'companies',
+                model: 'company',
                 key: 'id'
             }
         }
-    })
+    },
+    {
+        freezeTableName: true,
+    }
+    )
 
     Phone.associate = function (models) {
-        Phone.belongsTo(models.company , {foreignKey : 'company_id'})
+        Phone.belongsTo(models.company, { foreignKey: 'company_id' })
+        Phone.hasMany(models.specification, { foreignKey: 'phone_id' })
+        Phone.hasMany(models.purchase, { foreignKey: 'phone_id' })
     };  
-
-    Phone.associate = function (models) {
-        Phone.hasMany(models.specification , {foreignKey : 'phone_id'})
-        Phone.hasMany(models.purchase , {foreignKey : 'phone_id'})
-    };
 
     return Phone
 }

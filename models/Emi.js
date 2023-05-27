@@ -31,11 +31,20 @@ module.exports = (sequelize, DataTypes) => {
         purchase_id: {
             type: DataTypes.INTEGER,
             references: {
-                model: 'purchases',
+                model: 'purchase',
                 key: 'id'
             }
         },
-    })
+    },
+    {
+        freezeTableName: true,
+    }
+    )
+
+    Emi.associate = function (models) {
+        Emi.belongsTo(models.purchase, { foreignKey: 'purchase_id' })
+        Emi.hasOne(models.receipt, { foreignKey: 'emi_id' })
+    };
 
     return Emi
 }

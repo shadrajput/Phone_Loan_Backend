@@ -27,9 +27,15 @@ module.exports = (sequelize, DataTypes) =>{
       type: DataTypes.STRING,
       allowNull: true,
     }
-  }, {
-  tableName: 'document' // We need to choose the model name
-})
+  }, 
+  {
+    freezeTableName: true,
+  }
+  )
+
+  Document.associate = function (models) {
+    Document.hasOne(models.customer, { foreignKey: 'document_id' })
+  };
 
   return Document
 }

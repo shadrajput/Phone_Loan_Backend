@@ -11,21 +11,21 @@ module.exports = (sequelize, DataTypes) => {
         customer_id: {
             type: DataTypes.INTEGER,
             references: {
-                model: 'customers',
+                model: 'customer',
                 key: 'id'
             }
         },
         phone_id: {
             type: DataTypes.INTEGER,
             references: {
-                model: 'phones',
+                model: 'phone',
                 key: 'id'
             }
         },
         installment_id: {
             type: DataTypes.INTEGER,
             references: {
-                model: 'installments',
+                model: 'installment',
                 key: 'id'
             }
         },
@@ -37,12 +37,17 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             allowNull: false,
         },
+    },{
+        freezeTableName: true,
     })
 
     Purchase.associate = function (models) {
         Purchase.belongsTo(models.phone, { foreignKey: 'phone_id' })
         Purchase.belongsTo(models.customer, { foreignKey: 'customer_id' })
-      };
+        Purchase.belongsTo(models.installment, { foreignKey: 'installment_id' })
+        Purchase.hasMany(models.emi, { foreignKey: 'purchase_id' })
+
+    };
 
     return Purchase
 }

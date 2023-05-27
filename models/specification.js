@@ -26,11 +26,15 @@ module.exports = (sequelize, DataTypes) => {
     phone_id: {
       type: DataTypes.INTEGER,
       references: {
-        model: 'phones',
+        model: 'phone',
         key: 'id'
       }
     }
-  })
+  },
+  {
+    freezeTableName: true,
+  }
+  )
 
   Specification.associate = function (models) {
     Specification.belongsTo(models.phone, { foreignKey: 'phone_id' })

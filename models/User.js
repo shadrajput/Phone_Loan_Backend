@@ -24,12 +24,21 @@ module.exports = (sequelize, DataTypes) =>{
           msg: "Please enter alleast 3 characters"
         },
       }
+    },
+    is_admin:{
+      type: DataTypes.BOOLEAN,
+      default: false,
+      allowNull: false
     }
   },
   {
-    tableName: 'user' // We need to choose the model name
+    freezeTableName: true,
   }
-)
+  )
+
+  User.associate = function (models) {
+    User.hasOne(models.customer, { foreignKey: 'user_id' })
+  };
 
   return User
 }

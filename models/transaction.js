@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
         receipt_id: {
             type: DataTypes.INTEGER,
             references: {
-                model: 'receipts',
+                model: 'receipt',
                 key: 'id'
             }
         },
@@ -36,9 +36,15 @@ module.exports = (sequelize, DataTypes) => {
         amount: {
             type: DataTypes.INTEGER,
         },
+    },
+    {
+        freezeTableName: true,
+    }
+    )
 
-
-    })
+    Transaction.associate = function (models) {
+        Transaction.belongsTo(models.receipt, { foreignKey: 'receipt_id' })
+    };
 
     return Transaction
 }

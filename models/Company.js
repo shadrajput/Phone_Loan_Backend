@@ -19,10 +19,14 @@ module.exports = (sequelize, DataTypes) => {
                 }
             }
         },
-    })
+    },
+    {
+        freezeTableName: true,
+    }
+    )
 
     Company.associate = function (models) {
-        Company.hasMany(models.phone , {foreignKey : 'company_id'})
+        Company.hasMany(models.phone, { foreignKey: 'phone_id' })
     };
 
     return Company

@@ -11,14 +11,7 @@ module.exports = (sequelize, DataTypes) => {
         emi_id: {
             type: DataTypes.INTEGER,
             references: {
-                model: 'emis',
-                key: 'id'
-            }
-        },
-        admin_id: {
-            type: DataTypes.INTEGER,
-            references: {
-                model: 'admins',
+                model: 'emi',
                 key: 'id'
             }
         },
@@ -26,7 +19,16 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             allowNull: false,
         },
-    })
+    },
+    {
+        freezeTableName: true,
+    }
+    )
+
+    Receipt.associate = function (models) {
+        Receipt.belongsTo(models.emi, { foreignKey: 'emi_id' })
+        Receipt.hasOne(models.transaction, { foreignKey: 'receipt_id' })
+    };
 
     return Receipt
 }

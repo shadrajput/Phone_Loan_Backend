@@ -64,12 +64,16 @@ module.exports = (sequelize, DataTypes) =>{
       }
     }
     
-  },{
-  tableName: 'customer' // We need to choose the model name
-})
+  },
+  {
+    freezeTableName: true,
+  }
+  )
 
 Customer.associate = function (models) {
-  Customer.hasMany(models.purchase , {foreignKey : 'customer_id'})
+  Customer.hasMany(models.purchase, { foreignKey: 'customer_id' });
+  Customer.belongsTo(models.document, { foreignKey: 'document_id' });
+  Customer.belongsTo(models.user, { foreignKey: 'user_id' })
 };
 
   return Customer

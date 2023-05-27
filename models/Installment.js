@@ -36,7 +36,15 @@ module.exports = (sequelize, DataTypes) =>{
       //   },
       // }
     },
-  })
+  },
+  {
+    freezeTableName: true,
+  }
+  )
+
+  Installment.associate = function (models) {
+    Installment.hasMany(models.purchase, { foreignKey: 'installment_id' })
+  };
 
   return Installment
 }
