@@ -4,7 +4,7 @@ const { AddSpecification , getallSpecification , getSingleSpecification , update
 const router = express.Router();
 
 router.post("/addspecification" , AddSpecification)
-router.get("/" , getallSpecification)
+router.get("/:id" , getallSpecification)
 router.get("/details/:id" , getSingleSpecification)
 router.put("/update/:id" , updateSpecificationDetails)
 router.delete("/delete/:id" , deleteSpecificationDetails)

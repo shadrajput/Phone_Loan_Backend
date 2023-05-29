@@ -33,10 +33,10 @@ const AddInstallment = async (req, res, next) => {
 // 2 . Get all InstallmentS
 const getallInstallment = catchAsyncErrors(async (req, res, next) => {
 
-    const AllNews = await installment.findAll()
+    const AllInstallment = await installment.findAll()
 
     res.status(200).json({
-        AllNews: AllNews,
+        AllInstallment: AllInstallment,
         success: true,
         message: "All Installment"
     })

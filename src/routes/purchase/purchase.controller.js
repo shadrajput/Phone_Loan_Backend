@@ -3,7 +3,8 @@ const ErrorHandler = require("../../utils/ErrorHandler");
 const formidable = require("formidable")
 const { purchase } = require("../../../models")
 const { phone } = require("../../../models")
-
+const { customer } = require("../../../models")
+const { installment } = require("../../../models")
 
 // 1 . Add Purchase
 const AddPurchase = async (req, res, next) => {
@@ -18,11 +19,11 @@ const AddPurchase = async (req, res, next) => {
             }
 
             const data = await purchase.create({
-                customer_id : "5",
-                phone_id : "1",
-                installment_id : "1",
-                pending_amount : PurchaseInfo.pending_amount,
-                net_amount : PurchaseInfo.net_amount
+                customer_id: "3",
+                phone_id: "2",
+                installment_id: "1",
+                pending_amount: PurchaseInfo.pending_amount,
+                net_amount: PurchaseInfo.net_amount
 
             });
 
@@ -41,10 +42,31 @@ const AddPurchase = async (req, res, next) => {
 // 2 . Get all Purchase
 const getallPurchase = catchAsyncErrors(async (req, res, next) => {
 
-    const AllPurchase = await purchase.findAll({include : [phone]})
+    const AllPurchase = await purchase.findAll({
+        include: [customer, phone]
+    })
 
     res.status(200).json({
         AllPurchase: AllPurchase,
+        success: true,
+        message: "All Purchase"
+    })
+})
+
+// 3 . Get all Purchase By Customer Id
+const getSinglePurchasebyCustomerId = catchAsyncErrors(async (req, res, next) => {
+
+    const { id } = req.params
+
+    const CustomerAllPurchase = await purchase.findAll({
+        where: {
+            customer_id: Number(id)
+        },
+        include: [customer, phone, installment]
+    })
+
+    res.status(200).json({
+        CustomerAllPurchase: CustomerAllPurchase,
         success: true,
         message: "All Purchase"
     })
@@ -58,7 +80,8 @@ const getSinglePurchase = catchAsyncErrors(async (req, res, next) => {
     const SinglePurchase = await purchase.findOne({
         where: {
             id: Number(id)
-        }
+        },
+        include: [customer, installment, phone]
     })
 
     res.status(200).json({
@@ -87,7 +110,7 @@ const updatePurchase = catchAsyncErrors(async (req, res, next) => {
 
 // 5 . Delete Purchase
 const deletePurchaseDetails = catchAsyncErrors(async (req, res, next) => {
-    
+
     const { id } = req.params
 
     const DeletePurchaseDetails = await purchase.destroy({
@@ -97,7 +120,7 @@ const deletePurchaseDetails = catchAsyncErrors(async (req, res, next) => {
     })
 
     res.status(200).json({
-        DeletePurchaseDetails : DeletePurchaseDetails,
+        DeletePurchaseDetails: DeletePurchaseDetails,
         success: true,
         message: "Purchase deleted successfully"
     })
@@ -110,6 +133,7 @@ module.exports = {
     AddPurchase,
     getallPurchase,
     getSinglePurchase,
+    getSinglePurchasebyCustomerId,
     updatePurchase,
     deletePurchaseDetails
 };

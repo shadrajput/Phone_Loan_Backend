@@ -3,6 +3,7 @@ const ErrorHandler = require("../../utils/ErrorHandler");
 const formidable = require("formidable")
 const { specification } = require("../../../models")
 const { phone } = require("../../../models")
+const { company } = require("../../../models")
 
 // 1 . Add Company
 const AddSpecification = async (req, res, next) => {
@@ -20,7 +21,7 @@ const AddSpecification = async (req, res, next) => {
                 ram: Specification.ram,
                 storage: Specification.storage,
                 price: Specification.price,
-                phone_id: "1"
+                phone_id: "2"
             });
 
             res.status(201).json({
@@ -38,8 +39,14 @@ const AddSpecification = async (req, res, next) => {
 
 // 2 . Get all Specification
 const getallSpecification = catchAsyncErrors(async (req, res, next) => {
+    const { id } = req.params
 
-    const AllSpecification = await specification.findAll({ include: [phone] })
+    const AllSpecification = await specification.findAll({
+        where: {
+            phone_id: Number(id)
+        },
+        include: [phone]
+    })
 
     res.status(200).json({
         AllSpecification: AllSpecification,
@@ -48,6 +55,7 @@ const getallSpecification = catchAsyncErrors(async (req, res, next) => {
     })
 })
 
+
 // 3 . Get Single Specification
 const getSingleSpecification = catchAsyncErrors(async (req, res, next) => {
 
@@ -55,7 +63,7 @@ const getSingleSpecification = catchAsyncErrors(async (req, res, next) => {
 
     const SingleSpecification = await specification.findOne({
         where: {
-            id: Number(id)
+            phone_id: Number(id)
         },
         include: [phone]
     })

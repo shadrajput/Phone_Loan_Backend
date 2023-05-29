@@ -42,7 +42,7 @@ const getallCustomers = catchAsyncErrors(async (req, res, next) => {
     const AllCustomer = await customer.findAll()
 
     res.status(200).json({
-        AllNews: AllCustomer,
+        AllCustomer: AllCustomer,
         success: true,
         message: "All Customer"
     })
@@ -52,7 +52,7 @@ const getallCustomers = catchAsyncErrors(async (req, res, next) => {
 const getSingleCustomer = catchAsyncErrors(async (req, res, next) => {
 
     const { id } = req.params
-
+    console.log(id)
     const SingleCustomer = await customer.findOne({
         where: {
             id: Number(id)
@@ -60,7 +60,7 @@ const getSingleCustomer = catchAsyncErrors(async (req, res, next) => {
     })
 
     res.status(200).json({
-        SingleEMI: SingleCustomer,
+        SingleCustomer: SingleCustomer,
         success: true,
         message: "One Customer Details"
     })

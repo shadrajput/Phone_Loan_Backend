@@ -24,7 +24,7 @@ const AddEmi = async (req, res, next) => {
                 paid_date: EmiInfo.paid_date,
                 status: EmiInfo.status,
                 type: EmiInfo.type,
-                purchase_id: "2"
+                purchase_id: "6"
 
             });
 
@@ -44,6 +44,24 @@ const AddEmi = async (req, res, next) => {
 const getallEmi = catchAsyncErrors(async (req, res, next) => {
 
     const AllEmi = await emi.findAll()
+
+    res.status(200).json({
+        AllEmi: AllEmi,
+        success: true,
+        message: "All Emi"
+    })
+})
+
+// 3 . Get all Emi By Purchase Id 
+const getEmiByPurchaseId = catchAsyncErrors(async (req, res, next) => {
+
+    const { id } = req.params
+    console.log(id)
+    const AllEmi = await emi.findAll({
+        where: {
+            purchase_id : Number(id)
+        }
+    })
 
     res.status(200).json({
         AllEmi: AllEmi,
@@ -99,7 +117,7 @@ const deleteEmiDetails = catchAsyncErrors(async (req, res, next) => {
     })
 
     res.status(200).json({
-        DeleteEmiDetails : DeleteEmiDetails,
+        DeleteEmiDetails: DeleteEmiDetails,
         success: true,
         message: "Emi deleted successfully"
     })
@@ -111,6 +129,7 @@ const deleteEmiDetails = catchAsyncErrors(async (req, res, next) => {
 module.exports = {
     AddEmi,
     getallEmi,
+    getEmiByPurchaseId,
     getSingleEmi,
     updateEmi,
     deleteEmiDetails
