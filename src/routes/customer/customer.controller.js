@@ -5,7 +5,7 @@ const { customer } = require("../../../models")
 
 
 // 1 . Add Customer
-const AddCustomer = async (req, res, next) => {
+const AddCustomer = catchAsyncErrors(async (req, res, next) => {
     const form = new formidable.IncomingForm();
 
     form.parse(req, async function (err, fields, files) {
@@ -13,6 +13,7 @@ const AddCustomer = async (req, res, next) => {
         const CustomerInfo = (fields);
 
         const Mobile = CustomerInfo.mobile
+
         if (err) {
             return res.status(500).json({ success: false, message: err.message });
         }
@@ -34,7 +35,7 @@ const AddCustomer = async (req, res, next) => {
         });
     });
 
-}
+})
 
 // // 2 . Get all Customers
 const getallCustomers = catchAsyncErrors(async (req, res, next) => {

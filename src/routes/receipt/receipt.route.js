@@ -10,7 +10,7 @@ const {
 const router = express.Router();
 
 router.post("/addreceipt", AddReceipt)
-router.get("/", getallReceipt)
+router.get("/:search", getallReceipt)
 router.get("/details/:id" , getSingleReceipt)
 router.put("/update/:id" , updateReceipt)
 router.delete("/delete/:id" , deleteReceiptDetails)
