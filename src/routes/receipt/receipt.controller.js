@@ -43,12 +43,9 @@ const getallReceipt = catchAsyncErrors(async (req, res, next) => {
     let { search } = req.params;
 
     const AllReceipt = await receipt.findAll({
-        // where: {
-        //     first_name: {
-        //         contains: search == "" ? "" : search,
-        //         mode: "insensitive",
-        //     },
-        // },
+        where: {
+            id : search,
+        },
         include: [emi]
 
     })

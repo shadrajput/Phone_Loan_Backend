@@ -11,7 +11,7 @@ const {
 const router = express.Router();
 
 router.post("/addpurchase", AddPurchase)
-router.get("/", getallPurchase)
+router.get("/List", getallPurchase)
 router.get("/details/:id" , getSinglePurchase)
 router.get("/Customer_details/:id" , getSinglePurchasebyCustomerId)
 router.put("/update/:id" , updatePurchase)

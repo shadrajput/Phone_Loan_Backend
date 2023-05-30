@@ -6,8 +6,11 @@ const formidable = require("formidable")
 
 // 1 . Add Installment
 const AddInstallment = async (req, res, next) => {
+
     const form = new formidable.IncomingForm();
+
     form.parse(req, async function (err, fields, files) {
+        console.log(fields)
         try {
             const InstallmentSInfo = (fields);
 
