@@ -69,18 +69,25 @@ const getSingleCustomer = catchAsyncErrors(async (req, res, next) => {
 
 // // 4 . Update EMI
 const updateCustomerDetails = catchAsyncErrors(async (req, res, next) => {
-    const { id } = req.params
 
-    const updateCustomerDetails = await customer.update(req.body, {
-        where: {
-            id: Number(id)
-        },
-    })
+    const form = new formidable.IncomingForm();
 
-    res.status(200).json({
-        updateCustomerDetails: updateCustomerDetails,
-        success: true,
-        message: "Customer details updated"
+    form.parse(req, async function (err, fields, files) {
+
+        Customer_id = (fields.id)
+        Customer_Details = (fields)
+
+        const updateCustomerDetails = await customer.update(Customer_id, {
+            where: {
+                id: Number(Customer_id)
+            },
+        })
+
+        res.status(200).json({
+            updateCustomerDetails: updateCustomerDetails,
+            success: true,
+            message: "Customer details updated"
+        })
     })
 })
 

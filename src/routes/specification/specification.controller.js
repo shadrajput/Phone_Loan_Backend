@@ -39,6 +39,19 @@ const AddSpecification = async (req, res, next) => {
 
 // 2 . Get all Specification
 const getallSpecification = catchAsyncErrors(async (req, res, next) => {
+
+    const AllSpecification = await specification.findAll({
+        include: [phone]
+    })
+
+    res.status(200).json({
+        AllSpecification: AllSpecification,
+        success: true,
+        message: "All Specification"
+    })
+})
+
+const getallSpecificationById = catchAsyncErrors(async (req, res, next) => {
     const { id } = req.params
 
     const AllSpecification = await specification.findAll({
@@ -114,6 +127,7 @@ const deleteSpecificationDetails = catchAsyncErrors(async (req, res, next) => {
 module.exports = {
     AddSpecification,
     getallSpecification,
+    getallSpecificationById,
     getSingleSpecification,
     updateSpecificationDetails,
     deleteSpecificationDetails

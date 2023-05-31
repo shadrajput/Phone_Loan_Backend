@@ -10,15 +10,17 @@ const AddInstallment = async (req, res, next) => {
     const form = new formidable.IncomingForm();
 
     form.parse(req, async function (err, fields, files) {
-        console.log(fields)
         try {
-            const InstallmentSInfo = (fields);
+            
+            const InstallmentInfo = (fields);
+
+            console.log(InstallmentInfo)
 
             if (err) {
                 return res.status(500).json({ success: false, message: err.message });
             }
 
-            const data = await installment.create(InstallmentSInfo);
+            const data = await installment.create(InstallmentInfo);
 
             res.status(201).json({
                 data: data,
