@@ -43,7 +43,7 @@ const AddPurchase = async (req, res, next) => {
 const getallPurchase = catchAsyncErrors(async (req, res, next) => {
 
     const AllPurchase = await purchase.findAll({
-        include: [customer, phone]
+        include: [customer, phone , installment]
     })
 
     res.status(200).json({

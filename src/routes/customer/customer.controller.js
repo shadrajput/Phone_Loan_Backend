@@ -10,9 +10,18 @@ const AddCustomer = catchAsyncErrors(async (req, res, next) => {
 
     form.parse(req, async function (err, fields, files) {
 
-        const CustomerInfo = (fields);
+        const CustomerInfo = JSON.parse(fields.data).CustomerInfo;
+        console.log(CustomerInfo)
 
-        const Mobile = CustomerInfo.mobile
+        const result = await customer.findOne({
+            where: {
+                mobile : CustomerInfo.mobile
+            },
+          });
+      
+          if (result) {
+            return next(new ErrorHandler("Please change the tournament name", 400));
+          }
 
         if (err) {
             return res.status(500).json({ success: false, message: err.message });
