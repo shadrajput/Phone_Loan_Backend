@@ -2,6 +2,7 @@ const catchAsyncErrors = require("../../middlewares/catchAsyncErrors");
 const ErrorHandler = require("../../utils/ErrorHandler");
 const formidable = require("formidable")
 const { customer } = require("../../../models")
+const { installment } = require("../../../models")
 
 
 // 1 . Add Customer
@@ -12,16 +13,15 @@ const AddCustomer = catchAsyncErrors(async (req, res, next) => {
 
         const CustomerInfo = JSON.parse(fields.data).CustomerInfo;
         console.log(CustomerInfo)
-
         const result = await customer.findOne({
             where: {
-                mobile : CustomerInfo.mobile
+                mobile: CustomerInfo.mobile
             },
-          });
-      
-          if (result) {
-            return next(new ErrorHandler("Please change the tournament name", 400));
-          }
+        });
+
+        if (result) {
+            return res.status(400).json({ success: false, message: "Customer Exist Already" });
+        }
 
         if (err) {
             return res.status(500).json({ success: false, message: err.message });
