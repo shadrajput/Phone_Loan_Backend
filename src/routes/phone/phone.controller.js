@@ -12,19 +12,25 @@ const AddModel = async (req, res, next) => {
 
             const Phone = (fields);
 
+            const Company = await company.findOne({
+                where: {
+                    company_name: Phone.company
+                },
+            });
+
             if (err) {
                 return res.status(500).json({ success: false, message: err.message });
             }
 
             const data = await phone.create({
-                model_name: Phone.model_name,
-                company_id: "1"
+                model_name: Phone.model,
+                company_id: Company.id
             });
 
             res.status(201).json({
                 data: data,
                 success: true,
-                message: "Model added successfully",
+                message: "Phone added successfully",
             });
         } catch (error) {
             next(error)

@@ -9,8 +9,8 @@ const AddCompany = async (req, res, next) => {
     const form = new formidable.IncomingForm();
     form.parse(req, async function (err, fields, files) {
         try {
-            
-            const Company = (fields);
+
+            const Company = JSON.parse(fields);
 
             if (err) {
                 return res.status(500).json({ success: false, message: err.message });

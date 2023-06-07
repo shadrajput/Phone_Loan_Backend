@@ -12,7 +12,7 @@ const AddCustomer = catchAsyncErrors(async (req, res, next) => {
     form.parse(req, async function (err, fields, files) {
 
         const CustomerInfo = JSON.parse(fields.data).CustomerInfo;
-        console.log(CustomerInfo)
+
         const result = await customer.findOne({
             where: {
                 mobile: CustomerInfo.mobile
@@ -82,17 +82,25 @@ const updateCustomerDetails = catchAsyncErrors(async (req, res, next) => {
     const form = new formidable.IncomingForm();
 
     form.parse(req, async function (err, fields, files) {
+        console.log(fields)
+        // const customer_id = Number(req.params.tournament_id);
+        const {
+            id,
+            first_name,
+            last_name,
+            mobile,
+            alternate_no,
+            reference_name,
+            reference_mobile,
+        } = fields;
 
-        Customer_id = (fields.id)
-        Customer_Details = (fields)
+        const updateCustomerDetails = await customer.update(fields, {
+                where: {
+                    id: Number(id)
+                },
+            })
 
-        const updateCustomerDetails = await customer.update(Customer_id, {
-            where: {
-                id: Number(Customer_id)
-            },
-        })
-
-        res.status(200).json({
+        res.status(201).json({
             updateCustomerDetails: updateCustomerDetails,
             success: true,
             message: "Customer details updated"
