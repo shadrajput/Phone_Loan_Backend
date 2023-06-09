@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     ram: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
     },
     storage: {
       type: DataTypes.INTEGER,
@@ -18,7 +18,6 @@ module.exports = (sequelize, DataTypes) => {
     },
     price: {
       type: DataTypes.INTEGER,
-      unique: true,
       allowNull: true,
     },
     phone_id: {

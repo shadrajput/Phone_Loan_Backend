@@ -7,34 +7,23 @@ const { company } = require("../../../models")
 
 // 1 . Add Company
 const AddSpecification = async (req, res, next) => {
-    const form = new formidable.IncomingForm();
-    form.parse(req, async function (err, fields, files) {
-        try {
+    try {
 
-            const Specification = (fields);
+        const data = await specification.create({
+            ram: req.body.ram,
+            storage: req.body.storage,
+            price: req.body.price,
+            phone_id: req.body.phone_id
+        });
 
-            if (err) {
-                return res.status(500).json({ success: false, message: err.message });
-            }
-
-            const data = await specification.create({
-                ram: Specification.ram,
-                storage: Specification.storage,
-                price: Specification.price,
-                phone_id: "2"
-            });
-
-            res.status(201).json({
-                data: data,
-                success: true,
-                message: "Specification added successfully",
-            });
-        } catch (error) {
-            next(error)
-        }
-
-    });
-
+        res.status(201).json({
+            data: data,
+            success: true,
+            message: "Specification added successfully",
+        });
+    } catch (error) {
+        next(error)
+    }
 }
 
 // 2 . Get all Specification

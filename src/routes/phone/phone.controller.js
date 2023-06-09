@@ -8,33 +8,39 @@ const { company } = require("../../../models")
 const AddModel = async (req, res, next) => {
     const form = new formidable.IncomingForm();
     form.parse(req, async function (err, fields, files) {
-        try {
 
-            const Phone = (fields);
+        const Phone = (fields);
 
-            const Company = await company.findOne({
-                where: {
-                    company_name: Phone.company
-                },
-            });
+        const Company = await company.findOne({
+            where: {
+                company_name: Phone.company_name
+            },
+        });
 
-            if (err) {
-                return res.status(500).json({ success: false, message: err.message });
-            }
+        const Model = await phone.findOne({
+            where: {
+                model_name: Phone.model_name
+            },
+        });
 
-            const data = await phone.create({
-                model_name: Phone.model,
-                company_id: Company.id
-            });
-
-            res.status(201).json({
-                data: data,
-                success: true,
-                message: "Phone added successfully",
-            });
-        } catch (error) {
-            next(error)
+        if (Model) {
+            return res.status(500).json({ success: false, message: "Model Allready Exist " });
         }
+
+        if (err) {
+            return res.status(500).json({ success: false, message: err.message });
+        }
+
+        const data = await phone.create({
+            model_name: Phone.model_name,
+            company_id: Company.id
+        });
+
+        res.status(201).json({
+            data: data,
+            success: true,
+            message: "Model Add Successfully",
+        });
 
     });
 
@@ -90,7 +96,9 @@ const updateModelDetails = catchAsyncErrors(async (req, res, next) => {
 
 // 5 . Delete Model
 const deleteModelDetails = catchAsyncErrors(async (req, res, next) => {
+
     const { id } = req.params
+    console.log(id)
     const DeleteModelDetails = await phone.destroy({
         where: {
             id: Number(id)

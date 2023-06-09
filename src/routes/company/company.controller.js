@@ -6,28 +6,20 @@ const { company, phone } = require("../../../models")
 
 // 1 . Add Company
 const AddCompany = async (req, res, next) => {
-    const form = new formidable.IncomingForm();
-    form.parse(req, async function (err, fields, files) {
-        try {
+    try {
 
-            const Company = JSON.parse(fields);
+        const data = await company.create({
+            company_name: req.body.company
+        });
 
-            if (err) {
-                return res.status(500).json({ success: false, message: err.message });
-            }
-
-            const data = await company.create(Company);
-
-            res.status(201).json({
-                data: data,
-                success: true,
-                message: "company added successfully",
-            });
-        } catch (error) {
-            next(error)
-        }
-
-    });
+        res.status(201).json({
+            data: data,
+            success: true,
+            message: "company added successfully",
+        });
+    } catch (error) {
+        next(error)
+    }
 
 }
 

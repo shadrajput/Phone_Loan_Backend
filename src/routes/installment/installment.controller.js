@@ -96,7 +96,7 @@ const updateInstallmentDetails = catchAsyncErrors(async (req, res, next) => {
 
 const deleteInstallmentDetails = catchAsyncErrors(async (req, res, next) => {
     const { id } = req.params
-    console.log(req.params)
+
     const DeleteInstallmentDetails = await installment.destroy({
         where: {
             id: Number(id)
@@ -106,7 +106,7 @@ const deleteInstallmentDetails = catchAsyncErrors(async (req, res, next) => {
     res.status(200).json({
         DeleteInstallmentDetails: DeleteInstallmentDetails,
         success: true,
-        message: "News deleted successfully"
+        message: "Installment deleted successfully"
     })
 
 })
