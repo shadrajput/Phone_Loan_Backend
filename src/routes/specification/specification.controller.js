@@ -79,11 +79,13 @@ const getSingleSpecification = catchAsyncErrors(async (req, res, next) => {
 
 // 4 . Update Specification
 const updateSpecificationDetails = catchAsyncErrors(async (req, res, next) => {
-    const { id } = req.params
+    const { phone_id } = req.body
+    console.log(phone_id)
 
-    const updateSpecificationDetails = await specification.update(req.body, {
+
+    const updateSpecificationDetails = await specification.update(req.body , {
         where: {
-            id: Number(id)
+            id: Number(phone_id)
         },
     })
 
@@ -96,7 +98,9 @@ const updateSpecificationDetails = catchAsyncErrors(async (req, res, next) => {
 
 // 5 . Delete Specification
 const deleteSpecificationDetails = catchAsyncErrors(async (req, res, next) => {
+   
     const { id } = req.params
+
     const DeleteSpecificationDetails = await specification.destroy({
         where: {
             id: Number(id)

@@ -8,6 +8,14 @@ const { company, phone } = require("../../../models")
 const AddCompany = async (req, res, next) => {
     try {
 
+        const Company = await company.findOne({
+            company_name: req.body.company_name
+        });
+        
+        if (Company) {
+            return res.status(400).json({ success: false, message: "Company Exist Already" });
+        }
+
         const data = await company.create({
             company_name: req.body.company
         });

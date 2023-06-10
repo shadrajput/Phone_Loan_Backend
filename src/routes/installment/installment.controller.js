@@ -6,43 +6,30 @@ const formidable = require("formidable")
 
 // 1 . Add Installment
 const AddInstallment = async (req, res, next) => {
+    try {
+        const result = await installment.findOne({
+            where: {
+                month: req.body.month,
+            },
+        });
 
-    const form = new formidable.IncomingForm();
-
-    form.parse(req, async function (err, fields, files) {
-        try {
-            const InstallmentInfo = JSON.parse(fields.data).data;
-
-            const result = await installment.findOne({
-                where: {
-                    month: InstallmentInfo.month,
-                },
-            });
-
-            if (result) {
-                return res.status(400).json({ success: false, message: "Installment Exist Already" });
-            }
-
-            if (err) {
-                return res.status(500).json({ success: false, message: err.message });
-            }
-
-            const data = await installment.create({
-                month: InstallmentInfo.month,
-                charges: InstallmentInfo.charges
-            });
-
-            res.status(201).json({
-                data: data,
-                success: true,
-                message: "Installment added successfully",
-            });
-        } catch (error) {
-            next(error)
+        if (result) {
+            return res.status(400).json({ success: false, message: "Installment Exist Already" });
         }
 
-    });
+        const data = await installment.create({
+            month: req.body.month,
+            charges: req.body.charges
+        });
 
+        res.status(201).json({
+            data: data,
+            success: true,
+            message: "Installment added successfully",
+        });
+    } catch (error) {
+        next(error)
+    }
 }
 
 // 2 . Get all InstallmentS
@@ -77,8 +64,9 @@ const getSingleInstallment = catchAsyncErrors(async (req, res, next) => {
 
 // 4 . Update Installment
 const updateInstallmentDetails = catchAsyncErrors(async (req, res, next) => {
+
     const { id } = req.params
-    console.log(req.params)
+    
     const updateInstallmentDetails = await installment.update(req.body, {
         where: {
             id: Number(id)
@@ -95,8 +83,8 @@ const updateInstallmentDetails = catchAsyncErrors(async (req, res, next) => {
 // 5 . Delete Installment
 
 const deleteInstallmentDetails = catchAsyncErrors(async (req, res, next) => {
+    console.log(req)
     const { id } = req.params
-
     const DeleteInstallmentDetails = await installment.destroy({
         where: {
             id: Number(id)
