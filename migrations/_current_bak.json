@@ -440,6 +440,7 @@
                     "seqType": "Sequelize.INTEGER(11)"
                 },
                 "ram": {
+                    "unique": false,
                     "allowNull": true,
                     "field": "ram",
                     "seqType": "Sequelize.INTEGER"
@@ -590,5 +591,5 @@
             "indexes": []
         }
     },
-    "revision": 1
+    "revision": 2
 }

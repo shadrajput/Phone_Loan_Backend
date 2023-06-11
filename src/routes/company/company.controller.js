@@ -62,6 +62,7 @@ const getSingleCompany = catchAsyncErrors(async (req, res, next) => {
 
 // 4 . Update Company
 const updateCompanyDetails = catchAsyncErrors(async (req, res, next) => {
+    
     const { id } = req.params
 
     const updateCompanyDetails = await company.update(req.body, {

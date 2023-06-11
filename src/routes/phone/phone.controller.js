@@ -79,13 +79,14 @@ const getSingleModel = catchAsyncErrors(async (req, res, next) => {
 
 // 4 . Update Model
 const updateModelDetails = catchAsyncErrors(async (req, res, next) => {
+    console.log(req)
     const { id } = req.params
 
-    const updateModelDetails = await phone.update(req.body, {
-        where: {
-            id: Number(id)
-        },
-    })
+    // const updateModelDetails = await phone.update(req.body, {
+    //     where: {
+    //         id: Number(id)
+    //     },
+    // })
 
     res.status(200).json({
         updateModelDetails: updateModelDetails,

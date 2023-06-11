@@ -79,13 +79,12 @@ const getSingleSpecification = catchAsyncErrors(async (req, res, next) => {
 
 // 4 . Update Specification
 const updateSpecificationDetails = catchAsyncErrors(async (req, res, next) => {
-    const { phone_id } = req.body
-    console.log(phone_id)
 
+    const { id } = req.body
 
     const updateSpecificationDetails = await specification.update(req.body , {
         where: {
-            id: Number(phone_id)
+            id: Number(id)
         },
     })
 

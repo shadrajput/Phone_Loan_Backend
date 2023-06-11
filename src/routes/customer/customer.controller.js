@@ -2,7 +2,9 @@ const catchAsyncErrors = require("../../middlewares/catchAsyncErrors");
 const ErrorHandler = require("../../utils/ErrorHandler");
 const formidable = require("formidable")
 const { customer } = require("../../../models")
+const { document } = require("../../../models")
 const { installment } = require("../../../models")
+const { uploadImage } = require("../../helper/imageUpload")
 
 
 // 1 . Add Customer
@@ -10,7 +12,7 @@ const AddCustomer = catchAsyncErrors(async (req, res, next) => {
     const form = new formidable.IncomingForm();
 
     form.parse(req, async function (err, fields, files) {
-
+        console.log(fields)
         const CustomerInfo = JSON.parse(fields.data).CustomerInfo;
 
         const result = await customer.findOne({
@@ -27,21 +29,41 @@ const AddCustomer = catchAsyncErrors(async (req, res, next) => {
             return res.status(500).json({ success: false, message: err.message });
         }
 
-        const data = await customer.create({
-            first_name: CustomerInfo.first_name,
-            last_name: CustomerInfo.last_name,
-            mobile: CustomerInfo.mobile,
-            alternate_no: CustomerInfo.alternate_no,
-            reference_name: CustomerInfo.reference_name,
-            reference_mobile: CustomerInfo.reference_mobile,
-            document_id: "1"
+        let adhar_front = "";
+        adhar_front = await upload_Adhar_front(files, adhar_front);
+        let adhar_back = "";
+        adhar_back = await upload_Adhar_back(files, adhar_back);
+        let pancard = "";
+        pancard = await upload_pancard(files, pancard);
+        let lightbill = "";
+        lightbill = await upload_lightbill(files, lightbill);
+        console.log(lightbill)
+        const Document = await document.create({
+            adhar_front: adhar_front,
+            adhar_back: adhar_back,
+            pancard: pancard,
+            lightbill: lightbill
         });
 
-        res.status(201).json({
-            data: data,
-            success: true,
-            message: "Customer added successfully",
-        });
+        // let photo = "";
+        // photo = await upload_photo(files, photo);
+
+        // const data = await customer.create({
+        //     photo : photo,
+        //     first_name: CustomerInfo.first_name,
+        //     last_name: CustomerInfo.last_name,
+        //     mobile: CustomerInfo.mobile,
+        //     alternate_no: CustomerInfo.alternate_no,
+        //     reference_name: CustomerInfo.reference_name,
+        //     reference_mobile: CustomerInfo.reference_mobile,
+        //     document_id: "1"
+        // });
+
+        // res.status(201).json({
+        //     data: data,
+        //     success: true,
+        //     message: "Customer added successfully",
+        // });
     });
 
 })
@@ -95,10 +117,10 @@ const updateCustomerDetails = catchAsyncErrors(async (req, res, next) => {
         } = fields;
 
         const updateCustomerDetails = await customer.update(fields, {
-                where: {
-                    id: Number(id)
-                },
-            })
+            where: {
+                id: Number(id)
+            },
+        })
 
         res.status(201).json({
             updateCustomerDetails: updateCustomerDetails,
@@ -126,6 +148,48 @@ const deleteCustomerDetails = catchAsyncErrors(async (req, res, next) => {
     })
 
 })
+
+async function upload_photo(files) {
+    try {
+        return await uploadImage(files.photo, "customer");
+    } catch (error) {
+        throw new Error(error.message);
+    }
+}
+
+
+// Image Upload
+async function upload_Adhar_front(files) {
+    try {
+        return await uploadImage(files.adhar_front, "document");
+    } catch (error) {
+        throw new Error(error.message);
+    }
+}
+
+async function upload_Adhar_back(files) {
+    try {
+        return await uploadImage(files.adhar_back, "document");
+    } catch (error) {
+        throw new Error(error.message);
+    }
+}
+
+async function upload_pancard(files) {
+    try {
+        return await uploadImage(files.pancard, "document");
+    } catch (error) {
+        throw new Error(error.message);
+    }
+}
+
+async function upload_lightbill(files) {
+    try {
+        return await uploadImage(files.lightbill, "document");
+    } catch (error) {
+        throw new Error(error.message);
+    }
+}
 
 
 

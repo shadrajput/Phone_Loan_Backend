@@ -45,6 +45,14 @@
                     "field": "id",
                     "seqType": "Sequelize.INTEGER"
                 },
+                "photo": {
+                    "allowNull": false,
+                    "defaultValue": {
+                        "value": "default"
+                    },
+                    "field": "photo",
+                    "seqType": "Sequelize.STRING"
+                },
                 "first_name": {
                     "allowNull": false,
                     "validate": {
@@ -440,7 +448,6 @@
                     "seqType": "Sequelize.INTEGER(11)"
                 },
                 "ram": {
-                    "unique": false,
                     "allowNull": true,
                     "field": "ram",
                     "seqType": "Sequelize.INTEGER"
@@ -451,7 +458,6 @@
                     "seqType": "Sequelize.INTEGER"
                 },
                 "price": {
-                    "unique": true,
                     "allowNull": true,
                     "field": "price",
                     "seqType": "Sequelize.INTEGER"
@@ -591,5 +597,5 @@
             "indexes": []
         }
     },
-    "revision": 2
+    "revision": 3
 }
