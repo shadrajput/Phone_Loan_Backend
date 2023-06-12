@@ -9,6 +9,7 @@ const { uploadImage } = require("../../helper/imageUpload")
 
 // 1 . Add Customer
 const AddCustomer = catchAsyncErrors(async (req, res, next) => {
+
     const form = new formidable.IncomingForm();
 
     form.parse(req, async function (err, fields, files) {
@@ -37,7 +38,7 @@ const AddCustomer = catchAsyncErrors(async (req, res, next) => {
         pancard = await upload_pancard(files, pancard);
         let lightbill = "";
         lightbill = await upload_lightbill(files, lightbill);
-        console.log(lightbill)
+
         const Document = await document.create({
             adhar_front: adhar_front,
             adhar_back: adhar_back,
@@ -45,25 +46,25 @@ const AddCustomer = catchAsyncErrors(async (req, res, next) => {
             lightbill: lightbill
         });
 
-        // let photo = "";
-        // photo = await upload_photo(files, photo);
+        let photo = "";
+        photo = await upload_photo(files, photo);
 
-        // const data = await customer.create({
-        //     photo : photo,
-        //     first_name: CustomerInfo.first_name,
-        //     last_name: CustomerInfo.last_name,
-        //     mobile: CustomerInfo.mobile,
-        //     alternate_no: CustomerInfo.alternate_no,
-        //     reference_name: CustomerInfo.reference_name,
-        //     reference_mobile: CustomerInfo.reference_mobile,
-        //     document_id: "1"
-        // });
+        const data = await customer.create({
+            photo: photo,
+            first_name: CustomerInfo.first_name,
+            last_name: CustomerInfo.last_name,
+            mobile: CustomerInfo.mobile,
+            alternate_no: CustomerInfo.alternate_no,
+            reference_name: CustomerInfo.reference_name,
+            reference_mobile: CustomerInfo.reference_mobile,
+            document_id: Document.id
+        });
 
-        // res.status(201).json({
-        //     data: data,
-        //     success: true,
-        //     message: "Customer added successfully",
-        // });
+        res.status(201).json({
+            data: data, Document,
+            success: true,
+            message: "Customer added successfully",
+        });
     });
 
 })
@@ -82,13 +83,14 @@ const getallCustomers = catchAsyncErrors(async (req, res, next) => {
 
 // // 3 . Get Single Customer
 const getSingleCustomer = catchAsyncErrors(async (req, res, next) => {
-
+    console.log(req.params)
     const { id } = req.params
-    console.log(id)
+
     const SingleCustomer = await customer.findOne({
         where: {
             id: Number(id)
-        }
+        },
+        include: [document]
     })
 
     res.status(200).json({
@@ -105,22 +107,21 @@ const updateCustomerDetails = catchAsyncErrors(async (req, res, next) => {
 
     form.parse(req, async function (err, fields, files) {
         console.log(fields)
-        // const customer_id = Number(req.params.tournament_id);
-        const {
-            id,
-            first_name,
-            last_name,
-            mobile,
-            alternate_no,
-            reference_name,
-            reference_mobile,
-        } = fields;
 
-        const updateCustomerDetails = await customer.update(fields, {
-            where: {
-                id: Number(id)
+        const updateCustomerDetails = await customer.update(
+            {
+                first_name: fields.first_name,
+                last_name: fields.last_name,
+                mobile: fields.mobile,
+                alternate_no: fields.alternate_no,
+                reference_name: fields.reference_name,
+                reference_mobile: fields.reference_mobile
             },
-        })
+            {
+                where: {
+                    id: fields.id
+                },
+            })
 
         res.status(201).json({
             updateCustomerDetails: updateCustomerDetails,
@@ -149,7 +150,11 @@ const deleteCustomerDetails = catchAsyncErrors(async (req, res, next) => {
 
 })
 
-async function upload_photo(files) {
+async function upload_photo(files, photo) {
+    if (!files || !files.photo) {
+        return photo ? photo : "";
+    }
+
     try {
         return await uploadImage(files.photo, "customer");
     } catch (error) {
@@ -159,7 +164,10 @@ async function upload_photo(files) {
 
 
 // Image Upload
-async function upload_Adhar_front(files) {
+async function upload_Adhar_front(files, adhar_front) {
+    if (!files || !files.adhar_front) {
+        return adhar_front ? adhar_front : "";
+    }
     try {
         return await uploadImage(files.adhar_front, "document");
     } catch (error) {
@@ -167,7 +175,11 @@ async function upload_Adhar_front(files) {
     }
 }
 
-async function upload_Adhar_back(files) {
+async function upload_Adhar_back(files, adhar_back) {
+    if (!files || !files.adhar_back) {
+        return adhar_back ? adhar_back : "";
+    }
+
     try {
         return await uploadImage(files.adhar_back, "document");
     } catch (error) {
@@ -175,7 +187,11 @@ async function upload_Adhar_back(files) {
     }
 }
 
-async function upload_pancard(files) {
+async function upload_pancard(files, pancard) {
+    if (!files || !files.pancard) {
+        return pancard ? pancard : "";
+    }
+
     try {
         return await uploadImage(files.pancard, "document");
     } catch (error) {
@@ -183,7 +199,11 @@ async function upload_pancard(files) {
     }
 }
 
-async function upload_lightbill(files) {
+async function upload_lightbill(files, lightbill) {
+    if (!files || !files.lightbill) {
+        return lightbill ? lightbill : "";
+    }
+
     try {
         return await uploadImage(files.lightbill, "document");
     } catch (error) {

@@ -6,15 +6,16 @@ const { company, phone } = require("../../../models")
 
 // 1 . Add Company
 const AddCompany = async (req, res, next) => {
+    console.log(req.body)
     try {
 
-        const Company = await company.findOne({
-            company_name: req.body.company_name
-        });
+        // const Company = await company.findOne({
+        //     company_name: req.body.inputValue
+        // });
         
-        if (Company) {
-            return res.status(400).json({ success: false, message: "Company Exist Already" });
-        }
+        // if (Company) {
+        //     return res.status(400).json({ success: false, message: "Company Exist Already" });
+        // }
 
         const data = await company.create({
             company_name: req.body.company
@@ -23,7 +24,7 @@ const AddCompany = async (req, res, next) => {
         res.status(201).json({
             data: data,
             success: true,
-            message: "company added successfully",
+            message: "Company Added Successfully",
         });
     } catch (error) {
         next(error)
