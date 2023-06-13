@@ -106,10 +106,38 @@ const updateCustomerDetails = catchAsyncErrors(async (req, res, next) => {
     const form = new formidable.IncomingForm();
 
     form.parse(req, async function (err, fields, files) {
-        console.log(fields)
+
+        let id = fields.id
+        let Document_id = fields.document_id
+        let adhar_front = "";
+        adhar_front = await upload_Adhar_front(files, adhar_front);
+        let adhar_back = "";
+        adhar_back = await upload_Adhar_back(files, adhar_back);
+        let pancard = "";
+        pancard = await upload_pancard(files, pancard);
+        let lightbill = "";
+        lightbill = await upload_lightbill(files, lightbill);
+
+        const Document = await document.update(
+            {
+                adhar_front: adhar_front,
+                adhar_back: adhar_back,
+                pancard: pancard,
+                lightbill: lightbill
+            },
+            {
+                where: {
+                    id: Number(Document_id)
+                },
+            }
+        );
+
+        let photo = "";
+        photo = await upload_photo(files, photo);
 
         const updateCustomerDetails = await customer.update(
             {
+                photo: photo,
                 first_name: fields.first_name,
                 last_name: fields.last_name,
                 mobile: fields.mobile,
@@ -119,7 +147,7 @@ const updateCustomerDetails = catchAsyncErrors(async (req, res, next) => {
             },
             {
                 where: {
-                    id: fields.id
+                    id: Number(id)
                 },
             })
 
