@@ -10,7 +10,7 @@ const AddCompany = async (req, res, next) => {
     try {
 
         const data = await company.create({
-            company_name: req.body.company
+            company_name: req.body.inputValue
         });
 
         res.status(201).json({

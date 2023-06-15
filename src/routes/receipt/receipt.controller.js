@@ -44,7 +44,7 @@ const getallReceipt = catchAsyncErrors(async (req, res, next) => {
 
     const AllReceipt = await receipt.findAll({
         where: {
-            id : search,
+            id: search,
         },
         include: [emi]
 
@@ -56,6 +56,44 @@ const getallReceipt = catchAsyncErrors(async (req, res, next) => {
         message: "All Receipt"
     })
 })
+
+// 4 . Get Single Receipt By Receipt Mobile 
+const onerecieptDetailsbyNumber = catchAsyncErrors(async (req, res, next) => {
+
+    let CustomerName = req.params.search;
+    let page = req.params.pageNo
+    const itemsPerPage = 10
+    try {
+        const SingleReceiptDetails = await receipt.findAll({
+            skip: page * itemsPerPage,
+            take: itemsPerPage,
+            include: [
+                {
+                    model: customer,
+                    where: {
+                        last_name: CustomerName,
+                    },
+                },
+                installment,
+                {
+                    model: phone,
+                    include: [company],
+                }
+            ],
+
+        });
+
+        const totalCustomer = await customer.count();
+
+        res.status(200).json({
+            data: SingleReceiptDetails,
+            pageCount: Math.ceil(totalCustomer / itemsPerPage),
+            success: true,
+        });
+    } catch (error) {
+        next(error);
+    }
+});
 
 // 3 . Get Single Receipt
 const getSingleReceipt = catchAsyncErrors(async (req, res, next) => {
@@ -119,5 +157,6 @@ module.exports = {
     getallReceipt,
     getSingleReceipt,
     updateReceipt,
-    deleteReceiptDetails
+    deleteReceiptDetails,
+    onerecieptDetailsbyNumber
 };

@@ -5,7 +5,6 @@ const { purchase, company, phone, customer, installment, specification } = requi
 
 // 1 . Add Purchase
 const AddPurchase = async (req, res, next) => {
-    console.log(req.body)
     try {
 
         const Company = await company.findOne({
@@ -85,7 +84,7 @@ const getSinglePurchasebyCustomerId = catchAsyncErrors(async (req, res, next) =>
     })
 })
 
-// 3 . Get Single Purchase
+// 4 . Get Single Purchase By Purchase Id
 const getSinglePurchase = catchAsyncErrors(async (req, res, next) => {
 
     const { id } = req.params
@@ -103,6 +102,45 @@ const getSinglePurchase = catchAsyncErrors(async (req, res, next) => {
         message: "One Purchase Details"
     })
 })
+
+// 4 . Get Single Purchase By Customer Mobile 
+const oneCustomerDetailsbyNumber = catchAsyncErrors(async (req, res, next) => {
+
+    let CustomerName = req.params.search;
+    console.log(CustomerName)
+    let page = req.params.pageNo
+    const itemsPerPage = 10
+    try {
+        const SingleCustomerDetails = await purchase.findAll({
+            skip: page * itemsPerPage,
+            take: itemsPerPage,
+            include: [
+                {
+                    model: customer,
+                    where: {
+                        last_name: CustomerName,
+                    },
+                },
+                installment,
+                {
+                    model: phone,
+                    include: [company],
+                }
+            ],
+
+        });
+
+        const totalCustomer = await customer.count();
+
+        res.status(200).json({
+            data: SingleCustomerDetails,
+            pageCount: Math.ceil(totalCustomer / itemsPerPage),
+            success: true,
+        });
+    } catch (error) {
+        next(error);
+    }
+});
 
 // 4 . Update Purchase
 const updatePurchase = catchAsyncErrors(async (req, res, next) => {
@@ -147,6 +185,7 @@ module.exports = {
     getallPurchase,
     getSinglePurchase,
     getSinglePurchasebyCustomerId,
+    oneCustomerDetailsbyNumber,
     updatePurchase,
     deletePurchaseDetails
 };

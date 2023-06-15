@@ -4,16 +4,18 @@ const {
     getallReceipt,
     getSingleReceipt,
     updateReceipt,
-    deleteReceiptDetails 
+    deleteReceiptDetails,
+    onerecieptDetailsbyNumber
 } = require("../../routes/receipt/receipt.controller")
 
 const router = express.Router();
 
 router.post("/addreceipt", AddReceipt)
-router.get("/List/:search", getallReceipt)
-router.get("/details/:id" , getSingleReceipt)
-router.put("/update/:id" , updateReceipt)
-router.delete("/delete/:id" , deleteReceiptDetails)
+router.get("/search/:pageNo/:search", onerecieptDetailsbyNumber)
+router.get("/List", getallReceipt)
+router.get("/details/:id", getSingleReceipt)
+router.put("/update/:id", updateReceipt)
+router.delete("/delete/:id", deleteReceiptDetails)
 
 
 
