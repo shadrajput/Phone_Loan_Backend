@@ -3,6 +3,12 @@ const ErrorHandler = require("../../utils/ErrorHandler");
 const formidable = require("formidable")
 const { receipt } = require("../../../models")
 const { emi } = require("../../../models")
+const { purchase } = require("../../../models")
+const { customer } = require("../../../models")
+const { phone } = require("../../../models")
+const { installment } = require("../../../models")
+const { company } = require("../../../models")
+const { admin } = require("../../../models")
 
 
 // 1 . Add Receipt
@@ -40,14 +46,14 @@ const AddReceipt = async (req, res, next) => {
 // 2 . Get all Receipt
 const getallReceipt = catchAsyncErrors(async (req, res, next) => {
 
-    let { search } = req.params;
-
     const AllReceipt = await receipt.findAll({
-        where: {
-            id: search,
-        },
-        include: [emi]
-
+        include: [{
+            model: emi,
+            include: [{
+                model: purchase,
+                include: [customer, phone, installment]
+            }]
+        }]
     })
 
     res.status(200).json({
@@ -59,7 +65,6 @@ const getallReceipt = catchAsyncErrors(async (req, res, next) => {
 
 // 4 . Get Single Receipt By Receipt Mobile 
 const onerecieptDetailsbyNumber = catchAsyncErrors(async (req, res, next) => {
-
     let CustomerName = req.params.search;
     let page = req.params.pageNo
     const itemsPerPage = 10
@@ -67,19 +72,25 @@ const onerecieptDetailsbyNumber = catchAsyncErrors(async (req, res, next) => {
         const SingleReceiptDetails = await receipt.findAll({
             skip: page * itemsPerPage,
             take: itemsPerPage,
+            where: {
+                id: CustomerName
+            },
             include: [
                 {
-                    model: customer,
-                    where: {
-                        last_name: CustomerName,
-                    },
+                    model: emi,
+                    include: [{
+                        model: purchase,
+                        include: [
+                            {
+                                model: phone,
+                                include: [company]
+                            },
+                            customer,
+                            installment
+                        ]
+                    }]
                 },
-                installment,
-                {
-                    model: phone,
-                    include: [company],
-                }
-            ],
+            ]
 
         });
 
