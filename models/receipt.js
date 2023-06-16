@@ -23,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
     {
         freezeTableName: true,
     }
-    )
+)
 
     Receipt.associate = function (models) {
         Receipt.belongsTo(models.emi, { foreignKey: 'emi_id' })
