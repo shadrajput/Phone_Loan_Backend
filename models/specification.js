@@ -10,17 +10,14 @@ module.exports = (sequelize, DataTypes) => {
     },
     ram: {
       type: DataTypes.INTEGER,
-      unique: true,
-      allowNull: false,
+      allowNull: true,
     },
     storage: {
       type: DataTypes.INTEGER,
-      unique: true,
       allowNull: true,
     },
     price: {
       type: DataTypes.INTEGER,
-      unique: true,
       allowNull: true,
     },
     phone_id: {

@@ -11,30 +11,10 @@ module.exports = (sequelize, DataTypes) =>{
     month:{
       type: DataTypes.INTEGER,
       allowNull: false,
-      // validate: {
-      //   min:{
-      //     args: 10,
-      //     msg: "Please enter valid mobile number"
-      //   },
-      //   max:{
-      //     args: 10,
-      //     msg: "Please enter valid mobile number"
-      //   },
-      // }
     },
     charges:{
       type: DataTypes.INTEGER,
       allowNull: true,
-      // validate: {
-      //   min:{
-      //     args: 10,
-      //     msg: "Please enter valid mobile number"
-      //   },
-      //   max:{
-      //     args: 10,
-      //     msg: "Please enter valid mobile number"
-      //   },
-      // }
     },
   },
   {

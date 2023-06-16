@@ -3,7 +3,7 @@ const {AddModel , getallModel , getSingleModel , updateModelDetails , deleteMode
 
 const router = express.Router();
 
-router.post("/addmodel" , AddModel)
+router.post("/addphone" , AddModel)
 router.get("/" , getallModel)
 router.get("/details/:id" , getSingleModel)
 router.put("/update/:id" , updateModelDetails)

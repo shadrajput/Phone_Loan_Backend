@@ -6,30 +6,38 @@ const { company } = require("../../../models")
 
 // 1 . Add Model
 const AddModel = async (req, res, next) => {
-    const form = new formidable.IncomingForm();
-    form.parse(req, async function (err, fields, files) {
-        try {
+    console.log(req.body)
 
-            const Phone = (fields);
+    const Company = await company.findOne({
+        where: {
+            company_name: req.body.company_name
+        },
+    });
 
-            if (err) {
-                return res.status(500).json({ success: false, message: err.message });
-            }
-
-            const data = await phone.create({
-                model_name: Phone.model_name,
-                company_id: "1"
-            });
-
-            res.status(201).json({
-                data: data,
-                success: true,
-                message: "Model added successfully",
-            });
-        } catch (error) {
-            next(error)
+    const Model = await phone.findOne({
+        where: {
+            model_name: req.body.model_name,
+            company_id: Company.id
         }
+    });
 
+    if (Model) {
+        return res.status(500).json({ success: false, message: "Model Allready Exist " });
+    }
+
+    if (err) {
+        return res.status(500).json({ success: false, message: err.message });
+    }
+
+    const data = await phone.create({
+        model_name: req.body.model_name,
+        company_id: Company.id
+    });
+
+    res.status(201).json({
+        data: data,
+        success: true,
+        message: "Model Add Successfully",
     });
 
 }
@@ -67,13 +75,27 @@ const getSingleModel = catchAsyncErrors(async (req, res, next) => {
 
 // 4 . Update Model
 const updateModelDetails = catchAsyncErrors(async (req, res, next) => {
-    const { id } = req.params
 
-    const updateModelDetails = await phone.update(req.body, {
+    const Company = await company.findOne({
         where: {
-            id: Number(id)
+            company_name: req.body.company_name
         },
-    })
+    });
+
+    console.log(Company.id);
+    const updateModelDetails = await phone.update(
+        {
+            model_name: req.body.model_name,
+            company_id: Company.id
+        },
+        {
+            where: {
+                id: req.body.id,
+            },
+
+
+
+        })
 
     res.status(200).json({
         updateModelDetails: updateModelDetails,
@@ -84,7 +106,9 @@ const updateModelDetails = catchAsyncErrors(async (req, res, next) => {
 
 // 5 . Delete Model
 const deleteModelDetails = catchAsyncErrors(async (req, res, next) => {
+
     const { id } = req.params
+    console.log(id)
     const DeleteModelDetails = await phone.destroy({
         where: {
             id: Number(id)

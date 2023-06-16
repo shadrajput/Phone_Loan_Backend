@@ -8,6 +8,11 @@ module.exports = (sequelize, DataTypes) =>{
       primaryKey: true,
       autoIncrement: true,
     },
+    photo:{
+      type: DataTypes.STRING,
+      allowNull: false,
+      defaultValue: 'default'
+    },
     first_name: {
       type: DataTypes.STRING,
       allowNull: false,
