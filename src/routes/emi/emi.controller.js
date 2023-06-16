@@ -56,11 +56,11 @@ const getallEmi = catchAsyncErrors(async (req, res, next) => {
 const getEmiByPurchaseId = catchAsyncErrors(async (req, res, next) => {
 
     const { id } = req.params
-    console.log(id)
+
     const AllEmi = await emi.findAll({
         where: {
             purchase_id : Number(id)
-        }
+        },
     })
 
     res.status(200).json({
@@ -69,6 +69,8 @@ const getEmiByPurchaseId = catchAsyncErrors(async (req, res, next) => {
         message: "All Emi"
     })
 })
+
+
 
 // 3 . Get Single Emi
 const getSingleEmi = catchAsyncErrors(async (req, res, next) => {

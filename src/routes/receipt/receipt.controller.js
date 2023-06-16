@@ -63,7 +63,7 @@ const getallReceipt = catchAsyncErrors(async (req, res, next) => {
     })
 })
 
-// 4 . Get Single Receipt By Receipt Mobile 
+// 3 . Get Single Receipt By Receipt Mobile 
 const onerecieptDetailsbyNumber = catchAsyncErrors(async (req, res, next) => {
     let CustomerName = req.params.search;
     let page = req.params.pageNo
@@ -106,7 +106,26 @@ const onerecieptDetailsbyNumber = catchAsyncErrors(async (req, res, next) => {
     }
 });
 
-// 3 . Get Single Receipt
+
+// 3 . Get Single Receipt By Receipt Mobile 
+const getReceiptbyPurchaseId = catchAsyncErrors(async (req, res, next) => {
+    const { id } = req.params
+
+    const SingleReceiptByPurchaseId = await receipt.findOne({
+        where: {
+            id: Number(id)
+        }
+    })
+
+    res.status(200).json({
+        SingleReceiptByPurchaseId: SingleReceiptByPurchaseId,
+        success: true,
+        message: "One Receipt Details By Purchase Id"
+    })
+
+});
+
+// 4 . Get Single Receipt
 const getSingleReceipt = catchAsyncErrors(async (req, res, next) => {
 
     const { id } = req.params
@@ -124,7 +143,7 @@ const getSingleReceipt = catchAsyncErrors(async (req, res, next) => {
     })
 })
 
-// 4 . Update receipt
+// 6 . Update receipt
 const updateReceipt = catchAsyncErrors(async (req, res, next) => {
 
     const { id } = req.params
@@ -142,7 +161,7 @@ const updateReceipt = catchAsyncErrors(async (req, res, next) => {
     })
 })
 
-// 5 . Delete Receipt
+// 7 . Delete Receipt
 const deleteReceiptDetails = catchAsyncErrors(async (req, res, next) => {
 
     const { id } = req.params
@@ -169,5 +188,6 @@ module.exports = {
     getSingleReceipt,
     updateReceipt,
     deleteReceiptDetails,
-    onerecieptDetailsbyNumber
+    onerecieptDetailsbyNumber,
+    getReceiptbyPurchaseId
 };
