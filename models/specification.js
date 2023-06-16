@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     ram: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
     },
     storage: {
       type: DataTypes.INTEGER,

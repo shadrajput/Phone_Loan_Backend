@@ -1,0 +1,601 @@
+{
+    "tables": {
+        "company": {
+            "tableName": "company",
+            "schema": {
+                "id": {
+                    "allowNull": false,
+                    "primaryKey": true,
+                    "autoIncrement": true,
+                    "field": "id",
+                    "seqType": "Sequelize.INTEGER(11)"
+                },
+                "company_name": {
+                    "allowNull": false,
+                    "validate": {
+                        "notEmpty": true,
+                        "isAlpha": {
+                            "args": true,
+                            "msg": "Please enter only letters"
+                        }
+                    },
+                    "field": "company_name",
+                    "seqType": "Sequelize.STRING"
+                },
+                "createdAt": {
+                    "allowNull": false,
+                    "field": "createdAt",
+                    "seqType": "Sequelize.DATE"
+                },
+                "updatedAt": {
+                    "allowNull": false,
+                    "field": "updatedAt",
+                    "seqType": "Sequelize.DATE"
+                }
+            },
+            "indexes": []
+        },
+        "customer": {
+            "tableName": "customer",
+            "schema": {
+                "id": {
+                    "allowNull": false,
+                    "primaryKey": true,
+                    "autoIncrement": true,
+                    "field": "id",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "photo": {
+                    "allowNull": false,
+                    "defaultValue": {
+                        "value": "default"
+                    },
+                    "field": "photo",
+                    "seqType": "Sequelize.STRING"
+                },
+                "first_name": {
+                    "allowNull": false,
+                    "validate": {
+                        "notEmpty": true,
+                        "isAlpha": {
+                            "args": true,
+                            "msg": "Please enter only letters"
+                        }
+                    },
+                    "field": "first_name",
+                    "seqType": "Sequelize.STRING"
+                },
+                "last_name": {
+                    "allowNull": false,
+                    "validate": {
+                        "notEmpty": true,
+                        "isAlpha": {
+                            "args": true,
+                            "msg": "Please enter only letters"
+                        }
+                    },
+                    "field": "last_name",
+                    "seqType": "Sequelize.STRING"
+                },
+                "mobile": {
+                    "allowNull": false,
+                    "field": "mobile",
+                    "seqType": "Sequelize.STRING"
+                },
+                "alternate_no": {
+                    "allowNull": true,
+                    "field": "alternate_no",
+                    "seqType": "Sequelize.STRING"
+                },
+                "reference_name": {
+                    "allowNull": true,
+                    "validate": {
+                        "is": {}
+                    },
+                    "field": "reference_name",
+                    "seqType": "Sequelize.STRING"
+                },
+                "reference_mobile": {
+                    "allowNull": true,
+                    "field": "reference_mobile",
+                    "seqType": "Sequelize.STRING"
+                },
+                "document_id": {
+                    "references": {
+                        "model": "document",
+                        "key": "id"
+                    },
+                    "field": "document_id",
+                    "allowNull": true,
+                    "onDelete": "NO ACTION",
+                    "onUpdate": "CASCADE",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "user_id": {
+                    "references": {
+                        "model": "user",
+                        "key": "id"
+                    },
+                    "field": "user_id",
+                    "allowNull": true,
+                    "onDelete": "NO ACTION",
+                    "onUpdate": "CASCADE",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "createdAt": {
+                    "allowNull": false,
+                    "field": "createdAt",
+                    "seqType": "Sequelize.DATE"
+                },
+                "updatedAt": {
+                    "allowNull": false,
+                    "field": "updatedAt",
+                    "seqType": "Sequelize.DATE"
+                }
+            },
+            "indexes": []
+        },
+        "document": {
+            "tableName": "document",
+            "schema": {
+                "id": {
+                    "allowNull": false,
+                    "primaryKey": true,
+                    "autoIncrement": true,
+                    "field": "id",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "adhar_front": {
+                    "allowNull": false,
+                    "defaultValue": {
+                        "value": "default"
+                    },
+                    "field": "adhar_front",
+                    "seqType": "Sequelize.STRING"
+                },
+                "adhar_back": {
+                    "allowNull": false,
+                    "defaultValue": {
+                        "value": "default"
+                    },
+                    "field": "adhar_back",
+                    "seqType": "Sequelize.STRING"
+                },
+                "pancard": {
+                    "allowNull": false,
+                    "defaultValue": {
+                        "value": "default"
+                    },
+                    "field": "pancard",
+                    "seqType": "Sequelize.STRING"
+                },
+                "light_bill": {
+                    "allowNull": true,
+                    "field": "light_bill",
+                    "seqType": "Sequelize.STRING"
+                },
+                "createdAt": {
+                    "allowNull": false,
+                    "field": "createdAt",
+                    "seqType": "Sequelize.DATE"
+                },
+                "updatedAt": {
+                    "allowNull": false,
+                    "field": "updatedAt",
+                    "seqType": "Sequelize.DATE"
+                }
+            },
+            "indexes": []
+        },
+        "emi": {
+            "tableName": "emi",
+            "schema": {
+                "id": {
+                    "allowNull": false,
+                    "primaryKey": true,
+                    "autoIncrement": true,
+                    "field": "id",
+                    "seqType": "Sequelize.INTEGER(11)"
+                },
+                "amount": {
+                    "allowNull": false,
+                    "field": "amount",
+                    "seqType": "Sequelize.STRING"
+                },
+                "due_date": {
+                    "allowNull": false,
+                    "field": "due_date",
+                    "seqType": "Sequelize.DATE"
+                },
+                "paid_date": {
+                    "allowNull": false,
+                    "field": "paid_date",
+                    "seqType": "Sequelize.DATE"
+                },
+                "status": {
+                    "allowNull": false,
+                    "field": "status",
+                    "seqType": "Sequelize.STRING"
+                },
+                "type": {
+                    "allowNull": false,
+                    "field": "type",
+                    "seqType": "Sequelize.STRING"
+                },
+                "purchase_id": {
+                    "references": {
+                        "model": "purchase",
+                        "key": "id"
+                    },
+                    "field": "purchase_id",
+                    "allowNull": true,
+                    "onDelete": "NO ACTION",
+                    "onUpdate": "CASCADE",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "createdAt": {
+                    "allowNull": false,
+                    "field": "createdAt",
+                    "seqType": "Sequelize.DATE"
+                },
+                "updatedAt": {
+                    "allowNull": false,
+                    "field": "updatedAt",
+                    "seqType": "Sequelize.DATE"
+                }
+            },
+            "indexes": []
+        },
+        "installment": {
+            "tableName": "installment",
+            "schema": {
+                "id": {
+                    "allowNull": false,
+                    "primaryKey": true,
+                    "autoIncrement": true,
+                    "field": "id",
+                    "seqType": "Sequelize.INTEGER(11)"
+                },
+                "month": {
+                    "allowNull": false,
+                    "field": "month",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "charges": {
+                    "allowNull": true,
+                    "field": "charges",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "createdAt": {
+                    "allowNull": false,
+                    "field": "createdAt",
+                    "seqType": "Sequelize.DATE"
+                },
+                "updatedAt": {
+                    "allowNull": false,
+                    "field": "updatedAt",
+                    "seqType": "Sequelize.DATE"
+                }
+            },
+            "indexes": []
+        },
+        "phone": {
+            "tableName": "phone",
+            "schema": {
+                "id": {
+                    "allowNull": false,
+                    "primaryKey": true,
+                    "autoIncrement": true,
+                    "field": "id",
+                    "seqType": "Sequelize.INTEGER(11)"
+                },
+                "model_name": {
+                    "allowNull": false,
+                    "validate": {
+                        "notEmpty": true
+                    },
+                    "field": "model_name",
+                    "seqType": "Sequelize.STRING"
+                },
+                "company_id": {
+                    "references": {
+                        "model": "company",
+                        "key": "id"
+                    },
+                    "field": "company_id",
+                    "allowNull": true,
+                    "onDelete": "NO ACTION",
+                    "onUpdate": "CASCADE",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "createdAt": {
+                    "allowNull": false,
+                    "field": "createdAt",
+                    "seqType": "Sequelize.DATE"
+                },
+                "updatedAt": {
+                    "allowNull": false,
+                    "field": "updatedAt",
+                    "seqType": "Sequelize.DATE"
+                },
+                "phone_id": {
+                    "allowNull": true,
+                    "references": {
+                        "model": "company",
+                        "key": "id"
+                    },
+                    "onDelete": "SET NULL",
+                    "onUpdate": "CASCADE",
+                    "field": "phone_id",
+                    "seqType": "Sequelize.INTEGER(11)"
+                }
+            },
+            "indexes": []
+        },
+        "purchase": {
+            "tableName": "purchase",
+            "schema": {
+                "id": {
+                    "allowNull": false,
+                    "primaryKey": true,
+                    "autoIncrement": true,
+                    "field": "id",
+                    "seqType": "Sequelize.INTEGER(11)"
+                },
+                "customer_id": {
+                    "references": {
+                        "model": "customer",
+                        "key": "id"
+                    },
+                    "field": "customer_id",
+                    "allowNull": true,
+                    "onDelete": "CASCADE",
+                    "onUpdate": "CASCADE",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "phone_id": {
+                    "references": {
+                        "model": "phone",
+                        "key": "id"
+                    },
+                    "field": "phone_id",
+                    "allowNull": true,
+                    "onDelete": "CASCADE",
+                    "onUpdate": "CASCADE",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "installment_id": {
+                    "references": {
+                        "model": "installment",
+                        "key": "id"
+                    },
+                    "field": "installment_id",
+                    "allowNull": true,
+                    "onDelete": "CASCADE",
+                    "onUpdate": "CASCADE",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "pending_amount": {
+                    "allowNull": false,
+                    "field": "pending_amount",
+                    "seqType": "Sequelize.STRING"
+                },
+                "net_amount": {
+                    "allowNull": false,
+                    "field": "net_amount",
+                    "seqType": "Sequelize.STRING"
+                },
+                "createdAt": {
+                    "allowNull": false,
+                    "field": "createdAt",
+                    "seqType": "Sequelize.DATE"
+                },
+                "updatedAt": {
+                    "allowNull": false,
+                    "field": "updatedAt",
+                    "seqType": "Sequelize.DATE"
+                }
+            },
+            "indexes": []
+        },
+        "receipt": {
+            "tableName": "receipt",
+            "schema": {
+                "id": {
+                    "allowNull": false,
+                    "primaryKey": true,
+                    "autoIncrement": true,
+                    "field": "id",
+                    "seqType": "Sequelize.INTEGER(11)"
+                },
+                "emi_id": {
+                    "references": {
+                        "model": "emi",
+                        "key": "id"
+                    },
+                    "field": "emi_id",
+                    "allowNull": true,
+                    "onDelete": "CASCADE",
+                    "onUpdate": "CASCADE",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "extra_charge": {
+                    "allowNull": false,
+                    "field": "extra_charge",
+                    "seqType": "Sequelize.STRING"
+                },
+                "createdAt": {
+                    "allowNull": false,
+                    "field": "createdAt",
+                    "seqType": "Sequelize.DATE"
+                },
+                "updatedAt": {
+                    "allowNull": false,
+                    "field": "updatedAt",
+                    "seqType": "Sequelize.DATE"
+                }
+            },
+            "indexes": []
+        },
+        "specification": {
+            "tableName": "specification",
+            "schema": {
+                "id": {
+                    "allowNull": false,
+                    "primaryKey": true,
+                    "autoIncrement": true,
+                    "field": "id",
+                    "seqType": "Sequelize.INTEGER(11)"
+                },
+                "ram": {
+                    "allowNull": true,
+                    "field": "ram",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "storage": {
+                    "allowNull": true,
+                    "field": "storage",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "price": {
+                    "allowNull": true,
+                    "field": "price",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "phone_id": {
+                    "references": {
+                        "model": "phone",
+                        "key": "id"
+                    },
+                    "field": "phone_id",
+                    "allowNull": true,
+                    "onDelete": "CASCADE",
+                    "onUpdate": "CASCADE",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "createdAt": {
+                    "allowNull": false,
+                    "field": "createdAt",
+                    "seqType": "Sequelize.DATE"
+                },
+                "updatedAt": {
+                    "allowNull": false,
+                    "field": "updatedAt",
+                    "seqType": "Sequelize.DATE"
+                }
+            },
+            "indexes": []
+        },
+        "transaction": {
+            "tableName": "transaction",
+            "schema": {
+                "id": {
+                    "allowNull": false,
+                    "primaryKey": true,
+                    "autoIncrement": true,
+                    "field": "id",
+                    "seqType": "Sequelize.INTEGER(11)"
+                },
+                "receipt_id": {
+                    "references": {
+                        "model": "receipt",
+                        "key": "id"
+                    },
+                    "field": "receipt_id",
+                    "allowNull": true,
+                    "onDelete": "CASCADE",
+                    "onUpdate": "CASCADE",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "is_by_cheque": {
+                    "field": "is_by_cheque",
+                    "seqType": "Sequelize.BOOLEAN"
+                },
+                "is_by_cash": {
+                    "field": "is_by_cash",
+                    "seqType": "Sequelize.BOOLEAN"
+                },
+                "is_by_upi": {
+                    "field": "is_by_upi",
+                    "seqType": "Sequelize.BOOLEAN"
+                },
+                "cheque_no": {
+                    "field": "cheque_no",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "cheque_date": {
+                    "field": "cheque_date",
+                    "seqType": "Sequelize.DATE"
+                },
+                "upi_no": {
+                    "field": "upi_no",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "amount": {
+                    "field": "amount",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "createdAt": {
+                    "allowNull": false,
+                    "field": "createdAt",
+                    "seqType": "Sequelize.DATE"
+                },
+                "updatedAt": {
+                    "allowNull": false,
+                    "field": "updatedAt",
+                    "seqType": "Sequelize.DATE"
+                }
+            },
+            "indexes": []
+        },
+        "user": {
+            "tableName": "user",
+            "schema": {
+                "id": {
+                    "allowNull": false,
+                    "primaryKey": true,
+                    "autoIncrement": true,
+                    "field": "id",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "username": {
+                    "allowNull": false,
+                    "validate": {
+                        "notEmpty": true
+                    },
+                    "field": "username",
+                    "seqType": "Sequelize.STRING"
+                },
+                "password": {
+                    "allowNull": false,
+                    "validate": {
+                        "min": {
+                            "args": 3,
+                            "msg": "Please enter alleast 3 characters"
+                        }
+                    },
+                    "field": "password",
+                    "seqType": "Sequelize.STRING"
+                },
+                "is_admin": {
+                    "default": false,
+                    "allowNull": false,
+                    "field": "is_admin",
+                    "seqType": "Sequelize.BOOLEAN"
+                },
+                "createdAt": {
+                    "allowNull": false,
+                    "field": "createdAt",
+                    "seqType": "Sequelize.DATE"
+                },
+                "updatedAt": {
+                    "allowNull": false,
+                    "field": "updatedAt",
+                    "seqType": "Sequelize.DATE"
+                }
+            },
+            "indexes": []
+        }
+    },
+    "revision": 3
+}

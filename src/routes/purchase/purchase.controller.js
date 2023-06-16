@@ -1,47 +1,62 @@
 const catchAsyncErrors = require("../../middlewares/catchAsyncErrors");
 const ErrorHandler = require("../../utils/ErrorHandler");
 const formidable = require("formidable")
-const { purchase } = require("../../../models")
-const { phone } = require("../../../models")
-
+const { purchase, company, phone, customer, installment, specification } = require("../../../models")
 
 // 1 . Add Purchase
 const AddPurchase = async (req, res, next) => {
-    const form = new formidable.IncomingForm();
-    form.parse(req, async function (err, fields, files) {
-        try {
+    try {
 
-            const PurchaseInfo = (fields);
+        const Company = await company.findOne({
+            where: {
+                company_name: req.body.company_name
+            },
+        });
 
-            if (err) {
-                return res.status(500).json({ success: false, message: err.message });
-            }
+        const Phone = await phone.findOne({
+            where: {
+                company_id: Company.id
+            },
+        });
 
-            const data = await purchase.create({
-                customer_id : "5",
-                phone_id : "1",
-                installment_id : "1",
-                pending_amount : PurchaseInfo.pending_amount,
-                net_amount : PurchaseInfo.net_amount
+        const Specification = await specification.findOne({
+            where: {
+                phone_id: Phone.id
+            },
+        });
 
-            });
+        const Installment = await installment.findOne({
+            where: {
+                month: req.body.month
+            },
+        });
 
-            res.status(201).json({
-                data: data,
-                success: true,
-                message: "Purchase added successfully",
-            });
-        } catch (error) {
-            next(error)
-        }
-    });
+        const data = await purchase.create({
+            customer_id: req.body.customer_id,
+            phone_id: Phone.id,
+            installment_id: Installment.id,
+            pending_amount: req.body.net_payable,
+            net_amount: req.body.net_payable
+
+        });
+
+        res.status(201).json({
+            data: data,
+            success: true,
+            message: "Purchase added successfully",
+        });
+    } catch (error) {
+        next(error)
+    }
 }
 
 
 // 2 . Get all Purchase
 const getallPurchase = catchAsyncErrors(async (req, res, next) => {
 
-    const AllPurchase = await purchase.findAll({include : [phone]})
+    const AllPurchase = await purchase.findAll({
+        include: [customer, phone, installment]
+    })
 
     res.status(200).json({
         AllPurchase: AllPurchase,
@@ -50,7 +65,26 @@ const getallPurchase = catchAsyncErrors(async (req, res, next) => {
     })
 })
 
-// 3 . Get Single Purchase
+// 3 . Get all Purchase By Customer Id
+const getSinglePurchasebyCustomerId = catchAsyncErrors(async (req, res, next) => {
+
+    const { id } = req.params
+
+    const CustomerAllPurchase = await purchase.findAll({
+        where: {
+            customer_id: Number(id)
+        },
+        include: [customer, phone, installment]
+    })
+
+    res.status(200).json({
+        CustomerAllPurchase: CustomerAllPurchase,
+        success: true,
+        message: "All Purchase"
+    })
+})
+
+// 4 . Get Single Purchase By Purchase Id
 const getSinglePurchase = catchAsyncErrors(async (req, res, next) => {
 
     const { id } = req.params
@@ -58,7 +92,8 @@ const getSinglePurchase = catchAsyncErrors(async (req, res, next) => {
     const SinglePurchase = await purchase.findOne({
         where: {
             id: Number(id)
-        }
+        },
+        include: [customer, installment, phone]
     })
 
     res.status(200).json({
@@ -67,6 +102,45 @@ const getSinglePurchase = catchAsyncErrors(async (req, res, next) => {
         message: "One Purchase Details"
     })
 })
+
+// 4 . Get Single Purchase By Customer Mobile 
+const oneCustomerDetailsbyNumber = catchAsyncErrors(async (req, res, next) => {
+
+    let CustomerName = req.params.search;
+    console.log(CustomerName)
+    let page = req.params.pageNo
+    const itemsPerPage = 10
+    try {
+        const SingleCustomerDetails = await purchase.findAll({
+            skip: page * itemsPerPage,
+            take: itemsPerPage,
+            include: [
+                {
+                    model: customer,
+                    where: {
+                        last_name: CustomerName,
+                    },
+                },
+                installment,
+                {
+                    model: phone,
+                    include: [company],
+                }
+            ],
+
+        });
+
+        const totalCustomer = await customer.count();
+
+        res.status(200).json({
+            data: SingleCustomerDetails,
+            pageCount: Math.ceil(totalCustomer / itemsPerPage),
+            success: true,
+        });
+    } catch (error) {
+        next(error);
+    }
+});
 
 // 4 . Update Purchase
 const updatePurchase = catchAsyncErrors(async (req, res, next) => {
@@ -87,9 +161,9 @@ const updatePurchase = catchAsyncErrors(async (req, res, next) => {
 
 // 5 . Delete Purchase
 const deletePurchaseDetails = catchAsyncErrors(async (req, res, next) => {
-    
-    const { id } = req.params
 
+    const { id } = req.params
+    console.log(id)
     const DeletePurchaseDetails = await purchase.destroy({
         where: {
             id: Number(id)
@@ -97,7 +171,7 @@ const deletePurchaseDetails = catchAsyncErrors(async (req, res, next) => {
     })
 
     res.status(200).json({
-        DeletePurchaseDetails : DeletePurchaseDetails,
+        DeletePurchaseDetails: DeletePurchaseDetails,
         success: true,
         message: "Purchase deleted successfully"
     })
@@ -110,6 +184,8 @@ module.exports = {
     AddPurchase,
     getallPurchase,
     getSinglePurchase,
+    getSinglePurchasebyCustomerId,
+    oneCustomerDetailsbyNumber,
     updatePurchase,
     deletePurchaseDetails
 };

@@ -19,7 +19,7 @@ async function uploadImage(file, folder) {
     }
 
     if (ext !== "png" && ext !== "jpg" && ext !== "jpeg") {
-      reject(new Error("Only JPG, JPEG or PNG logo is allowed"));
+      reject(new Error("Only JPG, JPEG or PNG is allowed"));
     }
 
     const oldPath = file.filepath;
