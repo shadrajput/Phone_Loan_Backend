@@ -20,7 +20,7 @@ const AddTransaction = async (req, res, next) => {
                 }
             });
 
-        console.log(PayEMI.id)
+        console.log(PayEMI)
 
         return
 

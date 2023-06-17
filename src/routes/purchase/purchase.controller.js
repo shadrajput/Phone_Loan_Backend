@@ -49,8 +49,8 @@ const AddPurchase = async (req, res, next) => {
         //entry of DP
         await emi.create({
             amount: Down_Payment,
-            due_date : new Date(),
-            paid_date : new Date(),
+            due_date : req.body.date,
+            paid_date : req.body.date,
             status : "completed",
             type : 'dp',
             purchase_id: data.id,
@@ -58,7 +58,7 @@ const AddPurchase = async (req, res, next) => {
 
         //entry of EMI
         for(let i=0; i < req.body.month; i++){
-            const currentDate = new Date();
+            const currentDate = new Date(req.body.date);
             currentDate.setMonth(currentDate.getMonth() + (i+1));
 
             await emi.create({
@@ -71,7 +71,7 @@ const AddPurchase = async (req, res, next) => {
         }
 
         //finding all emi
-        const EMI = await purchase.find({
+        const EMI = await emi.findAll({
             where:{
                 purchase_id: data.id
             }
