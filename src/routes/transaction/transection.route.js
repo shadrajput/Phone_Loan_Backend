@@ -10,7 +10,7 @@ const {
 const router = express.Router();
 
 router.post("/addtransaction", AddTransaction)
-router.get("/", getallTransaction)
+router.get("/List/:pageNo", getallTransaction)
 router.get("/details/:id" , getSingleTransaction)
 router.put("/update/:id" , updateTransation)
 router.delete("/delete/:id" , deleteTransactionDetails)

@@ -44,8 +44,16 @@ const AddTransaction = async (req, res, next) => {
 
 // // 2 . Get all Transaction
 const getallTransaction = catchAsyncErrors(async (req, res, next) => {
-
-    const AllTransaction = await transaction.findAll()
+    let page = req.params.pageNo
+    const itemsPerPage = 10
+    const today = new Date();
+    const AllTransaction = await transaction.findAll({
+        skip: page * itemsPerPage,
+        take: itemsPerPage,
+        where : {
+            createdAt : today
+        }
+    })
 
     res.status(200).json({
         AllTransaction: AllTransaction,

@@ -1,7 +1,7 @@
 const catchAsyncErrors = require("../../middlewares/catchAsyncErrors");
 const ErrorHandler = require("../../utils/ErrorHandler");
 const formidable = require("formidable")
-const { emi } = require("../../../models")
+const { emi , purchase , customer , phone , installment } = require("../../../models")
 
 
 // 1 . Add Emi
@@ -61,6 +61,16 @@ const getEmiByPurchaseId = catchAsyncErrors(async (req, res, next) => {
         where: {
             purchase_id : Number(id)
         },
+        include : [
+            {
+                model : purchase,
+                include : [
+                    customer ,
+                    installment , 
+                    phone
+                ]
+            }
+        ]
     })
 
     res.status(200).json({

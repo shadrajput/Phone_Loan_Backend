@@ -45,19 +45,34 @@ const AddReceipt = async (req, res, next) => {
 
 // 2 . Get all Receipt
 const getallReceipt = catchAsyncErrors(async (req, res, next) => {
-
+    let page = req.params.pageNo
+    const itemsPerPage = 10
     const AllReceipt = await receipt.findAll({
-        include: [{
-            model: emi,
-            include: [{
-                model: purchase,
-                include: [customer, phone, installment]
-            }]
-        }]
+        skip: page * itemsPerPage,
+        take: itemsPerPage,
+        include: [  
+            {
+                model: emi,
+                include: [{
+                    model: purchase,
+                    include: [
+                        customer,
+                        installment,
+                        {
+                            model : phone , 
+                            include : [company]
+                        }
+                    ]
+                }]
+            }
+        ]
     })
+
+    const totalReceipt = await customer.count();
 
     res.status(200).json({
         AllReceipt: AllReceipt,
+        pageCount: Math.ceil(totalReceipt / itemsPerPage),
         success: true,
         message: "All Receipt"
     })

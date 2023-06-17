@@ -6,9 +6,8 @@ const { Op } = require('sequelize');
 
 // 1 . Add Purchase
 const AddPurchase = async (req, res, next) => {
-    console.log(req.body)
 
-    return
+    let Down_Payment = req.body.Down_Payment
     try {
 
         const Company = await company.findOne({
@@ -39,7 +38,7 @@ const AddPurchase = async (req, res, next) => {
             customer_id: req.body.customer_id,
             phone_id: Phone.id,
             installment_id: Installment.id,
-            pending_amount: req.body.net_payable,
+            pending_amount: req.body.net_payable - Down_Payment,
             net_amount: req.body.net_payable
         });
 
@@ -53,14 +52,20 @@ const AddPurchase = async (req, res, next) => {
         const due_date = today.toDateString()
 
         const EMI = await emi.create({
-            purchase_id: data.id,
             amount: Emi_Amount,
+            due_date : due_date,
+            paid_date : due_date,
+            status : data.pending_amount == 0 ? "completed" : "pending" ,
+            type : Down_Payment ? "DP" : "EMI",
+            purchase_id: data.id,
+
+            
         });
 
 
 
         res.status(201).json({
-            data: data,
+            data: data , EMI ,
             success: true,
             message: "Purchase Added Successfully",
         });
@@ -136,6 +141,7 @@ const oneCustomerDetailsbyNumber = catchAsyncErrors(async (req, res, next) => {
 
     let page = req.params.pageNo
     const itemsPerPage = 10
+    
     try {
         const SingleCustomerDetails = await purchase.findAll({
             skip: page * itemsPerPage,
