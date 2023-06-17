@@ -43,27 +43,39 @@ const AddPurchase = async (req, res, next) => {
             net_amount: req.body.net_payable
         });
 
-        let Payable_amount = req.body.net_payable - req.body.Down_Payment
+        let Payable_amount = req.body.net_payable - Down_Payment
         let Emi_Amount = Payable_amount / req.body.month
 
-        const today = new Date();
-
-        // it adds 30 days to a current date
-        today.setDate(today.getDate() + 30);
-        const due_date = today.toDateString()
-
-        const EMI = await emi.create({
-            amount: Emi_Amount,
-            due_date : due_date,
-            paid_date : due_date,
-            status : data.pending_amount == 0 ? "completed" : "pending" ,
-            type : Down_Payment ? "DP" : "EMI",
+        //entry of DP
+        await emi.create({
+            amount: Down_Payment,
+            due_date : new Date(),
+            paid_date : new Date(),
+            status : "completed",
+            type : 'dp',
             purchase_id: data.id,
-
-            
         });
 
+        //entry of EMI
+        for(let i=0; i < req.body.month; i++){
+            const currentDate = new Date();
+            currentDate.setMonth(currentDate.getMonth() + (i+1));
 
+            await emi.create({
+                amount: Emi_Amount,
+                due_date : currentDate,
+                status : "pending" ,
+                type : 'emi',
+                purchase_id: data.id,
+            });
+        }
+
+        //finding all emi
+        const EMI = await purchase.find({
+            where:{
+                purchase_id: data.id
+            }
+        })
 
         res.status(201).json({
             data: data , EMI ,
