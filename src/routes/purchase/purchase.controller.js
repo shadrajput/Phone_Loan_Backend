@@ -1,10 +1,13 @@
 const catchAsyncErrors = require("../../middlewares/catchAsyncErrors");
 const ErrorHandler = require("../../utils/ErrorHandler");
 const formidable = require("formidable")
-const { purchase, company, phone, customer, installment, specification } = require("../../../models")
+const { purchase, company, phone, customer, installment, specification, emi } = require("../../../models")
+const { Op } = require('sequelize');
 
 // 1 . Add Purchase
 const AddPurchase = async (req, res, next) => {
+
+    let Down_Payment = req.body.Down_Payment
     try {
 
         const Company = await company.findOne({
@@ -35,15 +38,36 @@ const AddPurchase = async (req, res, next) => {
             customer_id: req.body.customer_id,
             phone_id: Phone.id,
             installment_id: Installment.id,
-            pending_amount: req.body.net_payable,
+            pending_amount: req.body.net_payable - Down_Payment,
             net_amount: req.body.net_payable
-
         });
 
+        let Payable_amount = req.body.net_payable - req.body.Down_Payment
+        let Emi_Amount = Payable_amount / req.body.month
+
+        const today = new Date();
+
+        // it adds 30 days to a current date
+        today.setDate(today.getDate() + 30);
+        const due_date = today.toDateString()
+
+        const EMI = await emi.create({
+            amount: Emi_Amount,
+            due_date : due_date,
+            paid_date : due_date,
+            status : data.pending_amount == 0 ? "completed" : "pending" ,
+            type : Down_Payment ? "DP" : "EMI",
+            purchase_id: data.id,
+
+            
+        });
+
+
+
         res.status(201).json({
-            data: data,
+            data: data , EMI ,
             success: true,
-            message: "Purchase added successfully",
+            message: "Purchase Added Successfully",
         });
     } catch (error) {
         next(error)
@@ -74,7 +98,14 @@ const getSinglePurchasebyCustomerId = catchAsyncErrors(async (req, res, next) =>
         where: {
             customer_id: Number(id)
         },
-        include: [customer, phone, installment]
+        include: [
+            customer,
+            installment,
+            {
+                model: phone,
+                include: [company],
+            }
+        ],
     })
 
     res.status(200).json({
@@ -107,9 +138,10 @@ const getSinglePurchase = catchAsyncErrors(async (req, res, next) => {
 const oneCustomerDetailsbyNumber = catchAsyncErrors(async (req, res, next) => {
 
     let CustomerName = req.params.search;
-    console.log(CustomerName)
+
     let page = req.params.pageNo
     const itemsPerPage = 10
+    
     try {
         const SingleCustomerDetails = await purchase.findAll({
             skip: page * itemsPerPage,
@@ -118,7 +150,14 @@ const oneCustomerDetailsbyNumber = catchAsyncErrors(async (req, res, next) => {
                 {
                     model: customer,
                     where: {
-                        last_name: CustomerName,
+                        [Op.or]: [
+                            {
+                                last_name: CustomerName,
+                            },
+                            {
+                                mobile: CustomerName
+                            }
+                        ]
                     },
                 },
                 installment,
@@ -163,7 +202,7 @@ const updatePurchase = catchAsyncErrors(async (req, res, next) => {
 const deletePurchaseDetails = catchAsyncErrors(async (req, res, next) => {
 
     const { id } = req.params
-    console.log(id)
+
     const DeletePurchaseDetails = await purchase.destroy({
         where: {
             id: Number(id)

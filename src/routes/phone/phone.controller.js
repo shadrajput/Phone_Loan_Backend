@@ -6,14 +6,14 @@ const { company } = require("../../../models")
 
 // 1 . Add Model
 const AddModel = async (req, res, next) => {
-    console.log(req.body)
 
+    
     const Company = await company.findOne({
         where: {
-            company_name: req.body.company_name
+            company_name : req.body.company_name
         },
     });
-
+    
     const Model = await phone.findOne({
         where: {
             model_name: req.body.model_name,
@@ -23,10 +23,6 @@ const AddModel = async (req, res, next) => {
 
     if (Model) {
         return res.status(500).json({ success: false, message: "Model Allready Exist " });
-    }
-
-    if (err) {
-        return res.status(500).json({ success: false, message: err.message });
     }
 
     const data = await phone.create({

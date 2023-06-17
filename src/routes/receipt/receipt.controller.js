@@ -45,25 +45,40 @@ const AddReceipt = async (req, res, next) => {
 
 // 2 . Get all Receipt
 const getallReceipt = catchAsyncErrors(async (req, res, next) => {
-
+    let page = req.params.pageNo
+    const itemsPerPage = 10
     const AllReceipt = await receipt.findAll({
-        include: [{
-            model: emi,
-            include: [{
-                model: purchase,
-                include: [customer, phone, installment]
-            }]
-        }]
+        skip: page * itemsPerPage,
+        take: itemsPerPage,
+        include: [  
+            {
+                model: emi,
+                include: [{
+                    model: purchase,
+                    include: [
+                        customer,
+                        installment,
+                        {
+                            model : phone , 
+                            include : [company]
+                        }
+                    ]
+                }]
+            }
+        ]
     })
+
+    const totalReceipt = await customer.count();
 
     res.status(200).json({
         AllReceipt: AllReceipt,
+        pageCount: Math.ceil(totalReceipt / itemsPerPage),
         success: true,
         message: "All Receipt"
     })
 })
 
-// 4 . Get Single Receipt By Receipt Mobile 
+// 3 . Get Single Receipt By Receipt Mobile 
 const onerecieptDetailsbyNumber = catchAsyncErrors(async (req, res, next) => {
     let CustomerName = req.params.search;
     let page = req.params.pageNo
@@ -106,7 +121,26 @@ const onerecieptDetailsbyNumber = catchAsyncErrors(async (req, res, next) => {
     }
 });
 
-// 3 . Get Single Receipt
+
+// 3 . Get Single Receipt By Receipt Mobile 
+const getReceiptbyPurchaseId = catchAsyncErrors(async (req, res, next) => {
+    const { id } = req.params
+
+    const SingleReceiptByPurchaseId = await receipt.findOne({
+        where: {
+            id: Number(id)
+        }
+    })
+
+    res.status(200).json({
+        SingleReceiptByPurchaseId: SingleReceiptByPurchaseId,
+        success: true,
+        message: "One Receipt Details By Purchase Id"
+    })
+
+});
+
+// 4 . Get Single Receipt
 const getSingleReceipt = catchAsyncErrors(async (req, res, next) => {
 
     const { id } = req.params
@@ -124,7 +158,7 @@ const getSingleReceipt = catchAsyncErrors(async (req, res, next) => {
     })
 })
 
-// 4 . Update receipt
+// 6 . Update receipt
 const updateReceipt = catchAsyncErrors(async (req, res, next) => {
 
     const { id } = req.params
@@ -142,7 +176,7 @@ const updateReceipt = catchAsyncErrors(async (req, res, next) => {
     })
 })
 
-// 5 . Delete Receipt
+// 7 . Delete Receipt
 const deleteReceiptDetails = catchAsyncErrors(async (req, res, next) => {
 
     const { id } = req.params
@@ -169,5 +203,6 @@ module.exports = {
     getSingleReceipt,
     updateReceipt,
     deleteReceiptDetails,
-    onerecieptDetailsbyNumber
+    onerecieptDetailsbyNumber,
+    getReceiptbyPurchaseId
 };

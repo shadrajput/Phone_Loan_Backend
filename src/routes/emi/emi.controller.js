@@ -1,7 +1,7 @@
 const catchAsyncErrors = require("../../middlewares/catchAsyncErrors");
 const ErrorHandler = require("../../utils/ErrorHandler");
 const formidable = require("formidable")
-const { emi } = require("../../../models")
+const { emi , purchase , customer , phone , installment } = require("../../../models")
 
 
 // 1 . Add Emi
@@ -56,11 +56,21 @@ const getallEmi = catchAsyncErrors(async (req, res, next) => {
 const getEmiByPurchaseId = catchAsyncErrors(async (req, res, next) => {
 
     const { id } = req.params
-    console.log(id)
+
     const AllEmi = await emi.findAll({
         where: {
             purchase_id : Number(id)
-        }
+        },
+        include : [
+            {
+                model : purchase,
+                include : [
+                    customer ,
+                    installment , 
+                    phone
+                ]
+            }
+        ]
     })
 
     res.status(200).json({
@@ -69,6 +79,8 @@ const getEmiByPurchaseId = catchAsyncErrors(async (req, res, next) => {
         message: "All Emi"
     })
 })
+
+
 
 // 3 . Get Single Emi
 const getSingleEmi = catchAsyncErrors(async (req, res, next) => {
