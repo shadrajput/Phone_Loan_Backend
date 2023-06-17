@@ -8,6 +8,7 @@ const { Op } = require('sequelize');
 const AddPurchase = async (req, res, next) => {
 
     let Down_Payment = req.body.Down_Payment
+    
     try {
 
         const Company = await company.findOne({
