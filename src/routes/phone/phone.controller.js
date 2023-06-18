@@ -7,13 +7,13 @@ const { company } = require("../../../models")
 // 1 . Add Model
 const AddModel = async (req, res, next) => {
 
-    
+
     const Company = await company.findOne({
         where: {
-            company_name : req.body.company_name
+            company_name: req.body.company_name
         },
     });
-    
+
     const Model = await phone.findOne({
         where: {
             model_name: req.body.model_name,
@@ -41,8 +41,10 @@ const AddModel = async (req, res, next) => {
 // 2 . Get all Models
 const getallModel = catchAsyncErrors(async (req, res, next) => {
 
-    const AllModel = await phone.findAll({ include: [company] })
-
+    const AllModel = await phone.findAll({
+        include: [company]
+    })
+   
     res.status(200).json({
         AllModel: AllModel,
         success: true,

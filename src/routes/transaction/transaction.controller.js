@@ -51,6 +51,7 @@ const getallTransaction = catchAsyncErrors(async (req, res, next) => {
     let page = req.params.pageNo
     const itemsPerPage = 10
     const today = new Date();
+    console.log(today)
     const AllTransaction = await transaction.findAll({
         skip: page * itemsPerPage,
         take: itemsPerPage,
