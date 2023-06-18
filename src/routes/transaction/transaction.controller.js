@@ -60,8 +60,11 @@ const getallTransaction = catchAsyncErrors(async (req, res, next) => {
         }
     })
 
+    const totaltransection = await transaction.count();
+
     res.status(200).json({
         AllTransaction: AllTransaction,
+        pageCount: Math.ceil(totaltransection / itemsPerPage),
         success: true,
         message: "All Transaction"
     })

@@ -6,9 +6,9 @@ const { Op } = require('sequelize');
 
 // 1 . Add Purchase
 const AddPurchase = async (req, res, next) => {
-
-    let Down_Payment = req.body.Down_Payment
     
+    let Down_Payment = req.body.Down_Payment
+
     try {
 
         const Company = await company.findOne({
@@ -49,36 +49,36 @@ const AddPurchase = async (req, res, next) => {
         //entry of DP
         await emi.create({
             amount: Down_Payment,
-            due_date : req.body.date,
-            paid_date : req.body.date,
-            status : "completed",
-            type : 'dp',
+            due_date: req.body.date,
+            paid_date: req.body.date,
+            status: "completed",
+            type: 'dp',
             purchase_id: data.id,
         });
 
         //entry of EMI
-        for(let i=0; i < req.body.month; i++){
+        for (let i = 0; i < req.body.month; i++) {
             const currentDate = new Date(req.body.date);
-            currentDate.setMonth(currentDate.getMonth() + (i+1));
+            currentDate.setMonth(currentDate.getMonth() + (i + 1));
 
             await emi.create({
                 amount: Emi_Amount,
-                due_date : currentDate,
-                status : "pending" ,
-                type : 'emi',
+                due_date: currentDate,
+                status: "pending",
+                type: 'emi',
                 purchase_id: data.id,
             });
         }
 
         //finding all emi
         const EMI = await emi.findAll({
-            where:{
+            where: {
                 purchase_id: data.id
             }
         })
 
         res.status(201).json({
-            data: data , EMI ,
+            data: data, EMI,
             success: true,
             message: "Purchase Added Successfully",
         });
@@ -154,7 +154,7 @@ const oneCustomerDetailsbyNumber = catchAsyncErrors(async (req, res, next) => {
 
     let page = req.params.pageNo
     const itemsPerPage = 10
-    
+
     try {
         const SingleCustomerDetails = await purchase.findAll({
             skip: page * itemsPerPage,

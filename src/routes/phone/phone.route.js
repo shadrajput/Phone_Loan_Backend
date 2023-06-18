@@ -4,7 +4,7 @@ const {AddModel , getallModel , getSingleModel , updateModelDetails , deleteMode
 const router = express.Router();
 
 router.post("/addphone" , AddModel)
-router.get("/" , getallModel)
+router.get("/List/:pageNo" , getallModel)
 router.get("/details/:id" , getSingleModel)
 router.put("/update/:id" , updateModelDetails)
 router.delete("/delete/:id" , deleteModelDetails)
