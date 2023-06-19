@@ -10,34 +10,36 @@ const { user } = require("../../../models")
 
 const userSignup = catchAsyncErrors(async (req, res, next) => {
 
-    const form = new formidable.IncomingForm();
-
-    form.parse(req, async function (err, fields, files) {
-
-        const UserInfo = (fields);
-        console.log(UserInfo)
+    try {
         const password = "1234"
-        //checking mobile number already exist
-        // let user = await user.findFirst({
-        //     where: UserInfo.username
-        // });
+        // checking mobile number already exist
+        const result = await user.findOne({
+            where: {
+                username: req.body.username,
+            },
+        });
 
-        // if (user) {
-        //     return next(new ErrorHandler('User already exists with this mobile number', 400))
-        // }
+        if (result) {
+            return res.status(400).json({ success: false, message: "User Exist Already" });
+        }
 
         const hashedPassword = await bcrypt.hash(password.trim(), 10)
         const token = tokenGenerator(32);
 
         const user_details = await user.create({
-            username: UserInfo.username,
+            username: req.body.username,
             password: hashedPassword,
-            is_admin: "1",
+            is_admin: "0",
         })
 
-        res.status(201).json({ success: true, message: 'Signup successfully' })
-    })
-
+        res.status(201).json({
+            success: true,
+            user_details : user_details ,
+            message: 'Signup successfully'
+        })
+    } catch (error) {
+        next(error)
+    }
 })
 
 

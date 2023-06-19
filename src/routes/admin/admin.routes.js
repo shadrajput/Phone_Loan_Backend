@@ -5,7 +5,7 @@ const router = express.Router();
 router.post("/addadmin" , AddAdmin)
 router.get("/" , getallAdmin)
 router.get("/details/:id" , getSingleAdmin)
-router.put("/update/:id" , updateAdminDetails)
+router.put("/update" , updateAdminDetails)
 router.delete("/delete/:id" , deleteAdminDetails)
 
 module.exports = router;

@@ -1,33 +1,27 @@
 const catchAsyncErrors = require("../../middlewares/catchAsyncErrors");
 const ErrorHandler = require("../../utils/ErrorHandler");
 const { admin } = require("../../../models")
-const formidable = require("formidable")
+const bcrypt = require('bcrypt')
 
 
 // 1 . Add Admin
 const AddAdmin = async (req, res, next) => {
-    const form = new formidable.IncomingForm();
-    form.parse(req, async function (err, fields, files) {
-        console.log(fields)
-        try {
-            const AdminInfo = (fields);
-            if (err) {
-                return res.status(500).json({ success: false, message: err.message });
-            }
+    try {
 
-            const data = await admin.create(AdminInfo);
+        const data = await admin.create({
+            first_name: req.body.first_name,
+            last_name: req.body.last_name,
+            pin: req.body.pin,
+        });
 
-            res.status(201).json({
-                data: data,
-                success: true,
-                message: "EMIS added successfully",
-            });
-        } catch (error) {
-            next(error)
-        }
-
-    });
-
+        res.status(201).json({
+            data: data,
+            success: true,
+            message: "Admin added successfully",
+        });
+    } catch (error) {
+        next(error)
+    }
 }
 
 // 2 . Get all EMIS
@@ -62,8 +56,14 @@ const getSingleAdmin = catchAsyncErrors(async (req, res, next) => {
 
 // // 4 . Update Admin
 const updateAdminDetails = catchAsyncErrors(async (req, res, next) => {
-    const { id } = req.params
-    const updateAdminDetails = await admin.update(req.body , {
+
+    const id = req.body.id
+
+    const updateAdminDetails = await admin.update({
+        first_name: req.body.first_name,
+        last_name: req.body.last_name,
+        pin: req.body.pin,
+    }, {
         where: {
             id: Number(id)
         },
@@ -87,7 +87,7 @@ const deleteAdminDetails = catchAsyncErrors(async (req, res, next) => {
     })
 
     res.status(200).json({
-        DeleteAdminDetails : DeleteAdminDetails,
+        DeleteAdminDetails: DeleteAdminDetails,
         success: true,
         message: "News deleted successfully"
     })

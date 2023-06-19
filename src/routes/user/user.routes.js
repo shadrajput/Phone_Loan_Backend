@@ -9,7 +9,7 @@ const {
 } = require("../../routes/user/user.controller")
 
 
-router.post('/', userSignup)
+router.post('/Usersignup', userSignup)
 // router.post('/login', userLogin)
 
 

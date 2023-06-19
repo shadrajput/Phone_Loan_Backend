@@ -10,7 +10,7 @@ const {
 const router = express.Router();
 
 router.post("/addcustomer", AddCustomer)
-router.get("/", getallCustomers)
+router.get("/List", getallCustomers)
 router.get("/details/:id" , getSingleCustomer)
 router.put("/update" , updateCustomerDetails)
 router.delete("/delete/:id" , deleteCustomerDetails)
