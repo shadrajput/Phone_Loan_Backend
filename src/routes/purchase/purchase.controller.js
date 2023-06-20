@@ -6,7 +6,7 @@ const { Op } = require('sequelize');
 
 // 1 . Add Purchase
 const AddPurchase = async (req, res, next) => {
-    
+
     let Down_Payment = req.body.Down_Payment
 
     try {
@@ -92,8 +92,17 @@ const AddPurchase = async (req, res, next) => {
 const getallPurchase = catchAsyncErrors(async (req, res, next) => {
 
     const AllPurchase = await purchase.findAll({
-        include: [customer, phone, installment]
+        include: [
+            customer,
+            installment,
+            {
+                model: phone,
+                include: [company],
+            }
+        ]
     })
+
+    console.log(AllPurchase)
 
     res.status(200).json({
         AllPurchase: AllPurchase,
