@@ -91,7 +91,12 @@ const AddPurchase = async (req, res, next) => {
 // 2 . Get all Purchase
 const getallPurchase = catchAsyncErrors(async (req, res, next) => {
 
+    let page = req.params.pageNo
+    const itemsPerPage = 10
+
     const AllPurchase = await purchase.findAll({
+        skip: page * itemsPerPage,
+        take: itemsPerPage,
         include: [
             customer,
             installment,
@@ -102,10 +107,11 @@ const getallPurchase = catchAsyncErrors(async (req, res, next) => {
         ]
     })
 
-    console.log(AllPurchase)
+    const totalCustomer = await customer.count();
 
     res.status(200).json({
         AllPurchase: AllPurchase,
+        pageCount: Math.ceil(totalCustomer / itemsPerPage),
         success: true,
         message: "All Purchase"
     })

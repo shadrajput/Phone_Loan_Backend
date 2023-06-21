@@ -66,7 +66,7 @@ const getEmiByPurchaseId = catchAsyncErrors(async (req, res, next) => {
                 model : purchase,
                 include : [
                     customer ,
-                    installment , 
+                    installment, 
                     phone
                 ]
             }
