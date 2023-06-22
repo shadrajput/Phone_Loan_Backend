@@ -40,7 +40,8 @@ const AddPurchase = async (req, res, next) => {
             phone_id: Phone.id,
             installment_id: Installment.id,
             pending_amount: req.body.net_payable - Down_Payment,
-            net_amount: req.body.net_payable
+            net_amount: req.body.net_payable,
+            iemi: req.body.iemi
         });
 
         let Payable_amount = req.body.net_payable - Down_Payment
@@ -86,7 +87,6 @@ const AddPurchase = async (req, res, next) => {
         next(error)
     }
 }
-
 
 // 2 . Get all Purchase
 const getallPurchase = catchAsyncErrors(async (req, res, next) => {
