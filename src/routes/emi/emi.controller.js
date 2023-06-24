@@ -1,7 +1,9 @@
 const catchAsyncErrors = require("../../middlewares/catchAsyncErrors");
 const ErrorHandler = require("../../utils/ErrorHandler");
 const formidable = require("formidable")
-const { emi, purchase, customer, phone, receipt, installment } = require("../../../models")
+const {Op } = require('sequelize');
+const db = require('../../../models')
+const { emi, purchase, customer, phone, receipt, installment, transaction } = require("../../../models")
 
 
 // 1 . Add Emi
@@ -52,7 +54,50 @@ const getallEmi = catchAsyncErrors(async (req, res, next) => {
     })
 })
 
-// 3 . Get all Emi By Purchase Id 
+const getPendingEmi = catchAsyncErrors(async (req, res, next) => {
+    const currentDate = new Date();
+    const currentMonth = currentDate.getMonth() + 1; // Note: January is 0-indexed
+    const currentYear = currentDate.getFullYear();
+    const pendingEmi = await emi.findAll({ 
+        where:{
+            [Op.and]: [
+                db.sequelize.where(db.sequelize.literal('MONTH(due_date)'), currentMonth),
+                db.sequelize.where(db.sequelize.literal('YEAR(due_date)'), currentYear),
+                { status: 'pending' }
+            ]  
+        },
+        include:[
+             {
+                model: purchase,
+                include: [
+                    customer,
+                    installment,
+                    phone
+                ]
+            }
+        ]
+    })
+
+    const todaysCollection = await transaction.findAll({
+        attributes: [[db.sequelize.fn('SUM', db.sequelize.col('amount')), 'amount']],
+        where: db.sequelize.where(
+            db.sequelize.fn('DATE', db.sequelize.col('createdAt')),
+            db.sequelize.literal(`DATE('${currentDate.toISOString().split('T')[0]}')`)
+        ),
+        raw: true // Add this option to retrieve plain JavaScript objects
+    });
+
+    const sumAmount = todaysCollection[0].amount || 0;
+
+    res.status(200).json({
+        todaysCollection: sumAmount,
+        totalPendingCustomers: pendingEmi.length,
+        pendingEmiCustomers: pendingEmi,
+        success: true,
+    })
+})
+
+// Get all Emi By Purchase Id 
 const getEmiByPurchaseId = catchAsyncErrors(async (req, res, next) => {
 
     const { id } = req.params
@@ -89,9 +134,7 @@ const getEmiByPurchaseId = catchAsyncErrors(async (req, res, next) => {
     })
 })
 
-
-
-// 3 . Get Single Emi
+// Get Single Emi
 const getSingleEmi = catchAsyncErrors(async (req, res, next) => {
 
     const { id } = req.params
@@ -109,7 +152,7 @@ const getSingleEmi = catchAsyncErrors(async (req, res, next) => {
     })
 })
 
-// 4 . Update Emi
+// Update Emi
 const updateEmi = catchAsyncErrors(async (req, res, next) => {
     const { id } = req.params
 
@@ -126,7 +169,7 @@ const updateEmi = catchAsyncErrors(async (req, res, next) => {
     })
 })
 
-// 5 . Delete Emi
+// Delete Emi
 const deleteEmiDetails = catchAsyncErrors(async (req, res, next) => {
 
     const { id } = req.params
@@ -150,6 +193,7 @@ const deleteEmiDetails = catchAsyncErrors(async (req, res, next) => {
 module.exports = {
     AddEmi,
     getallEmi,
+    getPendingEmi,
     getEmiByPurchaseId,
     getSingleEmi,
     updateEmi,

@@ -16,7 +16,8 @@ module.exports = (sequelize, DataTypes) => {
             }
         },
         extra_charge: {
-            type: DataTypes.STRING,
+            type: DataTypes.INTEGER,
+            defaultValue: 0,
             allowNull: false,
         },
     },
