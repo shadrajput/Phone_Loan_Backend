@@ -4,7 +4,6 @@ const tokenGenerator = require("../../utils/tokenGenerator");
 const { comparePassword, generateToken } = require('../../middlewares/auth');
 const ErrorHandler = require("../../utils/ErrorHandler");
 const jwt = require("jsonwebtoken");
-const formidable = require("formidable")
 const { user } = require("../../../models")
 
 
@@ -34,7 +33,7 @@ const userSignup = catchAsyncErrors(async (req, res, next) => {
 
         res.status(201).json({
             success: true,
-            user_details : user_details ,
+            user_details: user_details,
             message: 'Signup successfully'
         })
     } catch (error) {
@@ -42,7 +41,46 @@ const userSignup = catchAsyncErrors(async (req, res, next) => {
     }
 })
 
+const userLogin = catchAsyncErrors(async (req, res, next) => {
+    const { username, password } = req.body
+
+    const User = await user.findOne({
+        where: { username },
+    });
+
+    if (!User || !await comparePassword(password, User.password)) {
+        return next(new ErrorHandler('Invalid mobile or password', 400));
+    }
+
+    delete User.password
+    const token = generateToken(User.id);
+
+    res.status(200).json({ success: true, message: 'Login successful', token, User })
+
+})
+
+const userDetail = catchAsyncErrors(async (req, res, next) => {
+    const token = req.headers.authentication;
+    console.log(token)
+    return
+    const JWTSign = process.env.JWT_SIGN;
+
+    if (!token) {
+        return next(new ErrorHandler("Please login to access this resource", 401));
+    }
+
+    const user_id = jwt.verify(token, JWTSign);
+
+    const User = await user.findUnique({
+        where: { id: Number(user_id) },
+    });
+
+    res.status(200).json({ success: true, User })
+})
+
 
 module.exports = {
-    userSignup
+    userSignup,
+    userLogin,
+    userDetail
 }
