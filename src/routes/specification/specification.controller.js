@@ -33,6 +33,8 @@ const getallSpecification = catchAsyncErrors(async (req, res, next) => {
         include: [phone]
     })
 
+    console.log(AllSpecification)
+
     res.status(200).json({
         AllSpecification: AllSpecification,
         success: true,
