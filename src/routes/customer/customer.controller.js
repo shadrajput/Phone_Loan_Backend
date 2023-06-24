@@ -51,8 +51,7 @@ const AddCustomer = catchAsyncErrors(async (req, res, next) => {
 
         const data = await customer.create({
             photo: photo,
-            first_name: CustomerInfo.first_name,
-            last_name: CustomerInfo.last_name,
+            full_name: CustomerInfo.full_name,
             mobile: CustomerInfo.mobile,
             alternate_no: CustomerInfo.alternate_no,
             reference_name: CustomerInfo.reference_name,

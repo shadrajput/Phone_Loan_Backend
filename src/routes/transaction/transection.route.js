@@ -4,16 +4,18 @@ const {
     getallTransaction,
     getSingleTransaction,
     updateTransation,
-    deleteTransactionDetails 
+    deleteTransactionDetails,
+    getSingleTransactionByReceiptId
 } = require("../../routes/transaction/transaction.controller")
 
 const router = express.Router();
 
 router.post("/addtransaction", AddTransaction)
 router.get("/List/:pageNo", getallTransaction)
-router.get("/details/:id" , getSingleTransaction)
-router.put("/update/:id" , updateTransation)
-router.delete("/delete/:id" , deleteTransactionDetails)
+router.get("/details/:id", getSingleTransaction)
+router.get("/ReceiptId/:id", getSingleTransactionByReceiptId)
+router.put("/update/:id", updateTransation)
+router.delete("/delete/:id", deleteTransactionDetails)
 
 
 

@@ -40,13 +40,21 @@ const AddModel = async (req, res, next) => {
 
 // 2 . Get all Models
 const getallModel = catchAsyncErrors(async (req, res, next) => {
+  
+    let page = req.params.pageNo
+    const itemsPerPage = 10
 
     const AllModel = await phone.findAll({
+        skip: page * itemsPerPage,
+        take: itemsPerPage,
         include: [company]
     })
    
+    const totalModel = await phone.count();
+
     res.status(200).json({
         AllModel: AllModel,
+        pageCount: Math.ceil(totalModel / itemsPerPage),
         success: true,
         message: "All Models"
     })

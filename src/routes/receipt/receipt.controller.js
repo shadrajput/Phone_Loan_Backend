@@ -50,7 +50,7 @@ const getallReceipt = catchAsyncErrors(async (req, res, next) => {
     const AllReceipt = await receipt.findAll({
         skip: page * itemsPerPage,
         take: itemsPerPage,
-        include: [  
+        include: [
             {
                 model: emi,
                 include: [{
@@ -59,8 +59,8 @@ const getallReceipt = catchAsyncErrors(async (req, res, next) => {
                         customer,
                         installment,
                         {
-                            model : phone , 
-                            include : [company]
+                            model: phone,
+                            include: [company]
                         }
                     ]
                 }]
@@ -122,7 +122,7 @@ const onerecieptDetailsbyNumber = catchAsyncErrors(async (req, res, next) => {
 });
 
 
-// 3 . Get Single Receipt By Receipt Mobile 
+// 3 . Get Single Receipt By Purchase ID 
 const getReceiptbyPurchaseId = catchAsyncErrors(async (req, res, next) => {
     const { id } = req.params
 
@@ -134,6 +134,39 @@ const getReceiptbyPurchaseId = catchAsyncErrors(async (req, res, next) => {
 
     res.status(200).json({
         SingleReceiptByPurchaseId: SingleReceiptByPurchaseId,
+        success: true,
+        message: "One Receipt Details By Purchase Id"
+    })
+
+});
+
+// 3 . Get Single Receipt By Emi ID 
+const getReceiptbyEmiId = catchAsyncErrors(async (req, res, next) => {
+
+    const { id } = req.params
+
+    const SingleReceiptByEmiId = await receipt.findOne({
+        where: {
+            id: Number(id)
+        },
+        include: [
+            {
+                model: emi,
+                include: [{
+                    model: purchase,
+                    include: [customer, installment, {
+                        model: phone,
+                        include: [
+                            company
+                        ]
+                    }]
+                }]
+            }
+        ]
+    })
+
+    res.status(200).json({
+        SingleReceiptByEmiId: SingleReceiptByEmiId,
         success: true,
         message: "One Receipt Details By Purchase Id"
     })
@@ -203,6 +236,7 @@ module.exports = {
     getSingleReceipt,
     updateReceipt,
     deleteReceiptDetails,
+    getReceiptbyEmiId,
     onerecieptDetailsbyNumber,
     getReceiptbyPurchaseId
 };

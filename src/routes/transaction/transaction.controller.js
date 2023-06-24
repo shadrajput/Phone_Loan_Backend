@@ -1,39 +1,53 @@
 const catchAsyncErrors = require("../../middlewares/catchAsyncErrors");
 const ErrorHandler = require("../../utils/ErrorHandler");
 const formidable = require("formidable")
-const { transaction , emi } = require("../../../models")
+const { transaction, emi, receipt , purchase , customer , phone , company , installment} = require("../../../models")
 
 
 // // 1 . Add Transaction
 const AddTransaction = async (req, res, next) => {
     try {
-        const today = new Date();
 
         const PayEMI = await emi.update(
             {
-                paid_date: today,
+                paid_date: req.body.paid_date,
                 status: req.body.status,
             },
             {
                 where: {
                     id: req.body.purchase_id
                 }
-            });
+            }
+        );
 
-        console.log(PayEMI)
+        const EMI = await emi.findOne(
+            {
+                where: {
+                    id: req.body.purchase_id
+                }
+            }
+        );
 
-        return
+        const Receipt = await receipt.create(
+            {
+                emi_id: EMI.id,
+                admin_id: "1",
+                extra_charge: ""
+            }
+        );
 
         const data = await transaction.create({
-            receipt_id: "2",
-            is_by_cheque: TransactionInfo.is_by_cheque,
-            is_by_cash: TransactionInfo.is_by_cash,
-            is_by_upi: TransactionInfo.is_by_upi,
-            cheque_no: TransactionInfo.chaque_no,
-            cheque_date: TransactionInfo.cheque_date,
-            upi_no: TransactionInfo.upi_no,
-            amount: TransactionInfo.amount
+            receipt_id: Receipt.id,
+            is_by_cheque: req.body.is_by_cheque,
+            is_by_cash: req.body.is_by_cash,
+            is_by_upi: req.body.is_by_upi,
+            cheque_no: req.body.chequeNo,
+            cheque_date: req.body.chequeDate,
+            upi_no: req.body.upi_number,
+            amount: req.body.amount
         });
+
+        console.log(data)
 
         res.status(201).json({
             data: data,
@@ -60,8 +74,11 @@ const getallTransaction = catchAsyncErrors(async (req, res, next) => {
         }
     })
 
+    const totaltransection = await transaction.count();
+
     res.status(200).json({
         AllTransaction: AllTransaction,
+        pageCount: Math.ceil(totaltransection / itemsPerPage),
         success: true,
         message: "All Transaction"
     })
@@ -76,6 +93,41 @@ const getSingleTransaction = catchAsyncErrors(async (req, res, next) => {
         where: {
             id: Number(id)
         }
+    })
+
+    res.status(200).json({
+        SingleTransaction: SingleTransaction,
+        success: true,
+        message: "One Transaction Details"
+    })
+})
+
+// // 3 . Get Single Transaction By Receipt ID
+const getSingleTransactionByReceiptId = catchAsyncErrors(async (req, res, next) => {
+
+    const { id } = req.params
+
+    const SingleTransaction = await transaction.findOne({
+        where: {
+            receipt_id: Number(id)
+        },
+        include: [
+            {
+                model: receipt,
+                include: [{
+                    model: emi,
+                    include: [{
+                        model: purchase,
+                        include: [customer, installment, {
+                            model: phone,
+                            include: [
+                                company
+                            ]
+                        }]
+                    }]
+                }]
+            }
+        ]
     })
 
     res.status(200).json({
@@ -129,5 +181,6 @@ module.exports = {
     getallTransaction,
     getSingleTransaction,
     updateTransation,
-    deleteTransactionDetails
+    deleteTransactionDetails,
+    getSingleTransactionByReceiptId
 };
