@@ -30,7 +30,10 @@ const AddSpecification = async (req, res, next) => {
 const getallSpecification = catchAsyncErrors(async (req, res, next) => {
 
     const AllSpecification = await specification.findAll({
-        include: [phone]
+        include: [{
+            model: phone,
+            include: [company]
+        }]
     })
 
     console.log(AllSpecification)
@@ -84,7 +87,7 @@ const updateSpecificationDetails = catchAsyncErrors(async (req, res, next) => {
 
     const { id } = req.body
 
-    const updateSpecificationDetails = await specification.update(req.body , {
+    const updateSpecificationDetails = await specification.update(req.body, {
         where: {
             id: Number(id)
         },
@@ -99,7 +102,7 @@ const updateSpecificationDetails = catchAsyncErrors(async (req, res, next) => {
 
 // 5 . Delete Specification
 const deleteSpecificationDetails = catchAsyncErrors(async (req, res, next) => {
-   
+
     const { id } = req.params
 
     const DeleteSpecificationDetails = await specification.destroy({

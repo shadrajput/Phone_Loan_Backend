@@ -33,6 +33,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             allowNull: false,
         },
+        iemi: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
         net_amount: {
             type: DataTypes.STRING,
             allowNull: false,

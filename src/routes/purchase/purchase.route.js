@@ -12,7 +12,7 @@ const {
 const router = express.Router();
 
 router.post("/addpurchase", AddPurchase)
-router.get("/List", getallPurchase)
+router.get("/List/:pageNo", getallPurchase)
 router.get(
     "/search/:pageNo/:search",
     oneCustomerDetailsbyNumber
