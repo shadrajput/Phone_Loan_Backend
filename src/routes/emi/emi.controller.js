@@ -56,7 +56,7 @@ const getallEmi = catchAsyncErrors(async (req, res, next) => {
 
 const getPendingEmi = catchAsyncErrors(async (req, res, next) => {
     const currentDate = new Date();
-    const currentMonth = currentDate.getMonth() + 1; // Note: January is 0-indexed
+    const currentMonth = currentDate.getMonth() + 1; 
     const currentYear = currentDate.getFullYear();
     const pendingEmi = await emi.findAll({ 
         where:{
@@ -78,21 +78,35 @@ const getPendingEmi = catchAsyncErrors(async (req, res, next) => {
         ]
     })
 
+    let filteredCustomers = []
+    const findCustomerInArray = (item)=>{
+        return filteredCustomers.find( emi =>{
+            return emi.purchase.customer.id == item.purchase.customer.id
+        })
+    }
+
+    pendingEmi.filter((item)=>{
+        if(!findCustomerInArray(item)){
+            filteredCustomers.push(item)
+        }
+    })
+
     const todaysCollection = await transaction.findAll({
         attributes: [[db.sequelize.fn('SUM', db.sequelize.col('amount')), 'amount']],
         where: db.sequelize.where(
             db.sequelize.fn('DATE', db.sequelize.col('createdAt')),
             db.sequelize.literal(`DATE('${currentDate.toISOString().split('T')[0]}')`)
         ),
-        raw: true // Add this option to retrieve plain JavaScript objects
+        raw: true // To retrieve plain JavaScript objects
     });
 
     const sumAmount = todaysCollection[0].amount || 0;
 
     res.status(200).json({
         todaysCollection: sumAmount,
-        totalPendingCustomers: pendingEmi.length,
-        pendingEmiCustomers: pendingEmi,
+        totalPendingCustomers: filteredCustomers.length,
+        totalModels: pendingEmi.length,
+        pendingEmiCustomers: filteredCustomers,
         success: true,
     })
 })
