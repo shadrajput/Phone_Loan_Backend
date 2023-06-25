@@ -1,6 +1,7 @@
 const catchAsyncErrors = require("../../middlewares/catchAsyncErrors");
 const ErrorHandler = require("../../utils/ErrorHandler");
 const formidable = require("formidable")
+const { Op } = require('sequelize');
 const { phone } = require("../../../models")
 const { company } = require("../../../models")
 
@@ -129,6 +130,26 @@ const deleteModelDetails = catchAsyncErrors(async (req, res, next) => {
 
 })
 
+const searchPhone = catchAsyncErrors(async (req, res, next) => {
+
+    const { model } = req.params;
+
+    const modelDetails = await phone.findAll({
+        where: {
+            model_name: {
+                [Op.like]: `%${model}%`
+            }
+        },
+        include: [company]
+    })
+
+    res.status(200).json({
+        modelDetails: modelDetails,
+        success: true,
+    })
+
+})
+
 
 
 module.exports = {
@@ -136,5 +157,6 @@ module.exports = {
     getallModel,
     getSingleModel,
     updateModelDetails,
-    deleteModelDetails
+    deleteModelDetails,
+    searchPhone
 };

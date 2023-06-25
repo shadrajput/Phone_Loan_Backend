@@ -6,7 +6,7 @@ const db = require('../../../models')
 const { emi, purchase, customer, phone, receipt, installment, transaction } = require("../../../models")
 
 
-// 1 . Add Emi
+// Add Emi
 const AddEmi = async (req, res, next) => {
 
     const form = new formidable.IncomingForm();
@@ -42,7 +42,7 @@ const AddEmi = async (req, res, next) => {
 }
 
 
-// 2 . Get all Emi
+// Get all Emi
 const getallEmi = catchAsyncErrors(async (req, res, next) => {
 
     const AllEmi = await emi.findAll()
