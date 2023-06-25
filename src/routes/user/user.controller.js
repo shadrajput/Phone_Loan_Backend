@@ -28,7 +28,7 @@ const userSignup = catchAsyncErrors(async (req, res, next) => {
         const user_details = await user.create({
             username: req.body.username,
             password: hashedPassword,
-            is_admin: false,
+            is_admin: "0",
         })
 
         res.status(201).json({

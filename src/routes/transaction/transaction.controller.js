@@ -1,11 +1,13 @@
 const catchAsyncErrors = require("../../middlewares/catchAsyncErrors");
 const ErrorHandler = require("../../utils/ErrorHandler");
 const formidable = require("formidable")
-const { transaction, emi, receipt , purchase , customer , phone , company , installment} = require("../../../models")
+const { transaction, emi, receipt, purchase, customer, phone, company, installment } = require("../../../models")
 
 
 // // 1 . Add Transaction
 const AddTransaction = async (req, res, next) => {
+    console.log(req.body)
+    return
     try {
 
         const PayEMI = await emi.update(
@@ -46,8 +48,6 @@ const AddTransaction = async (req, res, next) => {
             upi_no: req.body.upi_number,
             amount: req.body.amount
         });
-
-        console.log(data)
 
         res.status(201).json({
             data: data,
