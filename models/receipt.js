@@ -8,6 +8,11 @@ module.exports = (sequelize, DataTypes) => {
             primaryKey: true,
             autoIncrement: true,
         },
+        receipt_id:{
+            type: DataTypes.INTEGER(11),
+            allowNull: false,
+            unique: true,
+        },
         emi_id: {
             type: DataTypes.INTEGER,
             references: {
