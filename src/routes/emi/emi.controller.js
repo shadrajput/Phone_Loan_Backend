@@ -3,7 +3,7 @@ const ErrorHandler = require("../../utils/ErrorHandler");
 const formidable = require("formidable")
 const { Op } = require('sequelize');
 const db = require('../../../models')
-const { emi, purchase, customer, phone, receipt, installment, transaction } = require("../../../models")
+const { emi, purchase, customer, phone, receipt, installment, transaction, company , specification } = require("../../../models")
 
 
 // Add Emi
@@ -41,7 +41,6 @@ const AddEmi = async (req, res, next) => {
     });
 }
 
-
 // Get all Emi
 const getallEmi = catchAsyncErrors(async (req, res, next) => {
 
@@ -55,10 +54,15 @@ const getallEmi = catchAsyncErrors(async (req, res, next) => {
 })
 
 const getPendingEmi = catchAsyncErrors(async (req, res, next) => {
+
+    let page = req.params.pageNo
+    const itemsPerPage = 10
     const currentDate = new Date();
     const currentMonth = currentDate.getMonth() + 1;
     const currentYear = currentDate.getFullYear();
     const pendingEmi = await emi.findAll({
+        skip: page * itemsPerPage,
+        take: itemsPerPage,
         where: {
             [Op.and]: [
                 db.sequelize.where(db.sequelize.literal('MONTH(due_date)'), currentMonth),
@@ -102,11 +106,14 @@ const getPendingEmi = catchAsyncErrors(async (req, res, next) => {
 
     const sumAmount = todaysCollection[0].amount || 0;
 
+    const totalCustomer = await emi.count();
+
     res.status(200).json({
         todaysCollection: sumAmount,
         totalPendingCustomers: filteredCustomers.length,
         totalModels: pendingEmi.length,
         pendingEmiCustomers: filteredCustomers,
+        pageCount: Math.ceil(totalCustomer / itemsPerPage),
         success: true,
     })
 })
@@ -114,7 +121,6 @@ const getPendingEmi = catchAsyncErrors(async (req, res, next) => {
 // Get all Emi By Purchase Id 
 const getEmiByPurchaseId = catchAsyncErrors(async (req, res, next) => {
     const { id } = req.params
-
     const AllEmi = await emi.findAll({
         where: {
             purchase_id: Number(id)
@@ -128,9 +134,9 @@ const getEmiByPurchaseId = catchAsyncErrors(async (req, res, next) => {
                     phone
                 ]
             },
-            {
-                model: receipt
-            }
+            // {
+            //     model: receipt
+            // }
         ]
     })
 
@@ -141,6 +147,63 @@ const getEmiByPurchaseId = catchAsyncErrors(async (req, res, next) => {
     })
 })
 
+// 4 . Get EMI BY Customer Name 
+const getemibycustomername = catchAsyncErrors(async (req, res, next) => {
+    let CustomerName = req.params.search;
+
+    let page = req.params.pageNo
+    const itemsPerPage = 10
+
+    try {
+        const SingleCustomerEMIDetails = await emi.findOne({
+            skip: page * itemsPerPage,
+            take: itemsPerPage,
+            where: {
+                status: "pending"
+            },
+            // order: [[due_date : ]],
+            include: [
+                {
+                    model: purchase,
+                    include: [
+                        installment,
+                        {
+                            model: customer,
+                            where: {
+                                [Op.or]: [
+                                    {
+                                        full_name: CustomerName,
+                                    },
+                                    {
+                                        mobile: CustomerName,
+
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            model: phone,
+                            include: [company]
+                        }
+                    ]
+                },
+            ],
+
+        });
+
+        const totalCustomer = await customer.count();
+
+        res.status(200).json({
+            data: SingleCustomerEMIDetails,
+            pageCount: Math.ceil(totalCustomer / itemsPerPage),
+            success: true,
+        });
+    } catch (error) {
+        next(error);
+    }
+});
+
+
 // Get Single Emi
 const getSingleEmi = catchAsyncErrors(async (req, res, next) => {
 
@@ -149,7 +212,19 @@ const getSingleEmi = catchAsyncErrors(async (req, res, next) => {
     const SingleEmi = await emi.findOne({
         where: {
             id: Number(id)
-        }
+        },
+        include : [
+            {
+            model : purchase,
+            include : [
+                installment,
+                customer,
+                {
+                    model : phone,
+                    include: [company , specification]
+                }
+            ]
+        }]
     })
 
     res.status(200).json({
@@ -204,5 +279,6 @@ module.exports = {
     getEmiByPurchaseId,
     getSingleEmi,
     updateEmi,
-    deleteEmiDetails
+    deleteEmiDetails,
+    getemibycustomername
 };

@@ -6,8 +6,6 @@ const { transaction, emi, receipt, purchase, customer, phone, company, installme
 
 // // 1 . Add Transaction
 const AddTransaction = async (req, res, next) => {
-    console.log(req.body)
-    return
     try {
 
         const Admin = await admin.findOne(
@@ -22,7 +20,6 @@ const AddTransaction = async (req, res, next) => {
         if (!Admin) {
             return res.status(500).json({ success: false, message: "Invalid Pin" });
         }
-
         const PayEMI = await emi.update(
             {
                 paid_date: req.body.date,
@@ -44,10 +41,13 @@ const AddTransaction = async (req, res, next) => {
             }
         );
 
+        console.log(EMI)
+        
         const Receipt = await receipt.create(
             {
                 emi_id: EMI.id,
                 admin_id: Admin.id,
+                receipt_id : "1",
                 extra_charge: req.body.Charge_amount
             }
         );
