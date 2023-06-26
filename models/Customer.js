@@ -35,9 +35,6 @@ module.exports = (sequelize, DataTypes) =>{
     reference_name:{
       type: DataTypes.STRING,
       allowNull: true,
-      validate: {
-        is: /^[a-z ]+$/i
-      }
     },
     reference_mobile:{
       type: DataTypes.STRING,

@@ -1,23 +1,35 @@
 const catchAsyncErrors = require("../../middlewares/catchAsyncErrors");
 const ErrorHandler = require("../../utils/ErrorHandler");
 const formidable = require("formidable")
-const { transaction, emi, receipt, purchase, customer, phone, company, installment } = require("../../../models")
+const { transaction, emi, receipt, purchase, customer, phone, company, installment, admin } = require("../../../models")
 
 
 // // 1 . Add Transaction
 const AddTransaction = async (req, res, next) => {
-    console.log(req.body)
-    return
     try {
+        
+        const Admin = await admin.findOne(
+            {
+                where: {
+                    user_id: req.body.user_id,
+                    pin: req.body.security_pin
+                }
+            }
+        );
 
+        if (!Admin) {
+            return res.status(500).json({ success: false, message: "Invalid Pin" });
+        }
+        
         const PayEMI = await emi.update(
             {
-                paid_date: req.body.paid_date,
+                paid_date: req.body.date,
                 status: req.body.status,
             },
             {
                 where: {
-                    id: req.body.purchase_id
+                    id: req.body.Emi_id,
+                    purchase_id: req.body.purchase_id
                 }
             }
         );
@@ -25,7 +37,7 @@ const AddTransaction = async (req, res, next) => {
         const EMI = await emi.findOne(
             {
                 where: {
-                    id: req.body.purchase_id
+                    id: req.body.Emi_id
                 }
             }
         );
@@ -33,8 +45,8 @@ const AddTransaction = async (req, res, next) => {
         const Receipt = await receipt.create(
             {
                 emi_id: EMI.id,
-                admin_id: "1",
-                extra_charge: ""
+                admin_id: Admin.id,
+                extra_charge: req.body.Charge_amount
             }
         );
 
@@ -54,6 +66,7 @@ const AddTransaction = async (req, res, next) => {
             success: true,
             message: "Purchase added successfully",
         });
+
     } catch (error) {
         next(error)
     }

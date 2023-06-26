@@ -13,7 +13,7 @@ const AddCustomer = catchAsyncErrors(async (req, res, next) => {
     const form = new formidable.IncomingForm();
 
     form.parse(req, async function (err, fields, files) {
-        console.log(fields)
+
         const CustomerInfo = JSON.parse(fields.data).CustomerInfo;
 
         const result = await customer.findOne({

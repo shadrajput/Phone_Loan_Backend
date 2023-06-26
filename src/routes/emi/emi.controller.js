@@ -1,7 +1,7 @@
 const catchAsyncErrors = require("../../middlewares/catchAsyncErrors");
 const ErrorHandler = require("../../utils/ErrorHandler");
 const formidable = require("formidable")
-const {Op } = require('sequelize');
+const { Op } = require('sequelize');
 const db = require('../../../models')
 const { emi, purchase, customer, phone, receipt, installment, transaction } = require("../../../models")
 
@@ -56,18 +56,18 @@ const getallEmi = catchAsyncErrors(async (req, res, next) => {
 
 const getPendingEmi = catchAsyncErrors(async (req, res, next) => {
     const currentDate = new Date();
-    const currentMonth = currentDate.getMonth() + 1; 
+    const currentMonth = currentDate.getMonth() + 1;
     const currentYear = currentDate.getFullYear();
-    const pendingEmi = await emi.findAll({ 
-        where:{
+    const pendingEmi = await emi.findAll({
+        where: {
             [Op.and]: [
                 db.sequelize.where(db.sequelize.literal('MONTH(due_date)'), currentMonth),
                 db.sequelize.where(db.sequelize.literal('YEAR(due_date)'), currentYear),
                 { status: 'pending' }
-            ]  
+            ]
         },
-        include:[
-             {
+        include: [
+            {
                 model: purchase,
                 include: [
                     customer,
@@ -79,14 +79,14 @@ const getPendingEmi = catchAsyncErrors(async (req, res, next) => {
     })
 
     let filteredCustomers = []
-    const findCustomerInArray = (item)=>{
-        return filteredCustomers.find( emi =>{
+    const findCustomerInArray = (item) => {
+        return filteredCustomers.find(emi => {
             return emi.purchase.customer.id == item.purchase.customer.id
         })
     }
 
-    pendingEmi.filter((item)=>{
-        if(!findCustomerInArray(item)){
+    pendingEmi.filter((item) => {
+        if (!findCustomerInArray(item)) {
             filteredCustomers.push(item)
         }
     })
@@ -128,18 +128,10 @@ const getEmiByPurchaseId = catchAsyncErrors(async (req, res, next) => {
                     installment,
                     phone
                 ]
-            }
+            },
+            receipt
         ]
     })
-
-    // const AllReceipt = await receipt.findAll({
-    //     include: [{
-    //         model: emi,
-    //         where: {
-    //             purchase_id: Number(id)
-    //         }
-    //     }]
-    // })
 
     res.status(200).json({
         AllEmi: AllEmi,
