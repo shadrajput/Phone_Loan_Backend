@@ -181,7 +181,21 @@ const getSingleReceipt = catchAsyncErrors(async (req, res, next) => {
     const SingleReceipt = await receipt.findOne({
         where: {
             id: Number(id)
-        }
+        },
+        include: [
+            {
+                model: emi,
+                include: [{
+                    model: purchase,
+                    include: [customer, installment, {
+                        model: phone,
+                        include: [
+                            company
+                        ]
+                    }]
+                }]
+            }
+        ]
     })
 
     res.status(200).json({

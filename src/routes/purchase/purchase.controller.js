@@ -1,12 +1,12 @@
 const catchAsyncErrors = require("../../middlewares/catchAsyncErrors");
 const ErrorHandler = require("../../utils/ErrorHandler");
 const formidable = require("formidable")
-const { purchase, company, phone, customer, installment, receipt , specification, emi } = require("../../../models")
+const { purchase, company, phone, customer, installment, receipt, specification, emi, transaction } = require("../../../models")
 const { Op } = require('sequelize');
 
 // 1 . Add Purchase
 const AddPurchase = async (req, res, next) => {
-
+    
     let Down_Payment = req.body.Down_Payment
 
     try {
@@ -47,9 +47,9 @@ const AddPurchase = async (req, res, next) => {
         let Payable_amount = req.body.net_payable - Down_Payment
         let Emi_Amount = Payable_amount / req.body.month
 
-        
+
         //entry of DP
-        const DP =  await emi.create({
+        const DP = await emi.create({
             amount: Down_Payment,
             due_date: req.body.date,
             paid_date: req.body.date,
@@ -66,6 +66,17 @@ const AddPurchase = async (req, res, next) => {
                 extra_charge: "-"
             }
         );
+
+        const Transection = await transaction.create({
+            receipt_id: Receipt.id,
+            is_by_cheque: "0",
+            is_by_cash: "1",
+            is_by_upi: "0",
+            cheque_no: req.body.chequeNo,
+            cheque_date: req.body.chequeDate,
+            upi_no: req.body.upi_number,
+            amount: req.body.Down_Payment
+        });
 
         //entry of EMI
         for (let i = 0; i < req.body.month; i++) {

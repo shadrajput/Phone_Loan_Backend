@@ -35,8 +35,8 @@ module.exports = (sequelize, DataTypes) => {
 
     Receipt.associate = function (models) {
         Receipt.belongsTo(models.emi, { foreignKey: 'emi_id' })
-        Receipt.belongsTo(models.admin, { foreignKey: 'admin_id' })
-        Receipt.hasOne(models.transaction, { foreignKey: 'transaction_id' })
+        // Receipt.belongsTo(models.admin, { foreignKey: 'admin_id' })
+        Receipt.hasOne(models.transaction, { foreignKey: 'receipt_id' })
     };
 
     return Receipt

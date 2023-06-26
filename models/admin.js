@@ -50,7 +50,7 @@ module.exports = (sequelize, DataTypes) =>{
 
   Admin.associate = function (models) {
     Admin.belongsTo(models.user, { foreignKey: 'user_id' })
-    Admin.hasOne(models.receipt, { foreignKey: 'receipt_id' })
+    // Admin.hasOne(models.receipt, { foreignKey: 'receipt_id' })
 };  
 
   return Admin
