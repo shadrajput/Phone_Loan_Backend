@@ -1,6 +1,6 @@
 const catchAsyncErrors = require("../../middlewares/catchAsyncErrors");
 const ErrorHandler = require("../../utils/ErrorHandler");
-const { installment } = require("../../../models")
+const { installment, purchase, customer, phone, company } = require("../../../models")
 const formidable = require("formidable")
 
 
@@ -35,12 +35,97 @@ const AddInstallment = async (req, res, next) => {
 // 2 . Get all InstallmentS
 const getallInstallment = catchAsyncErrors(async (req, res, next) => {
 
-    const AllInstallment = await installment.findAll()
+    const AllInstallment = await installment.findAll({
+        include:[
+            {
+                model: purchase,
+                include:[
+                    {
+                        model: customer
+                    }
+                ]
+            }
+        ],
+    })
+    let filteredCustomers = JSON.parse(JSON.stringify(AllInstallment));
+    filteredCustomers = filteredCustomers.filter((item)=>{
+        item.purchases.splice(0);
+        return true;
+    });
+    
+
+    const findCustomerInArray = (data)=>{
+        for(let i=0; i<filteredCustomers.length; i++){
+            let flag = 0;
+            for(let j=0; j<filteredCustomers[i].purchases.length; j++){
+                if( filteredCustomers[i].purchases[j].customer.id == data.customer.id ) flag = 1;
+            } 
+            
+            if(flag){
+                return true
+            }
+            else{
+                return false
+            }
+        }
+    }
+
+    AllInstallment.map((item, i)=>{
+        item.purchases.map((data)=>{
+            if(!findCustomerInArray(data)){
+                filteredCustomers[i].purchases.push(data)
+            }
+        })
+    })
+
 
     res.status(200).json({
-        AllInstallment: AllInstallment,
+        AllInstallment: filteredCustomers,
         success: true,
         message: "All Installment"
+    })
+})
+
+const getCustomersByInstallment = catchAsyncErrors(async (req, res, next) => {
+    const {installment_id} = req.params
+    const customers = await purchase.findAll({
+        include:[
+            { 
+                model: installment,
+                where:{
+                    id: installment_id
+                }
+            },
+            {
+                model: customer
+            },
+            {
+                model: phone,
+                include: [
+                    {
+                        model: company
+                    }
+                ]
+            }
+        ]
+    })  
+
+     let filteredCustomers = []
+    const findCustomerInArray = (item)=>{
+        return filteredCustomers.find( data =>{
+            return data.customer.id == item.customer.id
+        })
+    }
+
+    customers.filter((item)=>{
+        if(!findCustomerInArray(item)){
+            filteredCustomers.push(item)
+        }
+    })
+
+    res.status(200).json({
+        allCustomers: filteredCustomers,
+        success: true,
     })
 })
 
@@ -104,6 +189,7 @@ const deleteInstallmentDetails = catchAsyncErrors(async (req, res, next) => {
 module.exports = {
     AddInstallment,
     getallInstallment,
+    getCustomersByInstallment,
     getSingleInstallment,
     getSingleInstallment,
     updateInstallmentDetails,
