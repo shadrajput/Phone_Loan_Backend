@@ -6,7 +6,7 @@ const { Op } = require('sequelize');
 
 // 1 . Add Purchase
 const AddPurchase = async (req, res, next) => {
-    
+
     let Down_Payment = req.body.Down_Payment
 
     try {
@@ -62,8 +62,9 @@ const AddPurchase = async (req, res, next) => {
         const Receipt = await receipt.create(
             {
                 emi_id: DP.id,
-                admin_id: "1",
-                extra_charge: "-"
+                admin_id: "4",
+                extra_charge: "-",
+                receipt_id: "3"
             }
         );
 

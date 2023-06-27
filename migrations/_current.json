@@ -130,11 +130,7 @@
                 "full_name": {
                     "allowNull": false,
                     "validate": {
-                        "notEmpty": true,
-                        "isAlpha": {
-                            "args": true,
-                            "msg": "Please enter only letters"
-                        }
+                        "notEmpty": true
                     },
                     "field": "full_name",
                     "seqType": "Sequelize.STRING"
@@ -151,9 +147,6 @@
                 },
                 "reference_name": {
                     "allowNull": true,
-                    "validate": {
-                        "is": {}
-                    },
                     "field": "reference_name",
                     "seqType": "Sequelize.STRING"
                 },
@@ -500,6 +493,14 @@
                     "field": "extra_charge",
                     "seqType": "Sequelize.INTEGER"
                 },
+                "admin_id": {
+                    "references": {
+                        "model": "admin",
+                        "key": "id"
+                    },
+                    "field": "admin_id",
+                    "seqType": "Sequelize.INTEGER"
+                },
                 "createdAt": {
                     "allowNull": false,
                     "field": "createdAt",
@@ -673,5 +674,5 @@
             "indexes": []
         }
     },
-    "revision": 5
+    "revision": 6
 }

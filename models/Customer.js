@@ -18,10 +18,6 @@ module.exports = (sequelize, DataTypes) =>{
       allowNull: false,
       validate: {
         notEmpty: true,
-        isAlpha: {
-          args: true,
-          msg: 'Please enter only letters'
-        }
       }
     },
     mobile:{

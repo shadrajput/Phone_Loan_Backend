@@ -20,6 +20,7 @@ const AddTransaction = async (req, res, next) => {
         if (!Admin) {
             return res.status(500).json({ success: false, message: "Invalid Pin" });
         }
+
         const PayEMI = await emi.update(
             {
                 paid_date: req.body.date,
@@ -47,7 +48,7 @@ const AddTransaction = async (req, res, next) => {
             {
                 emi_id: EMI.id,
                 admin_id: Admin.id,
-                receipt_id : "1",
+                receipt_id : "2",
                 extra_charge: req.body.Charge_amount
             }
         );
