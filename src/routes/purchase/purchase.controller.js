@@ -39,23 +39,34 @@ const AddPurchase = async (req, res, next) => {
             customer_id: req.body.customer_id,
             phone_id: Phone.id,
             installment_id: Installment.id,
-            pending_amount: req.body.net_payable - Down_Payment,
+            pending_amount: req.body.net_payable - Down_Payment == '' ? 0 : Number(Down_Payment),
             net_amount: req.body.net_payable,
             iemi: req.body.iemi
         });
 
-        let Payable_amount = req.body.net_payable - Down_Payment
+        let Payable_amount = req.body.net_payable - Down_Payment == '' ? 0 : Number(Down_Payment)
         let Emi_Amount = Payable_amount / req.body.month
 
         //entry of DP
-        await emi.create({
-            amount: Down_Payment,
-            due_date: req.body.date,
-            paid_date: req.body.date,
-            status: "completed",
-            type: 'dp',
-            purchase_id: data.id,
-        });
+        if(Down_Payment == ''){
+            await emi.create({
+                amount: Number(Down_Payment),
+                due_date: req.body.date,
+                status: "pending",
+                type: 'dp',
+                purchase_id: data.id,
+            });
+        }
+        else{
+            await emi.create({
+                amount: Down_Payment,
+                due_date: req.body.date,
+                paid_date: req.body.date,
+                status: "completed",
+                type: 'dp',
+                purchase_id: data.id,
+            });
+        }
 
         //entry of EMI
         for (let i = 0; i < req.body.month; i++) {
@@ -132,8 +143,17 @@ const getSinglePurchasebyCustomerId = catchAsyncErrors(async (req, res, next) =>
             {
                 model: phone,
                 include: [company],
-            }
+            },
+            {
+                model: emi,
+                where: {
+                    type: 'dp',
+                },
+                limit: 1,
+                required: false,
+            },
         ],
+        
     })
 
     res.status(200).json({

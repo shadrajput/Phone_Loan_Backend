@@ -475,6 +475,12 @@
                     "field": "id",
                     "seqType": "Sequelize.INTEGER(11)"
                 },
+                "receipt_id": {
+                    "allowNull": false,
+                    "unique": true,
+                    "field": "receipt_id",
+                    "seqType": "Sequelize.INTEGER(11)"
+                },
                 "emi_id": {
                     "references": {
                         "model": "emi",
@@ -667,5 +673,5 @@
             "indexes": []
         }
     },
-    "revision": 4
+    "revision": 5
 }

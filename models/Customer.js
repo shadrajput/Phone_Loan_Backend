@@ -16,13 +16,6 @@ module.exports = (sequelize, DataTypes) =>{
     full_name: {
       type: DataTypes.STRING,
       allowNull: false,
-      validate: {
-        notEmpty: true,
-        isAlpha: {
-          args: true,
-          msg: 'Please enter only letters'
-        }
-      }
     },
     mobile:{
       type: DataTypes.STRING,

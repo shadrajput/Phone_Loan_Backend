@@ -72,4 +72,18 @@ async function deleteImage(name) {
   }
 }
 
-module.exports = { uploadImage, deleteImage };
+const customerProfileDefaultImage = "https://ik.imagekit.io/uz4hsgydu/Phone_loan_default/user.png?updatedAt=1687869603772"
+const adharFrontDefaultImage = "https://ik.imagekit.io/uz4hsgydu/Phone_loan_default/adhar.webp?updatedAt=1687869492661"
+const adharBackDefaultImage = "https://ik.imagekit.io/uz4hsgydu/Phone_loan_default/adhar_back.jpg?updatedAt=1687869492621"
+const pancardDefaultImage = "https://ik.imagekit.io/uz4hsgydu/Phone_loan_default/pan.webp?updatedAt=1687869492900"
+const lightBillDefaultImage = "https://ik.imagekit.io/uz4hsgydu/Phone_loan_default/bill.webp?updatedAt=1687869492791"
+
+module.exports = { 
+  uploadImage, 
+  deleteImage, 
+  customerProfileDefaultImage, 
+  adharFrontDefaultImage,
+  adharBackDefaultImage,
+  pancardDefaultImage,
+  lightBillDefaultImage
+};
