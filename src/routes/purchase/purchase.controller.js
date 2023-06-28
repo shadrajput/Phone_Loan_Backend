@@ -64,7 +64,7 @@ const AddPurchase = async (req, res, next) => {
                 emi_id: DP.id,
                 admin_id: "4",
                 extra_charge: "-",
-                receipt_id: "3"
+                receipt_id: "4"
             }
         );
 

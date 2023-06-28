@@ -76,7 +76,10 @@ const getPendingEmi = catchAsyncErrors(async (req, res, next) => {
                 include: [
                     customer,
                     installment,
-                    phone
+                    {
+                        model : phone,
+                        include : [company]
+                    }
                 ]
             }
         ]
@@ -162,32 +165,32 @@ const getemibycustomername = catchAsyncErrors(async (req, res, next) => {
                 status: 'pending'
               },
               order: [['due_date', 'ASC']],
-            // include: [
-            //     {
-            //         model: purchase,
-            //         include: [
-            //             installment,
-            //             {
-            //                 model: customer,
-            //                 where: {
-            //                     [Op.or]: [
-            //                         {
-            //                             full_name: CustomerName,
-            //                         },
-            //                         {
-            //                             mobile: CustomerName,
+            include: [
+                {
+                    model: purchase,
+                    include: [
+                        installment,
+                        {
+                            model: customer,
+                            // where: {
+                            //     [Op.or]: [
+                            //         {
+                            //             full_name: CustomerName,
+                            //         },
+                            //         {
+                            //             mobile: CustomerName,
 
-            //                         }
-            //                     ]
-            //                 }
-            //             },
-            //             {
-            //                 model: phone,
-            //                 include: [company]
-            //             }
-            //         ]
-            //     },
-            // ],
+                            //         }
+                            //     ]
+                            // }
+                        },
+                        {
+                            model: phone,
+                            include: [company]
+                        }
+                    ]
+                },
+            ],
 
         });
 
