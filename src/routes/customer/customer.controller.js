@@ -1,6 +1,7 @@
 const catchAsyncErrors = require("../../middlewares/catchAsyncErrors");
 const ErrorHandler = require("../../utils/ErrorHandler");
 const formidable = require("formidable")
+const { Op } = require('sequelize');
 const { customer } = require("../../../models")
 const { document } = require("../../../models")
 const { installment } = require("../../../models")
@@ -71,10 +72,19 @@ const AddCustomer = catchAsyncErrors(async (req, res, next) => {
 // // 2 . Get all Customers
 const getallCustomers = catchAsyncErrors(async (req, res, next) => {
 
-    const AllCustomer = await customer.findAll()
+    let page = req.params.pageNo
+    const itemsPerPage = 10
+
+    const AllCustomer = await customer.findAll({
+        skip: page * itemsPerPage,
+        take: itemsPerPage,
+    })
+
+    const totalCustomer = await customer.count();
 
     res.status(200).json({
         AllCustomer: AllCustomer,
+        pageCount: Math.ceil(totalCustomer / itemsPerPage),
         success: true,
         message: "All Customer"
     })
@@ -177,6 +187,26 @@ const deleteCustomerDetails = catchAsyncErrors(async (req, res, next) => {
 
 })
 
+//  Search Customer
+
+const searchCustomer = catchAsyncErrors(async (req, res, next) => {
+    const { CustomerName } = req.params;
+
+    const modelDetails = await customer.findAll({
+        where: {
+            full_name: {
+                [Op.like]: `%${CustomerName}%`
+            }
+        },
+    })
+
+    res.status(200).json({
+        modelDetails: modelDetails,
+        success: true,
+    })
+
+})
+
 async function upload_photo(files, photo) {
     if (!files || !files.photo) {
         return photo ? photo : "";
@@ -245,5 +275,6 @@ module.exports = {
     getallCustomers,
     getSingleCustomer,
     updateCustomerDetails,
-    deleteCustomerDetails
+    deleteCustomerDetails,
+    searchCustomer
 };

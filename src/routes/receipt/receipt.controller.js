@@ -42,7 +42,6 @@ const AddReceipt = async (req, res, next) => {
     });
 }
 
-
 // 2 . Get all Receipt
 const getallReceipt = catchAsyncErrors(async (req, res, next) => {
     let page = req.params.pageNo
@@ -88,7 +87,7 @@ const onerecieptDetailsbyNumber = catchAsyncErrors(async (req, res, next) => {
             skip: page * itemsPerPage,
             take: itemsPerPage,
             where: {
-                id: CustomerName
+                receipt_id : CustomerName
             },
             include: [
                 {
@@ -120,7 +119,6 @@ const onerecieptDetailsbyNumber = catchAsyncErrors(async (req, res, next) => {
         next(error);
     }
 });
-
 
 // 3 . Get Single Receipt By Purchase ID 
 const getReceiptbyPurchaseId = catchAsyncErrors(async (req, res, next) => {
@@ -180,7 +178,7 @@ const getSingleReceipt = catchAsyncErrors(async (req, res, next) => {
 
     const SingleReceipt = await receipt.findOne({
         where: {
-            id: Number(id)
+            receipt_id : Number(id)
         },
         include: [
             {

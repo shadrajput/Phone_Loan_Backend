@@ -41,14 +41,12 @@ const AddTransaction = async (req, res, next) => {
                 }
             }
         );
-
-        console.log(EMI)
         
         const Receipt = await receipt.create(
             {
                 emi_id: EMI.id,
                 admin_id: Admin.id,
-                receipt_id : "2",
+                receipt_id : "9",
                 extra_charge: req.body.Charge_amount
             }
         );
@@ -81,7 +79,7 @@ const getallTransaction = catchAsyncErrors(async (req, res, next) => {
     let page = req.params.pageNo
     const itemsPerPage = 10
     const today = new Date();
-    console.log(today)
+
     const AllTransaction = await transaction.findAll({
         skip: page * itemsPerPage,
         take: itemsPerPage,
@@ -120,12 +118,12 @@ const getSingleTransaction = catchAsyncErrors(async (req, res, next) => {
 
 // // 3 . Get Single Transaction By Receipt ID
 const getSingleTransactionByReceiptId = catchAsyncErrors(async (req, res, next) => {
-
-    const { id } = req.params
+    console.log(req.params)
+    const { id } = req.params   
 
     const SingleTransaction = await transaction.findOne({
         where: {
-            receipt_id: Number(id)
+            receipt_id : Number(id)
         },
         include: [
             {
