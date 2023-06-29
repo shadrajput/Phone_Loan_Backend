@@ -3,7 +3,7 @@ const ErrorHandler = require("../../utils/ErrorHandler");
 const formidable = require("formidable")
 const { Op } = require('sequelize');
 const db = require('../../../models')
-const { emi, purchase, customer, phone, receipt, installment, transaction, company , specification } = require("../../../models")
+const { emi, purchase, customer, phone, receipt, installment, transaction, company, specification } = require("../../../models")
 
 
 // Add Emi
@@ -53,6 +53,7 @@ const getallEmi = catchAsyncErrors(async (req, res, next) => {
     })
 })
 
+
 const getPendingEmi = catchAsyncErrors(async (req, res, next) => {
 
     let page = req.params.pageNo
@@ -77,8 +78,8 @@ const getPendingEmi = catchAsyncErrors(async (req, res, next) => {
                     customer,
                     installment,
                     {
-                        model : phone,
-                        include : [company]
+                        model: phone,
+                        include: [company]
                     }
                 ]
             }
@@ -163,8 +164,8 @@ const getemibycustomername = catchAsyncErrors(async (req, res, next) => {
             take: itemsPerPage,
             where: {
                 status: 'pending'
-              },
-              order: [['due_date', 'ASC']],
+            },
+            order: [['due_date', 'ASC']],
             include: [
                 {
                     model: purchase,
@@ -172,17 +173,17 @@ const getemibycustomername = catchAsyncErrors(async (req, res, next) => {
                         installment,
                         {
                             model: customer,
-                            // where: {
-                            //     [Op.or]: [
-                            //         {
-                            //             full_name: CustomerName,
-                            //         },
-                            //         {
-                            //             mobile: CustomerName,
+                            where: {
+                                [Op.or]: [
+                                    {
+                                        full_name: CustomerName,
+                                    },
+                                    {
+                                        mobile: CustomerName,
 
-                            //         }
-                            //     ]
-                            // }
+                                    }
+                                ]
+                            }
                         },
                         {
                             model: phone,
@@ -206,32 +207,43 @@ const getemibycustomername = catchAsyncErrors(async (req, res, next) => {
     }
 });
 
-
 // Get Single Emi
 const getSingleEmi = catchAsyncErrors(async (req, res, next) => {
 
     const { id } = req.params
 
-    const SingleEmi = await emi.findOne({
-        where: {
-            id: Number(id)
-        },
-        include : [
-            {
-            model : purchase,
-            include : [
-                installment,
-                customer,
+    const SingleEmi = await emi.findOne(
+        {
+            where: {
+                id: Number(id)
+            },
+            include: [
                 {
-                    model : phone,
-                    include: [company , specification]
-                }
-            ]
-        }]
-    })
+                    model: purchase,
+                    include: [
+                        installment,
+                        customer,
+                        {
+                            model: phone,
+                            include: [company, specification]
+                        }
+                    ]
+                }]
+        }
+    )
+
+    const Specifications = await specification.findOne(
+        {
+            where: {
+                phone_id: SingleEmi.purchase.phone_id
+            }
+        }
+    );
+
 
     res.status(200).json({
         SingleEmi: SingleEmi,
+        Specifications: Specifications,
         success: true,
         message: "One EMI Details"
     })
