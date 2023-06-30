@@ -9,6 +9,7 @@ const { phone } = require("../../../models")
 const { installment } = require("../../../models")
 const { company } = require("../../../models")
 const { admin } = require("../../../models")
+const { Op } = require('sequelize');
 
 
 // 1 . Add Receipt
@@ -20,12 +21,15 @@ const AddReceipt = async (req, res, next) => {
         try {
 
             const ReceiptInfo = (fields);
+            const allReceipts = await receipt.count();
+            const receipt_id = allReceipts + 1 + 1000
 
             if (err) {
                 return res.status(500).json({ success: false, message: err.message });
             }
 
             const data = await receipt.create({
+                receipt_id,
                 emi_id: "3",
                 admin_id: "1",
                 extra_charge: ReceiptInfo.extra_charge
@@ -80,34 +84,97 @@ const getallReceipt = catchAsyncErrors(async (req, res, next) => {
 
 // 3 . Get Single Receipt By Receipt Mobile 
 const onerecieptDetailsbyNumber = catchAsyncErrors(async (req, res, next) => {
-    let CustomerName = req.params.search;
+    let searchedValue = req.params.search;
     let page = req.params.pageNo
     const itemsPerPage = 10
-    try {
-        const SingleReceiptDetails = await receipt.findAll({
-            skip: page * itemsPerPage,
-            take: itemsPerPage,
-            where: {
-                id: CustomerName
-            },
-            include: [
-                {
-                    model: emi,
-                    include: [{
-                        model: purchase,
-                        include: [
-                            {
-                                model: phone,
-                                include: [company]
-                            },
-                            customer,
-                            installment
-                        ]
-                    }]
-                },
-            ]
 
-        });
+    let SingleReceiptDetails = null;
+
+    try {
+        if(!isNaN(searchedValue) && searchedValue.length < 10){
+            SingleReceiptDetails = await receipt.findAll({
+                skip: page * itemsPerPage,
+                take: itemsPerPage,
+                where: {
+                    receipt_id: searchedValue
+                },
+                include: [
+                    {
+                        model: emi,
+                        include: [{
+                            model: purchase,
+                            include: [
+                                {
+                                    model: phone,
+                                    include: [company]
+                                },
+                                customer,
+                                installment
+                            ]
+                        }]
+                    },
+                ]
+    
+            });
+        }
+        else if(!isNaN(searchedValue) && searchedValue.length == 10){
+            SingleReceiptDetails = await receipt.findAll({
+                skip: page * itemsPerPage,
+                take: itemsPerPage,
+                include: [
+                    {
+                        model: emi,
+                        include: [{
+                            model: purchase,
+                            include: [
+                                {
+                                    model: phone,
+                                    include: [company]
+                                },
+                                {
+                                    model:customer,
+                                    where:{
+                                        mobile: searchedValue
+                                    }
+                                },
+                                installment
+                            ]
+                        }]
+                    },
+                ]
+    
+            });
+        }
+        else{
+            SingleReceiptDetails = await receipt.findAll({
+                skip: page * itemsPerPage,
+                take: itemsPerPage,
+                include: [
+                    {
+                        model: emi,
+                        include: [{
+                            model: purchase,
+                            include: [
+                                {
+                                    model: phone,
+                                    include: [company]
+                                },
+                                {
+                                    model:customer,
+                                    where:{
+                                        full_name:{
+                                            [Op.like]: `%${searchedValue}%`
+                                        }
+                                    }
+                                },
+                                installment
+                            ]
+                        }]
+                    },
+                ]
+    
+            });
+        }
 
         const totalCustomer = await customer.count();
 

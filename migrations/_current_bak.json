@@ -129,13 +129,6 @@
                 },
                 "full_name": {
                     "allowNull": false,
-                    "validate": {
-                        "notEmpty": true,
-                        "isAlpha": {
-                            "args": true,
-                            "msg": "Please enter only letters"
-                        }
-                    },
                     "field": "full_name",
                     "seqType": "Sequelize.STRING"
                 },
@@ -673,5 +666,5 @@
             "indexes": []
         }
     },
-    "revision": 5
+    "revision": 6
 }

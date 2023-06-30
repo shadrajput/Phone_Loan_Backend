@@ -20,5 +20,4 @@ router.put("/update/:id" , updateEmi)
 router.delete("/delete/:id" , deleteEmiDetails)
 
 
-
 module.exports = router;
