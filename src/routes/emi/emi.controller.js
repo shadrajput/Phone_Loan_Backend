@@ -1,9 +1,9 @@
 const catchAsyncErrors = require("../../middlewares/catchAsyncErrors");
 const ErrorHandler = require("../../utils/ErrorHandler");
 const formidable = require("formidable")
-const {Op } = require('sequelize');
+const {Op} = require('sequelize');
 const db = require('../../../models')
-const { emi, purchase, customer, phone, receipt, installment, transaction } = require("../../../models")
+const { emi, purchase, customer, phone, receipt, installment, transaction, company } = require("../../../models")
 
 
 // Add Emi
@@ -115,7 +115,6 @@ const getPendingEmi = catchAsyncErrors(async (req, res, next) => {
 const getEmiByPurchaseId = catchAsyncErrors(async (req, res, next) => {
     const { id } = req.params
 
-    console.log(id)
 
     const AllEmi = await emi.findAll({
         where: {
@@ -170,6 +169,76 @@ const getSingleEmi = catchAsyncErrors(async (req, res, next) => {
     })
 })
 
+// Search EMI customer
+const getEMICustomers = catchAsyncErrors(async (req, res, next) => {
+    const {pageNo, searchedValue} = req.params;
+    const itemsPerPage = 10;
+
+    const { count, rows: emiDetails } = await customer.findAndCountAll({
+        skip: pageNo * itemsPerPage,
+        take: itemsPerPage,
+        where:{
+            [Op.or]:[
+                {
+                    full_name: {
+                        [Op.like]: `%${searchedValue}%`
+                    }
+                },
+                {
+                    mobile: searchedValue
+                }
+
+            ]
+        },
+        include: [
+            {
+                model: purchase,
+                include: [
+                    installment,
+                    {
+                        model: emi,
+                        where:{
+                            status: 'pending',
+                        },
+                        order: [['createdAt', 'ASC']],
+                        limit: 1,
+                    },
+                    {
+                        model: phone,
+                        include: company
+                    }
+                ]
+            },
+        ]
+    })
+
+    let filteredCustomers = JSON.parse(JSON.stringify(emiDetails));
+    filteredCustomers = filteredCustomers.filter((item)=>{
+        item.purchases.splice(0);
+        return true;
+    });
+
+    const findCustomerInArray = (data)=>{
+        if(data.emis.length > 0) return true;
+        else return false;
+    }
+
+    emiDetails.map((item, i)=>{
+        item.purchases.map((data)=>{
+            if(findCustomerInArray(data)){
+                filteredCustomers[i].purchases.push(data)
+            }
+        })
+    })
+
+
+    res.status(200).json({
+        success: true, 
+        emiDetails : filteredCustomers,
+        totalPages : Math.ceil( count / itemsPerPage )
+    })
+})
+
 // Update Emi
 const updateEmi = catchAsyncErrors(async (req, res, next) => {
     const { id } = req.params
@@ -214,6 +283,7 @@ module.exports = {
     getPendingEmi,
     getEmiByPurchaseId,
     getSingleEmi,
+    getEMICustomers,
     updateEmi,
     deleteEmiDetails
 };
