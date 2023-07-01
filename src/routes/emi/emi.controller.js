@@ -58,7 +58,13 @@ const getPendingEmi = catchAsyncErrors(async (req, res, next) => {
     const currentDate = new Date();
     const currentMonth = currentDate.getMonth() + 1; 
     const currentYear = currentDate.getFullYear();
-    const pendingEmi = await emi.findAll({ 
+
+    const pageNo = req.params.pageNo;
+    const itemsPerPage = 10;
+
+    const {count, rows: pendingEmi} = await emi.findAndCountAll({
+        skip: pageNo * itemsPerPage,
+        take: itemsPerPage, 
         where:{
             [Op.and]: [
                 db.sequelize.where(db.sequelize.literal('MONTH(due_date)'), currentMonth),
@@ -72,10 +78,22 @@ const getPendingEmi = catchAsyncErrors(async (req, res, next) => {
                 include: [
                     customer,
                     installment,
-                    phone
+                    {
+                        model: phone,
+                        include: company
+                    }
                 ]
             }
         ]
+    })
+
+    const totalPendingEMI = await emi.findOne({
+         attributes: [
+            [db.sequelize.fn('SUM', db.sequelize.literal('amount')), 'totalPendingAmount'],
+        ],
+        where:{
+            status: 'pending'
+        }
     })
 
     let filteredCustomers = []
@@ -106,7 +124,9 @@ const getPendingEmi = catchAsyncErrors(async (req, res, next) => {
         todaysCollection: sumAmount,
         totalPendingCustomers: filteredCustomers.length,
         totalModels: pendingEmi.length,
+        totalPendingPayment: totalPendingEMI.get('totalPendingAmount'),
         pendingEmiCustomers: filteredCustomers,
+        totalPages: Math.ceil(count / itemsPerPage),
         success: true,
     })
 })

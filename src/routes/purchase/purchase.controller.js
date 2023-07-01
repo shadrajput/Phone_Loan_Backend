@@ -45,7 +45,7 @@ const AddPurchase = async (req, res, next) => {
         });
 
         let Payable_amount = req.body.net_payable - Down_Payment == '' ? 0 : Number(Down_Payment)
-        let Emi_Amount = Payable_amount / req.body.month
+        let Emi_Amount = Math.round(Payable_amount / req.body.month)
 
         //entry of DP
         if(Down_Payment == ''){
@@ -62,7 +62,7 @@ const AddPurchase = async (req, res, next) => {
                 amount: Down_Payment,
                 due_date: req.body.date,
                 paid_date: req.body.date,
-                status: "completed",
+                status: "paid",
                 type: 'dp',
                 purchase_id: data.id,
             });
