@@ -493,6 +493,14 @@
                     "field": "extra_charge",
                     "seqType": "Sequelize.INTEGER"
                 },
+                "is_deleted": {
+                    "defaultValue": {
+                        "value": false
+                    },
+                    "allowNull": false,
+                    "field": "is_deleted",
+                    "seqType": "Sequelize.BOOLEAN"
+                },
                 "createdAt": {
                     "allowNull": false,
                     "field": "createdAt",
@@ -666,5 +674,5 @@
             "indexes": []
         }
     },
-    "revision": 6
+    "revision": 7
 }

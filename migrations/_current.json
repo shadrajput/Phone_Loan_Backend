@@ -255,7 +255,7 @@
                 "amount": {
                     "allowNull": false,
                     "field": "amount",
-                    "seqType": "Sequelize.STRING"
+                    "seqType": "Sequelize.INTEGER"
                 },
                 "due_date": {
                     "allowNull": false,
@@ -674,5 +674,5 @@
             "indexes": []
         }
     },
-    "revision": 7
+    "revision": 8
 }
