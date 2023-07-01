@@ -93,7 +93,8 @@ const getPendingEmi = catchAsyncErrors(async (req, res, next) => {
         ],
         where:{
             status: 'pending'
-        }
+        },
+        raw: true // To retrieve JavaScript objects
     })
 
     let filteredCustomers = []
@@ -115,7 +116,7 @@ const getPendingEmi = catchAsyncErrors(async (req, res, next) => {
             db.sequelize.fn('DATE', db.sequelize.col('createdAt')),
             db.sequelize.literal(`DATE('${currentDate.toISOString().split('T')[0]}')`)
         ),
-        raw: true // To retrieve plain JavaScript objects
+        raw: true // To retrieve JavaScript objects
     });
 
     const sumAmount = todaysCollection[0].amount || 0;
@@ -124,7 +125,7 @@ const getPendingEmi = catchAsyncErrors(async (req, res, next) => {
         todaysCollection: sumAmount,
         totalPendingCustomers: filteredCustomers.length,
         totalModels: pendingEmi.length,
-        totalPendingPayment: totalPendingEMI.get('totalPendingAmount'),
+        totalPendingPayment: totalPendingEMI.totalPendingAmount,
         pendingEmiCustomers: filteredCustomers,
         totalPages: Math.ceil(count / itemsPerPage),
         success: true,
