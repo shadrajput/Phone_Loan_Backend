@@ -258,7 +258,7 @@
                 "amount": {
                     "allowNull": false,
                     "field": "amount",
-                    "seqType": "Sequelize.STRING"
+                    "seqType": "Sequelize.INTEGER"
                 },
                 "due_date": {
                     "allowNull": false,
@@ -496,14 +496,6 @@
                     "field": "extra_charge",
                     "seqType": "Sequelize.INTEGER"
                 },
-                "admin_id": {
-                    "references": {
-                        "model": "admin",
-                        "key": "id"
-                    },
-                    "field": "admin_id",
-                    "seqType": "Sequelize.INTEGER"
-                },
                 "createdAt": {
                     "allowNull": false,
                     "field": "createdAt",
@@ -677,5 +669,5 @@
             "indexes": []
         }
     },
-    "revision": 6
+    "revision": 8
 }

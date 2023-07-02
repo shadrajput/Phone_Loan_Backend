@@ -36,17 +36,25 @@ const AddPurchase = async (req, res, next) => {
             },
         });
 
+        const pending_amount = Math.round(
+            (
+                req.body.net_payable - Down_Payment == '' ? 0 : Number(Down_Payment)
+            ) 
+            / 
+            req.body.month
+        ) * req.body.month;
+
         const data = await purchase.create({
             customer_id: req.body.customer_id,
             phone_id: Phone.id,
             installment_id: Installment.id,
-            pending_amount: req.body.net_payable - Down_Payment == '' ? 0 : Number(Down_Payment),
+            pending_amount: pending_amount,
             net_amount: req.body.net_payable,
             iemi: req.body.iemi
         });
 
         let Payable_amount = req.body.net_payable - Down_Payment == '' ? 0 : Number(Down_Payment)
-        let Emi_Amount = Payable_amount / req.body.month
+        let Emi_Amount = Math.round(Payable_amount / req.body.month)
 
 
         //entry of DP
@@ -64,7 +72,7 @@ const AddPurchase = async (req, res, next) => {
                 amount: Down_Payment,
                 due_date: req.body.date,
                 paid_date: req.body.date,
-                status: "completed",
+                status: "paid",
                 type: 'dp',
                 purchase_id: data.id,
             });

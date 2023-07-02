@@ -25,12 +25,10 @@ module.exports = (sequelize, DataTypes) => {
             defaultValue: 0,
             allowNull: false,
         },
-        admin_id: {
-            type: DataTypes.INTEGER,
-            references: {
-                model: 'admin',
-                key: 'id'
-            }
+        is_deleted:{
+            type: DataTypes.BOOLEAN,
+            defaultValue: false,
+            allowNull: false,
         }
     },
         {
