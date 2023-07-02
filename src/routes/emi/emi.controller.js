@@ -3,7 +3,7 @@ const ErrorHandler = require("../../utils/ErrorHandler");
 const formidable = require("formidable")
 const {Op } = require('sequelize');
 const db = require('../../../models')
-const { emi, purchase, customer, phone, receipt, installment, transaction } = require("../../../models")
+const { emi, purchase, customer, phone, company,  receipt, installment, transaction , specification } = require("../../../models")
 
 
 // Add Emi
@@ -75,7 +75,10 @@ const getPendingEmi = catchAsyncErrors(async (req, res, next) => {
                 include: [
                     customer,
                     installment,
-                    phone
+                    {
+                        model : phone,
+                        include : [company]
+                    }
                 ]
             }
         ]

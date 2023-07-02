@@ -5,7 +5,7 @@ const { Op } = require('sequelize');
 const { customer } = require("../../../models")
 const { document } = require("../../../models")
 const { installment } = require("../../../models")
-const { Op } = require('sequelize')
+
 const { 
     uploadImage, 
     deleteImage,

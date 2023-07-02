@@ -129,6 +129,12 @@
                 },
                 "full_name": {
                     "allowNull": false,
+<<<<<<< HEAD
+                    "validate": {
+                        "notEmpty": true
+                    },
+=======
+>>>>>>> refs/remotes/origin/master
                     "field": "full_name",
                     "seqType": "Sequelize.STRING"
                 },
@@ -144,9 +150,6 @@
                 },
                 "reference_name": {
                     "allowNull": true,
-                    "validate": {
-                        "is": {}
-                    },
                     "field": "reference_name",
                     "seqType": "Sequelize.STRING"
                 },
@@ -255,7 +258,7 @@
                 "amount": {
                     "allowNull": false,
                     "field": "amount",
-                    "seqType": "Sequelize.STRING"
+                    "seqType": "Sequelize.INTEGER"
                 },
                 "due_date": {
                     "allowNull": false,
@@ -493,14 +496,6 @@
                     "field": "extra_charge",
                     "seqType": "Sequelize.INTEGER"
                 },
-                "is_deleted": {
-                    "defaultValue": {
-                        "value": false
-                    },
-                    "allowNull": false,
-                    "field": "is_deleted",
-                    "seqType": "Sequelize.BOOLEAN"
-                },
                 "createdAt": {
                     "allowNull": false,
                     "field": "createdAt",
@@ -674,5 +669,5 @@
             "indexes": []
         }
     },
-    "revision": 7
+    "revision": 8
 }

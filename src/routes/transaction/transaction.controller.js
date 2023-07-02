@@ -143,8 +143,18 @@ const getSingleTransactionByReceiptId = catchAsyncErrors(async (req, res, next) 
         ]
     })
 
+    const PendingAmount = await emi.findAll({
+        where: {
+            id: SingleTransaction.receipt.emi.id
+        },
+        include: [
+            purchase
+        ]
+    })
+
     res.status(200).json({
         SingleTransaction: SingleTransaction,
+        PendingAmount: PendingAmount,
         success: true,
         message: "One Transaction Details"
     })
