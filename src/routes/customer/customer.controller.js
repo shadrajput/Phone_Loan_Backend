@@ -5,7 +5,15 @@ const { Op } = require('sequelize');
 const { customer } = require("../../../models")
 const { document } = require("../../../models")
 const { installment } = require("../../../models")
-const { uploadImage } = require("../../helper/imageUpload")
+const {
+    uploadImage,
+    deleteImage,
+    customerProfileDefaultImage,
+    adharFrontDefaultImage,
+    adharBackDefaultImage,
+    pancardDefaultImage,
+    lightBillDefaultImage
+} = require("../../helper/imageUpload")
 
 
 // 1 . Add Customer
@@ -92,7 +100,6 @@ const getallCustomers = catchAsyncErrors(async (req, res, next) => {
 
 // // 3 . Get Single Customer
 const getSingleCustomer = catchAsyncErrors(async (req, res, next) => {
-    console.log(req.params)
     const { id } = req.params
 
     const SingleCustomer = await customer.findOne({
@@ -115,40 +122,44 @@ const updateCustomerDetails = catchAsyncErrors(async (req, res, next) => {
     const form = new formidable.IncomingForm();
 
     form.parse(req, async function (err, fields, files) {
+        let id = fields.id;
 
-        let id = fields.id
-        let Document_id = fields.document_id
-        let adhar_front = "";
-        adhar_front = await upload_Adhar_front(files, adhar_front);
-        let adhar_back = "";
-        adhar_back = await upload_Adhar_back(files, adhar_back);
-        let pancard = "";
-        pancard = await upload_pancard(files, pancard);
-        let lightbill = "";
-        lightbill = await upload_lightbill(files, lightbill);
+        let adhar_front = fields.old_adhar_front_url;
+        adhar_front = await upload_image(files?.adhar_front, adhar_front, adharFrontDefaultImage, 'phone_document');
+
+        let adhar_back = fields.old_adhar_back_url;
+        adhar_back = await upload_image(files?.adhar_back, adhar_back, adharBackDefaultImage, 'phone_document');
+
+        let pancard = fields.old_pancard_url;
+        pancard = await upload_image(files?.pancard, pancard, pancardDefaultImage, 'phone_document');
+
+        let lightbill = fields.old_light_bill_url;
+        lightbill = await upload_image(files?.light_bill, lightbill, lightBillDefaultImage, 'phone_document');
+
+
+        const customerDetails = await customer.findOne({ where: { id: Number(id) } });
 
         const Document = await document.update(
             {
                 adhar_front: adhar_front,
                 adhar_back: adhar_back,
                 pancard: pancard,
-                lightbill: lightbill
+                light_bill: lightbill
             },
             {
                 where: {
-                    id: Number(Document_id)
+                    id: customerDetails.document_id
                 },
             }
         );
 
-        let photo = "";
-        photo = await upload_photo(files, photo);
+        let photo = fields.old_photo_url;
+        photo = await upload_image(files?.photo, photo, customerProfileDefaultImage, 'phone_customer_profile');
 
         const updateCustomerDetails = await customer.update(
             {
                 photo: photo,
-                first_name: fields.first_name,
-                last_name: fields.last_name,
+                full_name: fields.full_name,
                 mobile: fields.mobile,
                 alternate_no: fields.alternate_no,
                 reference_name: fields.reference_name,
@@ -187,12 +198,12 @@ const deleteCustomerDetails = catchAsyncErrors(async (req, res, next) => {
 
 })
 
-//  Search Customer
 
 const searchCustomer = catchAsyncErrors(async (req, res, next) => {
+
     const { CustomerName } = req.params;
 
-    const modelDetails = await customer.findAll({
+    const CustomerDetails = await customer.findAll({
         where: {
             full_name: {
                 [Op.like]: `%${CustomerName}%`
@@ -201,74 +212,28 @@ const searchCustomer = catchAsyncErrors(async (req, res, next) => {
     })
 
     res.status(200).json({
-        modelDetails: modelDetails,
+        CustomerDetails: CustomerDetails,
         success: true,
     })
 
 })
 
-async function upload_photo(files, photo) {
-    if (!files || !files.photo) {
-        return photo ? photo : "";
-    }
-
-    try {
-        return await uploadImage(files.photo, "customer");
-    } catch (error) {
-        throw new Error(error.message);
-    }
-}
-
 
 // Image Upload
-async function upload_Adhar_front(files, adhar_front) {
-    if (!files || !files.adhar_front) {
-        return adhar_front ? adhar_front : "";
+async function upload_image(file, image, default_image, folder) {
+    if (!file) {
+        return image.length <= 2 ? default_image : image;
     }
+
     try {
-        return await uploadImage(files.adhar_front, "document");
+        if (image && image != default_image) {
+            await deleteImage(image);
+        }
+        return await uploadImage(file, folder);
     } catch (error) {
         throw new Error(error.message);
     }
 }
-
-async function upload_Adhar_back(files, adhar_back) {
-    if (!files || !files.adhar_back) {
-        return adhar_back ? adhar_back : "";
-    }
-
-    try {
-        return await uploadImage(files.adhar_back, "document");
-    } catch (error) {
-        throw new Error(error.message);
-    }
-}
-
-async function upload_pancard(files, pancard) {
-    if (!files || !files.pancard) {
-        return pancard ? pancard : "";
-    }
-
-    try {
-        return await uploadImage(files.pancard, "document");
-    } catch (error) {
-        throw new Error(error.message);
-    }
-}
-
-async function upload_lightbill(files, lightbill) {
-    if (!files || !files.lightbill) {
-        return lightbill ? lightbill : "";
-    }
-
-    try {
-        return await uploadImage(files.lightbill, "document");
-    } catch (error) {
-        throw new Error(error.message);
-    }
-}
-
-
 
 module.exports = {
     AddCustomer,

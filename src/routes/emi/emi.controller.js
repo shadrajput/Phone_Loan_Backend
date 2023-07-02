@@ -125,6 +125,9 @@ const getPendingEmi = catchAsyncErrors(async (req, res, next) => {
 // Get all Emi By Purchase Id 
 const getEmiByPurchaseId = catchAsyncErrors(async (req, res, next) => {
     const { id } = req.params
+
+    console.log(id)
+
     const AllEmi = await emi.findAll({
         where: {
             purchase_id: Number(id)

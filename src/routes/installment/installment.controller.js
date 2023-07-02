@@ -110,21 +110,21 @@ const getCustomersByInstallment = catchAsyncErrors(async (req, res, next) => {
         ]
     })  
 
-     let filteredCustomers = []
-    const findCustomerInArray = (item)=>{
-        return filteredCustomers.find( data =>{
-            return data.customer.id == item.customer.id
-        })
-    }
+    //  let filteredCustomers = []
+    // const findCustomerInArray = (item)=>{
+    //     return filteredCustomers.find( data =>{
+    //         return data.customer.id == item.customer.id
+    //     })
+    // }
 
-    customers.filter((item)=>{
-        if(!findCustomerInArray(item)){
-            filteredCustomers.push(item)
-        }
-    })
+    // customers.filter((item)=>{
+    //     if(!findCustomerInArray(item)){
+    //         filteredCustomers.push(item)
+    //     }
+    // })
 
     res.status(200).json({
-        allCustomers: filteredCustomers,
+        allCustomers: customers,
         success: true,
     })
 })

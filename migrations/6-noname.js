@@ -5,20 +5,30 @@ var Sequelize = require('sequelize');
 /**
  * Actions summary:
  *
+<<<<<<< HEAD
  * addColumn "admin_id" to table "receipt"
  * changeColumn "full_name" on table "customer"
  * changeColumn "reference_name" on table "customer"
+=======
+ * changeColumn "reference_name" on table "customer"
+ * changeColumn "full_name" on table "customer"
+>>>>>>> refs/remotes/origin/master
  *
  **/
 
 var info = {
     "revision": 6,
     "name": "noname",
+<<<<<<< HEAD
     "created": "2023-06-27T07:37:24.627Z",
+=======
+    "created": "2023-06-27T10:15:33.333Z",
+>>>>>>> refs/remotes/origin/master
     "comment": ""
 };
 
 var migrationCommands = [{
+<<<<<<< HEAD
         fn: "addColumn",
         params: [
             "receipt",
@@ -30,6 +40,19 @@ var migrationCommands = [{
                     "model": "admin",
                     "key": "id"
                 }
+=======
+        fn: "changeColumn",
+        params: [
+            "customer",
+            "reference_name",
+            {
+                "type": Sequelize.STRING,
+                "field": "reference_name",
+                "validate": {
+                    "is": {}
+                },
+                "allowNull": true
+>>>>>>> refs/remotes/origin/master
             }
         ]
     },
@@ -41,6 +64,7 @@ var migrationCommands = [{
             {
                 "type": Sequelize.STRING,
                 "field": "full_name",
+<<<<<<< HEAD
                 "validate": {
                     "notEmpty": true
                 },
@@ -59,6 +83,11 @@ var migrationCommands = [{
                 "allowNull": true
             }
         ]
+=======
+                "allowNull": false
+            }
+        ]
+>>>>>>> refs/remotes/origin/master
     }
 ];
 

@@ -129,9 +129,12 @@
                 },
                 "full_name": {
                     "allowNull": false,
+<<<<<<< HEAD
                     "validate": {
                         "notEmpty": true
                     },
+=======
+>>>>>>> refs/remotes/origin/master
                     "field": "full_name",
                     "seqType": "Sequelize.STRING"
                 },
