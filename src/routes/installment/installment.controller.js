@@ -47,6 +47,7 @@ const getallInstallment = catchAsyncErrors(async (req, res, next) => {
             }
         ],
     })
+    
     let filteredCustomers = JSON.parse(JSON.stringify(AllInstallment));
     filteredCustomers = filteredCustomers.filter((item)=>{
         item.purchases.splice(0);
