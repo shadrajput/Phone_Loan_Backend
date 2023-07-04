@@ -71,9 +71,22 @@ const userDetail = catchAsyncErrors(async (req, res, next) => {
 
     const user_id = jwt.verify(token, JWTSign);
 
-    const User = await user.findOne({
+    let User = await user.findOne({
         where: { id: Number(user_id) },
     });
+
+    if(User.is_admin){
+        const adminDetails = await admin.findOne({
+            where: {
+                user_id: User.id
+            }
+        })
+
+        User = {
+            ...User,
+            ...adminDetails
+        }
+    }
 
     res.status(200).json({ success: true, User })
 })
