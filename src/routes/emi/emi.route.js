@@ -7,7 +7,8 @@ const {
     getSingleEmi,
     getEMICustomers,
     updateEmi,
-    deleteEmiDetails 
+    deleteEmiDetails,
+    getemibycustomername
 } = require("../../routes/emi/emi.controller")
 
 const router = express.Router();

@@ -1,9 +1,9 @@
 const catchAsyncErrors = require("../../middlewares/catchAsyncErrors");
 const ErrorHandler = require("../../utils/ErrorHandler");
 const formidable = require("formidable")
-const {Op} = require('sequelize');
+const {Op } = require('sequelize');
 const db = require('../../../models')
-const { emi, purchase, customer, phone, receipt, installment, transaction, company } = require("../../../models")
+const { emi, purchase, customer, phone, company,  receipt, installment, transaction , specification } = require("../../../models")
 
 
 // Add Emi
@@ -41,7 +41,6 @@ const AddEmi = async (req, res, next) => {
     });
 }
 
-
 // Get all Emi
 const getallEmi = catchAsyncErrors(async (req, res, next) => {
 
@@ -54,33 +53,31 @@ const getallEmi = catchAsyncErrors(async (req, res, next) => {
     })
 })
 
+
 const getPendingEmi = catchAsyncErrors(async (req, res, next) => {
+
+    let page = req.params.pageNo
+    const itemsPerPage = 10
     const currentDate = new Date();
-    const currentMonth = currentDate.getMonth() + 1; 
+    const currentMonth = currentDate.getMonth() + 1;
     const currentYear = currentDate.getFullYear();
-
-    const pageNo = req.params.pageNo;
-    const itemsPerPage = 10;
-
-    const {count, rows: pendingEmi} = await emi.findAndCountAll({
-        skip: pageNo * itemsPerPage,
-        take: itemsPerPage, 
+    const pendingEmi = await emi.findAll({ 
         where:{
             [Op.and]: [
                 db.sequelize.where(db.sequelize.literal('MONTH(due_date)'), currentMonth),
                 db.sequelize.where(db.sequelize.literal('YEAR(due_date)'), currentYear),
                 { status: 'pending' }
-            ]  
+            ]
         },
-        include:[
-             {
+        include: [
+            {
                 model: purchase,
                 include: [
                     customer,
                     installment,
                     {
-                        model: phone,
-                        include: company
+                        model : phone,
+                        include : [company]
                     }
                 ]
             }
@@ -98,14 +95,14 @@ const getPendingEmi = catchAsyncErrors(async (req, res, next) => {
     })
 
     let filteredCustomers = []
-    const findCustomerInArray = (item)=>{
-        return filteredCustomers.find( emi =>{
+    const findCustomerInArray = (item) => {
+        return filteredCustomers.find(emi => {
             return emi.purchase.customer.id == item.purchase.customer.id
         })
     }
 
-    pendingEmi.filter((item)=>{
-        if(!findCustomerInArray(item)){
+    pendingEmi.filter((item) => {
+        if (!findCustomerInArray(item)) {
             filteredCustomers.push(item)
         }
     })
@@ -121,13 +118,14 @@ const getPendingEmi = catchAsyncErrors(async (req, res, next) => {
 
     const sumAmount = todaysCollection[0].amount || 0;
 
+    const totalCustomer = await emi.count();
+
     res.status(200).json({
         todaysCollection: sumAmount,
         totalPendingCustomers: filteredCustomers.length,
         totalModels: pendingEmi.length,
         totalPendingPayment: totalPendingEMI.totalPendingAmount,
         pendingEmiCustomers: filteredCustomers,
-        totalPages: Math.ceil(count / itemsPerPage),
         success: true,
     })
 })
@@ -150,20 +148,11 @@ const getEmiByPurchaseId = catchAsyncErrors(async (req, res, next) => {
                     phone
                 ]
             },
-            {
-                model: receipt
-            }
+            // {
+            //     model: receipt
+            // }
         ]
     })
-
-    // const AllReceipt = await receipt.findAll({
-    //     include: [{
-    //         model: emi,
-    //         where: {
-    //             purchase_id: Number(id)
-    //         }
-    //     }]
-    // })
 
     res.status(200).json({
         AllEmi: AllEmi,
@@ -172,19 +161,99 @@ const getEmiByPurchaseId = catchAsyncErrors(async (req, res, next) => {
     })
 })
 
+// 4 . Get EMI BY Customer Name 
+const getemibycustomername = catchAsyncErrors(async (req, res, next) => {
+    let CustomerName = req.params.search;
+
+    let page = req.params.pageNo
+    const itemsPerPage = 10
+
+    try {
+        const SingleCustomerEMIDetails = await emi.findOne({
+            skip: page * itemsPerPage,
+            take: itemsPerPage,
+            where: {
+                status: 'pending'
+            },
+            order: [['due_date', 'ASC']],
+            include: [
+                {
+                    model: purchase,
+                    include: [
+                        installment,
+                        {
+                            model: customer,
+                            where: {
+                                [Op.or]: [
+                                    {
+                                        full_name: CustomerName,
+                                    },
+                                    {
+                                        mobile: CustomerName,
+
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            model: phone,
+                            include: [company]
+                        }
+                    ]
+                },
+            ],
+
+        });
+
+        const totalCustomer = await customer.count();
+
+        res.status(200).json({
+            data: SingleCustomerEMIDetails,
+            pageCount: Math.ceil(totalCustomer / itemsPerPage),
+            success: true,
+        });
+    } catch (error) {
+        next(error);
+    }
+});
+
 // Get Single Emi
 const getSingleEmi = catchAsyncErrors(async (req, res, next) => {
 
     const { id } = req.params
 
-    const SingleEmi = await emi.findOne({
-        where: {
-            id: Number(id)
+    const SingleEmi = await emi.findOne(
+        {
+            where: {
+                id: Number(id)
+            },
+            include: [
+                {
+                    model: purchase,
+                    include: [
+                        installment,
+                        customer,
+                        {
+                            model: phone,
+                            include: [company, specification]
+                        }
+                    ]
+                }]
         }
-    })
+    )
+
+    const Specifications = await specification.findOne(
+        {
+            where: {
+                phone_id: SingleEmi.purchase.phone_id
+            }
+        }
+    );
+
 
     res.status(200).json({
         SingleEmi: SingleEmi,
+        Specifications: Specifications,
         success: true,
         message: "One EMI Details"
     })
@@ -306,5 +375,6 @@ module.exports = {
     getSingleEmi,
     getEMICustomers,
     updateEmi,
-    deleteEmiDetails
+    deleteEmiDetails,
+    getemibycustomername
 };

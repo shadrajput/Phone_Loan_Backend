@@ -144,9 +144,6 @@
                 },
                 "reference_name": {
                     "allowNull": true,
-                    "validate": {
-                        "is": {}
-                    },
                     "field": "reference_name",
                     "seqType": "Sequelize.STRING"
                 },
@@ -674,5 +671,5 @@
             "indexes": []
         }
     },
-    "revision": 8
+    "revision": 1
 }

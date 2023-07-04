@@ -31,13 +31,14 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false,
         }
     },
-    {
-        freezeTableName: true,
-    }
-)
+        {
+            freezeTableName: true,
+        }
+    )
 
     Receipt.associate = function (models) {
         Receipt.belongsTo(models.emi, { foreignKey: 'emi_id' })
+        // Receipt.belongsTo(models.admin, { foreignKey: 'admin_id' })
         Receipt.hasOne(models.transaction, { foreignKey: 'receipt_id' })
     };
 

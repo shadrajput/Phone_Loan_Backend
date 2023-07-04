@@ -34,6 +34,7 @@ module.exports = (sequelize, DataTypes) =>{
         type: DataTypes.STRING,
         allowNull: false,
       },
+      
       user_id: {
         type: DataTypes.INTEGER,
         references: {
@@ -49,6 +50,7 @@ module.exports = (sequelize, DataTypes) =>{
 
   Admin.associate = function (models) {
     Admin.belongsTo(models.user, { foreignKey: 'user_id' })
+    // Admin.hasOne(models.receipt, { foreignKey: 'receipt_id' })
 };  
 
   return Admin

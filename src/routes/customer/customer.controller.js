@@ -1,14 +1,15 @@
 const catchAsyncErrors = require("../../middlewares/catchAsyncErrors");
 const ErrorHandler = require("../../utils/ErrorHandler");
 const formidable = require("formidable")
+const { Op } = require('sequelize');
 const { customer } = require("../../../models")
 const { document } = require("../../../models")
 const { installment } = require("../../../models")
-const { Op } = require('sequelize')
+
 const { 
     uploadImage, 
     deleteImage,
-    customerProfileDefaultImage, 
+    customerProfileDefaultImage,
     adharFrontDefaultImage,
     adharBackDefaultImage,
     pancardDefaultImage,
@@ -140,13 +141,13 @@ const updateCustomerDetails = catchAsyncErrors(async (req, res, next) => {
 
         let pancard = fields.old_pancard_url;
         pancard = await upload_image(files?.pancard, pancard, pancardDefaultImage, 'phone_document');
-        
+
         let lightbill = fields.old_light_bill_url;
         lightbill = await upload_image(files?.light_bill, lightbill, lightBillDefaultImage, 'phone_document');
 
 
-        const customerDetails = await customer.findOne({ where: { id: Number(id) }});
-        
+        const customerDetails = await customer.findOne({ where: { id: Number(id) } });
+
         const Document = await document.update(
             {
                 adhar_front: adhar_front,
@@ -207,6 +208,25 @@ const deleteCustomerDetails = catchAsyncErrors(async (req, res, next) => {
 })
 
 
+const searchCustomer = catchAsyncErrors(async (req, res, next) => {
+
+    const { CustomerName } = req.params;
+
+    const CustomerDetails = await customer.findAll({
+        where: {
+            full_name: {
+                [Op.like]: `%${CustomerName}%`
+            }
+        },
+    })
+
+    res.status(200).json({
+        CustomerDetails: CustomerDetails,
+        success: true,
+    })
+
+})
+
 
 // Image Upload
 async function upload_image(file, image, default_image, folder) {
@@ -229,5 +249,6 @@ module.exports = {
     getallCustomers,
     getSingleCustomer,
     updateCustomerDetails,
-    deleteCustomerDetails
+    deleteCustomerDetails,
+    searchCustomer
 };

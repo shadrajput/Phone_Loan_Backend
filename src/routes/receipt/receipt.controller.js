@@ -46,7 +46,6 @@ const AddReceipt = async (req, res, next) => {
     });
 }
 
-
 // 2 . Get all Receipt
 const getallReceipt = catchAsyncErrors(async (req, res, next) => {
     let page = req.params.pageNo
@@ -91,7 +90,7 @@ const onerecieptDetailsbyNumber = catchAsyncErrors(async (req, res, next) => {
     let SingleReceiptDetails = null;
 
     try {
-        if(!isNaN(searchedValue) && searchedValue.length < 10){
+        if (!isNaN(searchedValue) && searchedValue.length < 10) {
             SingleReceiptDetails = await receipt.findAll({
                 skip: page * itemsPerPage,
                 take: itemsPerPage,
@@ -114,10 +113,10 @@ const onerecieptDetailsbyNumber = catchAsyncErrors(async (req, res, next) => {
                         }]
                     },
                 ]
-    
+
             });
         }
-        else if(!isNaN(searchedValue) && searchedValue.length == 10){
+        else if (!isNaN(searchedValue) && searchedValue.length == 10) {
             SingleReceiptDetails = await receipt.findAll({
                 skip: page * itemsPerPage,
                 take: itemsPerPage,
@@ -132,8 +131,8 @@ const onerecieptDetailsbyNumber = catchAsyncErrors(async (req, res, next) => {
                                     include: [company]
                                 },
                                 {
-                                    model:customer,
-                                    where:{
+                                    model: customer,
+                                    where: {
                                         mobile: searchedValue
                                     }
                                 },
@@ -142,10 +141,10 @@ const onerecieptDetailsbyNumber = catchAsyncErrors(async (req, res, next) => {
                         }]
                     },
                 ]
-    
+
             });
         }
-        else{
+        else {
             SingleReceiptDetails = await receipt.findAll({
                 skip: page * itemsPerPage,
                 take: itemsPerPage,
@@ -160,9 +159,9 @@ const onerecieptDetailsbyNumber = catchAsyncErrors(async (req, res, next) => {
                                     include: [company]
                                 },
                                 {
-                                    model:customer,
-                                    where:{
-                                        full_name:{
+                                    model: customer,
+                                    where: {
+                                        full_name: {
                                             [Op.like]: `%${searchedValue}%`
                                         }
                                     }
@@ -172,7 +171,7 @@ const onerecieptDetailsbyNumber = catchAsyncErrors(async (req, res, next) => {
                         }]
                     },
                 ]
-    
+
             });
         }
 
@@ -187,7 +186,6 @@ const onerecieptDetailsbyNumber = catchAsyncErrors(async (req, res, next) => {
         next(error);
     }
 });
-
 
 // 3 . Get Single Receipt By Purchase ID 
 const getReceiptbyPurchaseId = catchAsyncErrors(async (req, res, next) => {
@@ -247,8 +245,22 @@ const getSingleReceipt = catchAsyncErrors(async (req, res, next) => {
 
     const SingleReceipt = await receipt.findOne({
         where: {
-            id: Number(id)
-        }
+            receipt_id: Number(id)
+        },
+        include: [
+            {
+                model: emi,
+                include: [{
+                    model: purchase,
+                    include: [customer, installment, {
+                        model: phone,
+                        include: [
+                            company
+                        ]
+                    }]
+                }]
+            }
+        ]
     })
 
     res.status(200).json({

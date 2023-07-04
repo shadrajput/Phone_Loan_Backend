@@ -12,6 +12,7 @@ const AddAdmin = async (req, res, next) => {
             first_name: req.body.first_name,
             last_name: req.body.last_name,
             pin: req.body.pin,
+            user_id : "3"
         });
 
         res.status(201).json({
@@ -19,6 +20,7 @@ const AddAdmin = async (req, res, next) => {
             success: true,
             message: "Admin added successfully",
         });
+        
     } catch (error) {
         next(error)
     }

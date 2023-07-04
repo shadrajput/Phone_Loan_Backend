@@ -4,7 +4,8 @@ const {
     getallCustomers,
     getSingleCustomer,
     updateCustomerDetails,
-    deleteCustomerDetails 
+    deleteCustomerDetails,
+    searchCustomer
 } = require("../../routes/customer/customer.controller")
 
 const router = express.Router();

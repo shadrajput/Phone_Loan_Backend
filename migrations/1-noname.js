@@ -9,6 +9,7 @@ var Sequelize = require('sequelize');
  * createTable "document", deps: []
  * createTable "installment", deps: []
  * createTable "user", deps: []
+ * createTable "admin", deps: [user, user]
  * createTable "customer", deps: [document, user]
  * createTable "phone", deps: [company, company]
  * createTable "purchase", deps: [customer, phone, installment]
@@ -22,7 +23,7 @@ var Sequelize = require('sequelize');
 var info = {
     "revision": 1,
     "name": "noname",
-    "created": "2023-06-09T10:22:50.678Z",
+    "created": "2023-07-02T07:28:09.563Z",
     "comment": ""
 };
 
@@ -203,7 +204,7 @@ var migrationCommands = [{
     {
         fn: "createTable",
         params: [
-            "customer",
+            "admin",
             {
                 "id": {
                     "type": Sequelize.INTEGER,
@@ -236,6 +237,70 @@ var migrationCommands = [{
                     },
                     "allowNull": false
                 },
+                "pin": {
+                    "type": Sequelize.STRING,
+                    "field": "pin",
+                    "allowNull": false
+                },
+                "user_id": {
+                    "type": Sequelize.INTEGER,
+                    "onUpdate": "CASCADE",
+                    "onDelete": "NO ACTION",
+                    "allowNull": true,
+                    "field": "user_id",
+                    "references": {
+                        "model": "user",
+                        "key": "id"
+                    }
+                },
+                "createdAt": {
+                    "type": Sequelize.DATE,
+                    "field": "createdAt",
+                    "allowNull": false
+                },
+                "updatedAt": {
+                    "type": Sequelize.DATE,
+                    "field": "updatedAt",
+                    "allowNull": false
+                },
+                "admin_id": {
+                    "type": Sequelize.INTEGER,
+                    "field": "admin_id",
+                    "onUpdate": "CASCADE",
+                    "onDelete": "SET NULL",
+                    "references": {
+                        "model": "user",
+                        "key": "id"
+                    },
+                    "allowNull": true
+                }
+            },
+            {}
+        ]
+    },
+    {
+        fn: "createTable",
+        params: [
+            "customer",
+            {
+                "id": {
+                    "type": Sequelize.INTEGER,
+                    "field": "id",
+                    "autoIncrement": true,
+                    "primaryKey": true,
+                    "allowNull": false
+                },
+                "photo": {
+                    "type": Sequelize.STRING,
+                    "field": "photo",
+                    "defaultValue": "default",
+                    "allowNull": false
+                },
+                "full_name": {
+                    "type": Sequelize.STRING,
+                    "field": "full_name",
+                    "allowNull": false
+                },
                 "mobile": {
                     "type": Sequelize.STRING,
                     "field": "mobile",
@@ -249,9 +314,6 @@ var migrationCommands = [{
                 "reference_name": {
                     "type": Sequelize.STRING,
                     "field": "reference_name",
-                    "validate": {
-                        "is": {}
-                    },
                     "allowNull": true
                 },
                 "reference_mobile": {
@@ -401,6 +463,11 @@ var migrationCommands = [{
                     "field": "pending_amount",
                     "allowNull": false
                 },
+                "iemi": {
+                    "type": Sequelize.STRING,
+                    "field": "iemi",
+                    "allowNull": false
+                },
                 "net_amount": {
                     "type": Sequelize.STRING,
                     "field": "net_amount",
@@ -433,7 +500,7 @@ var migrationCommands = [{
                     "allowNull": false
                 },
                 "amount": {
-                    "type": Sequelize.STRING,
+                    "type": Sequelize.INTEGER,
                     "field": "amount",
                     "allowNull": false
                 },
@@ -445,7 +512,7 @@ var migrationCommands = [{
                 "paid_date": {
                     "type": Sequelize.DATE,
                     "field": "paid_date",
-                    "allowNull": false
+                    "allowNull": true
                 },
                 "status": {
                     "type": Sequelize.STRING,
@@ -494,6 +561,12 @@ var migrationCommands = [{
                     "primaryKey": true,
                     "allowNull": false
                 },
+                "receipt_id": {
+                    "type": Sequelize.INTEGER(11),
+                    "field": "receipt_id",
+                    "unique": true,
+                    "allowNull": false
+                },
                 "emi_id": {
                     "type": Sequelize.INTEGER,
                     "onUpdate": "CASCADE",
@@ -506,9 +579,16 @@ var migrationCommands = [{
                     }
                 },
                 "extra_charge": {
-                    "type": Sequelize.STRING,
+                    "type": Sequelize.INTEGER,
                     "field": "extra_charge",
-                    "allowNull": false
+                    "allowNull": false,
+                    "defaultValue": 0
+                },
+                "is_deleted": {
+                    "type": Sequelize.BOOLEAN,
+                    "field": "is_deleted",
+                    "allowNull": false,
+                    "defaultValue": false
                 },
                 "createdAt": {
                     "type": Sequelize.DATE,
@@ -549,8 +629,7 @@ var migrationCommands = [{
                 "price": {
                     "type": Sequelize.INTEGER,
                     "field": "price",
-                    "allowNull": true,
-                    "unique": true
+                    "allowNull": true
                 },
                 "phone_id": {
                     "type": Sequelize.INTEGER,

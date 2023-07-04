@@ -1,21 +1,35 @@
 const catchAsyncErrors = require("../../middlewares/catchAsyncErrors");
 const ErrorHandler = require("../../utils/ErrorHandler");
 const formidable = require("formidable")
-const { transaction, emi, receipt , purchase , customer , phone , company , installment} = require("../../../models")
+const { transaction, emi, receipt, purchase, customer, phone, company, installment, admin } = require("../../../models")
 
 
 // // 1 . Add Transaction
 const AddTransaction = async (req, res, next) => {
     try {
 
+        const Admin = await admin.findOne(
+            {
+                where: {
+                    user_id: req.body.user_id,
+                    pin: req.body.security_pin
+                }
+            }
+        );
+
+        if (!Admin) {
+            return res.status(500).json({ success: false, message: "Invalid Pin" });
+        }
+
         const PayEMI = await emi.update(
             {
-                paid_date: req.body.paid_date,
+                paid_date: req.body.date,
                 status: req.body.status,
             },
             {
                 where: {
-                    id: req.body.purchase_id
+                    id: req.body.Emi_id,
+                    purchase_id: req.body.purchase_id
                 }
             }
         );
@@ -23,7 +37,7 @@ const AddTransaction = async (req, res, next) => {
         const EMI = await emi.findOne(
             {
                 where: {
-                    id: req.body.purchase_id
+                    id: req.body.Emi_id
                 }
             }
         );
@@ -31,8 +45,9 @@ const AddTransaction = async (req, res, next) => {
         const Receipt = await receipt.create(
             {
                 emi_id: EMI.id,
-                admin_id: "1",
-                extra_charge: ""
+                admin_id: Admin.id,
+                receipt_id: "9",
+                extra_charge: req.body.Charge_amount
             }
         );
 
@@ -47,25 +62,23 @@ const AddTransaction = async (req, res, next) => {
             amount: req.body.amount
         });
 
-        console.log(data)
-
         res.status(201).json({
             data: data,
             success: true,
             message: "Purchase added successfully",
         });
+
     } catch (error) {
         next(error)
     }
 }
-
 
 // // 2 . Get all Transaction
 const getallTransaction = catchAsyncErrors(async (req, res, next) => {
     let page = req.params.pageNo
     const itemsPerPage = 10
     const today = new Date();
-    console.log(today)
+
     const AllTransaction = await transaction.findAll({
         skip: page * itemsPerPage,
         take: itemsPerPage,
@@ -104,7 +117,7 @@ const getSingleTransaction = catchAsyncErrors(async (req, res, next) => {
 
 // // 3 . Get Single Transaction By Receipt ID
 const getSingleTransactionByReceiptId = catchAsyncErrors(async (req, res, next) => {
-
+    console.log(req.params)
     const { id } = req.params
 
     const SingleTransaction = await transaction.findOne({
@@ -130,8 +143,18 @@ const getSingleTransactionByReceiptId = catchAsyncErrors(async (req, res, next) 
         ]
     })
 
+    const PendingAmount = await emi.findAll({
+        where: {
+            id: SingleTransaction.receipt.emi.id
+        },
+        include: [
+            purchase
+        ]
+    })
+
     res.status(200).json({
         SingleTransaction: SingleTransaction,
+        PendingAmount: PendingAmount,
         success: true,
         message: "One Transaction Details"
     })

@@ -6,11 +6,20 @@ const { company, phone } = require("../../../models")
 
 // 1 . Add Company
 const AddCompany = async (req, res, next) => {
-    console.log(req.body)
     try {
 
+        const Company = await company.findOne({
+            where: {
+                company_name: req.body.company_name
+            },
+        });
+
+        if (Company) {
+            return res.status(500).json({ success: false, message: "Company Allready Exist " });
+        }
+
         const data = await company.create({
-            company_name: req.body.inputValue
+            company_name: req.body.company_name
         });
 
         res.status(201).json({
@@ -27,7 +36,7 @@ const AddCompany = async (req, res, next) => {
 // 2 . Get all Company
 const getallCompany = catchAsyncErrors(async (req, res, next) => {
 
-    const all_companies = await company.findAll({ include: phone })
+    const all_companies = await company.findAll()
 
     res.status(200).json({
         all_companies: all_companies,
@@ -55,7 +64,7 @@ const getSingleCompany = catchAsyncErrors(async (req, res, next) => {
 
 // 4 . Update Company
 const updateCompanyDetails = catchAsyncErrors(async (req, res, next) => {
-    
+
     const { id } = req.params
 
     const updateCompanyDetails = await company.update(req.body, {
@@ -72,21 +81,23 @@ const updateCompanyDetails = catchAsyncErrors(async (req, res, next) => {
 })
 
 // 5 . Delete EMI
-// const deleteEmiDetails = catchAsyncErrors(async (req, res, next) => {
-//     const { id } = req.params
-//     const DeleteEmiDetails = await emi.destroy({
-//         where: {
-//             id: Number(id)
-//         }
-//     })
+const deleteCompany = catchAsyncErrors(async (req, res, next) => {
 
-//     res.status(200).json({
-//         DeleteEmiDetails : DeleteEmiDetails,
-//         success: true,
-//         message: "News deleted successfully"
-//     })
+    const { id } = req.params
 
-// })
+    const DeleteCompany = await company.destroy({
+        where: {
+            id: Number(id)
+        }
+    })
+
+    res.status(200).json({
+        DeleteCompany: DeleteCompany,
+        success: true,
+        message: "Company deleted successfully"
+    })
+
+})
 
 
 
@@ -94,5 +105,6 @@ module.exports = {
     AddCompany,
     getallCompany,
     getSingleCompany,
-    updateCompanyDetails
+    updateCompanyDetails,
+    deleteCompany
 };
