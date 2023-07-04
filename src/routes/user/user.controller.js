@@ -4,6 +4,7 @@ const tokenGenerator = require("../../utils/tokenGenerator");
 const { comparePassword, generateToken } = require('../../middlewares/auth');
 const ErrorHandler = require("../../utils/ErrorHandler");
 const jwt = require("jsonwebtoken");
+const db = require('../../../models')
 const { user } = require("../../../models")
 
 
@@ -28,7 +29,7 @@ const userSignup = catchAsyncErrors(async (req, res, next) => {
         const user_details = await user.create({
             username: req.body.username,
             password: hashedPassword,
-            is_admin: "0",
+            is_admin: false,
         })
 
         res.status(201).json({
@@ -45,7 +46,7 @@ const userLogin = catchAsyncErrors(async (req, res, next) => {
     const { username, password } = req.body
 
     const User = await user.findOne({
-        where: { username },
+        where: db.sequelize.literal(`BINARY username = '${username}'`),
     });
 
     if (!User || !await comparePassword(password, User.password)) {
@@ -60,9 +61,8 @@ const userLogin = catchAsyncErrors(async (req, res, next) => {
 })
 
 const userDetail = catchAsyncErrors(async (req, res, next) => {
-    const token = req.headers.authentication;
-    console.log(token)
-    return
+    const token = req.headers.authorization;
+
     const JWTSign = process.env.JWT_SIGN;
 
     if (!token) {
@@ -71,7 +71,7 @@ const userDetail = catchAsyncErrors(async (req, res, next) => {
 
     const user_id = jwt.verify(token, JWTSign);
 
-    const User = await user.findUnique({
+    const User = await user.findOne({
         where: { id: Number(user_id) },
     });
 

@@ -21,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
       validate: {
         min: {
           args: 3,
-          msg: "Please enter alleast 3 characters"
+          msg: "Please enter atleast 3 characters"
         },
       }
     },
