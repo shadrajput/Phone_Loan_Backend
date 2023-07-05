@@ -6,7 +6,8 @@ const { Op } = require('sequelize');
 
 // 1 . Add Purchase
 const AddPurchase = async (req, res, next) => {
- 
+    
+    console.log(req.body)
     let Down_Payment = req.body.Down_Payment
 
     try {
@@ -37,11 +38,15 @@ const AddPurchase = async (req, res, next) => {
 
         const pending_amount = Math.round(
             (
-                req.body.net_payable - Down_Payment == '' ? 0 : Number(Down_Payment)
-            ) 
-            / 
-            req.body.month
-        ) * req.body.month;
+                (
+                    req.body.net_payable - (Down_Payment == '' ? 0 : Number(Down_Payment))
+                ) 
+                / 
+                req.body.month
+            ) * req.body.month
+        );
+
+        console.log('#pending amount ',pending_amount)
 
         const data = await purchase.create({
             customer_id: req.body.customer_id,
@@ -52,14 +57,15 @@ const AddPurchase = async (req, res, next) => {
             iemi: req.body.iemi
         });
 
-        let Payable_amount = req.body.net_payable - Down_Payment == '' ? 0 : Number(Down_Payment)
-        let Emi_Amount = Math.round(Payable_amount / req.body.month)
+        let Payable_amount = req.body.net_payable - (Down_Payment == '' ? 0 : Number(Down_Payment))
+        let Emi_Amount = Math.round(Payable_amount / (Number(req.body.month) + (Down_Payment == '' ? 1 : 0)))
 
+        console.log('#payable amount ', Payable_amount)
 
         //entry of DP
         if(Down_Payment == ''){
-            await emi.create({
-                amount: Number(Down_Payment),
+            const emiDetails = await emi.create({
+                amount: Emi_Amount,
                 due_date: req.body.date,
                 status: "pending",
                 type: 'dp',
@@ -67,7 +73,7 @@ const AddPurchase = async (req, res, next) => {
             });
         }
         else{
-            await emi.create({
+            const emiDetails = await emi.create({
                 amount: Down_Payment,
                 due_date: req.body.date,
                 paid_date: req.body.date,
@@ -75,28 +81,27 @@ const AddPurchase = async (req, res, next) => {
                 type: 'dp',
                 purchase_id: data.id,
             });
+
+            // DP Receipt
+            const allReceipts = await receipt.count();
+            const receipt_id = allReceipts + 1 + 1000
+            const Receipt = await receipt.create(
+                {
+                    emi_id: emiDetails.id,
+                    admin_id: req.body.admin_id,
+                    extra_charge: 0,
+                    receipt_id
+                }
+            );
+
+            const Transection = await transaction.create({
+                receipt_id: Receipt.id,
+                is_by_cheque: false,
+                is_by_cash: true,
+                is_by_upi: false,
+                amount: req.body.Down_Payment
+            });
         }
-
-        // DP Receipt
-        const Receipt = await receipt.create(
-            {
-                emi_id: DP.id,
-                admin_id: "4",
-                extra_charge: "-",
-                receipt_id: "10"
-            }
-        );
-
-        const Transection = await transaction.create({
-            receipt_id: Receipt.id,
-            is_by_cheque: "0",
-            is_by_cash: "1",
-            is_by_upi: "0",
-            cheque_no: req.body.chequeNo,
-            cheque_date: req.body.chequeDate,
-            upi_no: req.body.upi_number,
-            amount: req.body.Down_Payment
-        });
 
         //entry of EMI
         for (let i = 0; i < req.body.month; i++) {

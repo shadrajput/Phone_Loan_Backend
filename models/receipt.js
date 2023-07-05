@@ -25,6 +25,10 @@ module.exports = (sequelize, DataTypes) => {
             defaultValue: 0,
             allowNull: false,
         },
+        admin_id:{
+            type: DataTypes.INTEGER,
+            allowNull: false,
+        },
         is_deleted:{
             type: DataTypes.BOOLEAN,
             defaultValue: false,
@@ -38,7 +42,7 @@ module.exports = (sequelize, DataTypes) => {
 
     Receipt.associate = function (models) {
         Receipt.belongsTo(models.emi, { foreignKey: 'emi_id' })
-        // Receipt.belongsTo(models.admin, { foreignKey: 'admin_id' })
+        Receipt.belongsTo(models.admin, { foreignKey: 'admin_id' })
         Receipt.hasOne(models.transaction, { foreignKey: 'receipt_id' })
     };
 
