@@ -405,14 +405,14 @@
                     "onUpdate": "CASCADE",
                     "seqType": "Sequelize.INTEGER"
                 },
-                "phone_id": {
+                "specification_id": {
                     "references": {
-                        "model": "phone",
+                        "model": "specification",
                         "key": "id"
                     },
-                    "field": "phone_id",
+                    "field": "specification_id",
                     "allowNull": true,
-                    "onDelete": "CASCADE",
+                    "onDelete": "NO ACTION",
                     "onUpdate": "CASCADE",
                     "seqType": "Sequelize.INTEGER"
                 },
@@ -451,6 +451,17 @@
                     "allowNull": false,
                     "field": "updatedAt",
                     "seqType": "Sequelize.DATE"
+                },
+                "phone_id": {
+                    "allowNull": true,
+                    "references": {
+                        "model": "phone",
+                        "key": "id"
+                    },
+                    "onDelete": "SET NULL",
+                    "onUpdate": "CASCADE",
+                    "field": "phone_id",
+                    "seqType": "Sequelize.INTEGER(11)"
                 }
             },
             "indexes": []
@@ -645,7 +656,7 @@
                     "validate": {
                         "min": {
                             "args": 3,
-                            "msg": "Please enter alleast 3 characters"
+                            "msg": "Please enter atleast 3 characters"
                         }
                     },
                     "field": "password",
@@ -671,5 +682,5 @@
             "indexes": []
         }
     },
-    "revision": 1
+    "revision": 2
 }

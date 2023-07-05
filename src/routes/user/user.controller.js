@@ -50,7 +50,7 @@ const userLogin = catchAsyncErrors(async (req, res, next) => {
     });
 
     if (!User || !await comparePassword(password, User.password)) {
-        return next(new ErrorHandler('Invalid mobile or password', 400));
+        return next(new ErrorHandler('Invalid username or password', 400));
     }
 
     delete User.password

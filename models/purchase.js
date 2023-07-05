@@ -15,10 +15,10 @@ module.exports = (sequelize, DataTypes) => {
                 key: 'id'
             }
         },
-        phone_id: {
+        specification_id: {
             type: DataTypes.INTEGER,
             references: {
-                model: 'phone',
+                model: 'specification',
                 key: 'id'
             }
         },
@@ -46,7 +46,7 @@ module.exports = (sequelize, DataTypes) => {
     })
 
     Purchase.associate = function (models) {
-        Purchase.belongsTo(models.phone, { foreignKey: 'phone_id' })
+        Purchase.belongsTo(models.specification, { foreignKey: 'specification_id' })
         Purchase.belongsTo(models.customer, { foreignKey: 'customer_id' })
         Purchase.belongsTo(models.installment, { foreignKey: 'installment_id' })
         Purchase.hasMany(models.emi, { foreignKey: 'purchase_id' })

@@ -1,6 +1,6 @@
 const catchAsyncErrors = require("../../middlewares/catchAsyncErrors");
 const ErrorHandler = require("../../utils/ErrorHandler");
-const { installment, purchase, customer, phone, company } = require("../../../models")
+const { installment, specification, purchase, customer, phone, company } = require("../../../models")
 const formidable = require("formidable")
 
 
@@ -101,12 +101,15 @@ const getCustomersByInstallment = catchAsyncErrors(async (req, res, next) => {
                 model: customer
             },
             {
-                model: phone,
-                include: [
-                    {
-                        model: company
-                    }
-                ]
+                model: specification,
+                include: {
+                    model: phone,
+                    include: [
+                        {
+                            model: company
+                        }
+                    ]
+                }
             }
         ]
     })  

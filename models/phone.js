@@ -31,7 +31,6 @@ module.exports = (sequelize, DataTypes) => {
     Phone.associate = function (models) {
         Phone.belongsTo(models.company, { foreignKey: 'company_id' })
         Phone.hasMany(models.specification, { foreignKey: 'phone_id' })
-        Phone.hasMany(models.purchase, { foreignKey: 'phone_id' })
     };  
 
     return Phone

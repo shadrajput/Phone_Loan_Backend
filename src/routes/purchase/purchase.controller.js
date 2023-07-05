@@ -6,8 +6,7 @@ const { Op } = require('sequelize');
 
 // 1 . Add Purchase
 const AddPurchase = async (req, res, next) => {
-    console.log(req.body)
-    return
+ 
     let Down_Payment = req.body.Down_Payment
 
     try {
@@ -46,7 +45,7 @@ const AddPurchase = async (req, res, next) => {
 
         const data = await purchase.create({
             customer_id: req.body.customer_id,
-            phone_id: Phone.id,
+            specification_id: Specification.id,
             installment_id: Installment.id,
             pending_amount: pending_amount,
             net_amount: req.body.net_payable,
@@ -143,8 +142,11 @@ const getallPurchase = catchAsyncErrors(async (req, res, next) => {
             customer,
             installment,
             {
-                model: phone,
-                include: [company],
+                model: specification,
+                include:{
+                    model: phone,
+                    include: [company],
+                }
             }
         ]
     })
@@ -172,8 +174,11 @@ const getSinglePurchasebyCustomerId = catchAsyncErrors(async (req, res, next) =>
             customer,
             installment,
             {
-                model: phone,
-                include: [company],
+                model: specification,
+                include: {
+                    model: phone,
+                    include: [company],
+                }
             },
             {
                 model: emi,
@@ -203,7 +208,16 @@ const getSinglePurchase = catchAsyncErrors(async (req, res, next) => {
         where: {
             id: Number(id)
         },
-        include: [customer, installment, phone]
+        include: [
+            customer, 
+            installment, 
+            {
+                model: specification,
+                include: {
+                    phone
+                }
+            }
+        ]
     })
 
     res.status(200).json({
@@ -241,8 +255,11 @@ const oneCustomerDetailsbyNumber = catchAsyncErrors(async (req, res, next) => {
                 },
                 installment,
                 {
-                    model: phone,
-                    include: [company],
+                    model: specification,
+                    include: {
+                        model: phone,
+                        include: [company]
+                    }
                 }
             ],
 

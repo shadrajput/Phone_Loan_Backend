@@ -3,7 +3,7 @@ const ErrorHandler = require("../../utils/ErrorHandler");
 const formidable = require("formidable")
 const {Op } = require('sequelize');
 const db = require('../../../models')
-const { emi, purchase, customer, phone, company,  receipt, installment, transaction , specification } = require("../../../models")
+const { emi, purchase, customer, specification, phone, company,  receipt, installment, transaction } = require("../../../models")
 
 
 // Add Emi
@@ -76,8 +76,14 @@ const getPendingEmi = catchAsyncErrors(async (req, res, next) => {
                     customer,
                     installment,
                     {
-                        model : phone,
-                        include : [company]
+                        model: specification,
+                        include : [
+                            {
+                                model: phone,
+                                include: company
+                            }
+                        ],
+                        
                     }
                 ]
             }
@@ -145,7 +151,10 @@ const getEmiByPurchaseId = catchAsyncErrors(async (req, res, next) => {
                 include: [
                     customer,
                     installment,
-                    phone
+                    {
+                        model: specification,
+                        include: phone
+                    }
                 ]
             },
             // {
@@ -196,8 +205,11 @@ const getemibycustomername = catchAsyncErrors(async (req, res, next) => {
                             }
                         },
                         {
-                            model: phone,
-                            include: [company]
+                            model: specification,
+                            include:{
+                                model: phone,
+                                include: [company]
+                            }
                         }
                     ]
                 },
@@ -234,21 +246,22 @@ const getSingleEmi = catchAsyncErrors(async (req, res, next) => {
                         installment,
                         customer,
                         {
-                            model: phone,
-                            include: [company, specification]
+                            model: specification,
+                            include:{
+                                model: phone,
+                                include: [company, specification]
+                            }
                         }
                     ]
                 }]
         }
     )
 
-    const Specifications = await specification.findOne(
-        {
+    const Specifications = await specification.findOne({
             where: {
-                phone_id: SingleEmi.purchase.phone_id
+                id: SingleEmi.purchase.specification_id
             }
-        }
-    );
+    });
 
 
     res.status(200).json({
@@ -294,8 +307,11 @@ const getEMICustomers = catchAsyncErrors(async (req, res, next) => {
                         limit: 1,
                     },
                     {
-                        model: phone,
-                        include: company
+                        model: specification,
+                        include:{
+                            model: phone,
+                            include: company
+                        }
                     }
                 ]
             },
