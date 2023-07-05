@@ -6,6 +6,7 @@ const formidable = require("formidable")
 
 // 1 . Add Installment
 const AddInstallment = async (req, res, next) => {
+    console.log(req.body)
     try {
         const result = await installment.findOne({
             where: {
@@ -36,16 +37,16 @@ const AddInstallment = async (req, res, next) => {
 const getallInstallment = catchAsyncErrors(async (req, res, next) => {
 
     const AllInstallment = await installment.findAll({
-        include:[
-            {
-                model: purchase,
-                include:[
-                    {
-                        model: customer
-                    }
-                ]
-            }
-        ],
+        // include:[
+        //     {
+        //         model: purchase,
+        //         include:[
+        //             {
+        //                 model: customer
+        //             }
+        //         ]
+        //     }
+        // ],
     })
     
     let filteredCustomers = JSON.parse(JSON.stringify(AllInstallment));

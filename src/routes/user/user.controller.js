@@ -62,9 +62,11 @@ const userLogin = catchAsyncErrors(async (req, res, next) => {
 })
 
 const userDetail = catchAsyncErrors(async (req, res, next) => {
+
     const token = req.headers.authorization;
 
     console.log(req.headers)
+    
     const JWTSign = process.env.JWT_SIGN;
 
     if (!token) {
