@@ -1,7 +1,7 @@
 const catchAsyncErrors = require("../../middlewares/catchAsyncErrors");
 const ErrorHandler = require("../../utils/ErrorHandler");
 const formidable = require("formidable")
-const { transaction, emi, receipt, purchase, customer, phone, company, installment, admin } = require("../../../models")
+const { transaction, emi, receipt, purchase, customer, phone, company, installment, specification, admin } = require("../../../models")
 
 
 // // 1 . Add Transaction
@@ -134,12 +134,19 @@ const getSingleTransactionByReceiptId = catchAsyncErrors(async (req, res, next) 
                     model: emi,
                     include: [{
                         model: purchase,
-                        include: [customer, installment, {
-                            model: phone,
-                            include: [
-                                company
-                            ]
-                        }]
+                        include: [
+                            customer, 
+                            installment,
+                            {
+                                model: specification,
+                                include:{
+                                    model: phone,
+                                    include: [
+                                        company
+                                    ]
+                                }
+                            }
+                        ]
                     }]
                 }]
             }
