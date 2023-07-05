@@ -43,6 +43,7 @@ const userSignup = catchAsyncErrors(async (req, res, next) => {
 })
 
 const userLogin = catchAsyncErrors(async (req, res, next) => {
+
     const { username, password } = req.body
 
     const User = await user.findOne({
@@ -50,7 +51,7 @@ const userLogin = catchAsyncErrors(async (req, res, next) => {
     });
 
     if (!User || !await comparePassword(password, User.password)) {
-        return next(new ErrorHandler('Invalid mobile or password', 400));
+        return next(new ErrorHandler('Invalid username or password', 400));
     }
 
     delete User.password
@@ -63,6 +64,7 @@ const userLogin = catchAsyncErrors(async (req, res, next) => {
 const userDetail = catchAsyncErrors(async (req, res, next) => {
     const token = req.headers.authorization;
 
+    console.log(req.headers)
     const JWTSign = process.env.JWT_SIGN;
 
     if (!token) {
@@ -75,7 +77,9 @@ const userDetail = catchAsyncErrors(async (req, res, next) => {
         where: { id: Number(user_id) },
     });
 
-    if(User.is_admin){
+    console.log(User)
+
+    if (User.is_admin) {
         const adminDetails = await admin.findOne({
             where: {
                 user_id: User.id
