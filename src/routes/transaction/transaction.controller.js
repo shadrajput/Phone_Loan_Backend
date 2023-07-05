@@ -42,11 +42,14 @@ const AddTransaction = async (req, res, next) => {
             }
         );
 
+        const allReceipts = await receipt.count();
+        const receipt_id = allReceipts + 1 + 1000
+
         const Receipt = await receipt.create(
             {
                 emi_id: EMI.id,
                 admin_id: Admin.id,
-                receipt_id: "9",
+                receipt_id,
                 extra_charge: req.body.Charge_amount
             }
         );
