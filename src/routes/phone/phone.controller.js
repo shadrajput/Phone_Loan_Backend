@@ -3,7 +3,7 @@ const ErrorHandler = require("../../utils/ErrorHandler");
 const formidable = require("formidable")
 const { Op } = require('sequelize');
 const { phone } = require("../../../models")
-const { company } = require("../../../models")
+const { company, specification } = require("../../../models")
 
 // 1 . Add Model
 const AddModel = async (req, res, next) => {
@@ -48,7 +48,7 @@ const getallModel = catchAsyncErrors(async (req, res, next) => {
     const AllModel = await phone.findAll({
         skip: page * itemsPerPage,
         take: itemsPerPage,
-        include: [company]
+        include: [company, specification]
     })
    
     const totalModel = await phone.count();
