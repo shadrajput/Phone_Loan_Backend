@@ -5,7 +5,7 @@ const { comparePassword, generateToken } = require('../../middlewares/auth');
 const ErrorHandler = require("../../utils/ErrorHandler");
 const jwt = require("jsonwebtoken");
 const db = require('../../../models')
-const { user } = require("../../../models")
+const { user, admin } = require("../../../models")
 
 
 const userSignup = catchAsyncErrors(async (req, res, next) => {
@@ -75,24 +75,28 @@ const userDetail = catchAsyncErrors(async (req, res, next) => {
 
     const user_id = jwt.verify(token, JWTSign);
 
-    let User = await user.findOne({
+    const userDetails = await user.findOne({
         where: { id: Number(user_id) },
     });
 
-    console.log(User)
-
-    if (User.is_admin) {
+    let User = userDetails;
+    if (userDetails.is_admin){
         const adminDetails = await admin.findOne({
             where: {
-                user_id: User.id
-            }
+                user_id: userDetails.id
+            },
+            attributes: ['first_name', 'last_name', 'pin']
         })
-
+        
         User = {
-            ...User,
-            ...adminDetails
+            id: userDetails.id,
+            username: userDetails.username,
+            password: userDetails.password,
+            is_admin: userDetails.is_admin,
+            pin: adminDetails.pin
         }
     }
+
 
     res.status(200).json({ success: true, User })
 })

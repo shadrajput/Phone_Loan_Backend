@@ -1,13 +1,12 @@
 const catchAsyncErrors = require("../../middlewares/catchAsyncErrors");
 const ErrorHandler = require("../../utils/ErrorHandler");
 const formidable = require("formidable")
-const { transaction, emi, receipt, purchase, customer, phone, company, installment, admin } = require("../../../models")
+const { transaction, emi, receipt, purchase, customer, phone, company, installment, specification, admin } = require("../../../models")
 
 
 // // 1 . Add Transaction
 const AddTransaction = async (req, res, next) => {
     try {
-
         const Admin = await admin.findOne(
             {
                 where: {
@@ -18,13 +17,13 @@ const AddTransaction = async (req, res, next) => {
         );
 
         if (!Admin) {
-            return res.status(500).json({ success: false, message: "Invalid Pin" });
+            return res.status(500).json({ success: false, message: "Invalid Security Pin" });
         }
 
         const PayEMI = await emi.update(
             {
                 paid_date: req.body.date,
-                status: req.body.status,
+                status: 'paid',
             },
             {
                 where: {
@@ -120,7 +119,7 @@ const getSingleTransaction = catchAsyncErrors(async (req, res, next) => {
 
 // // 3 . Get Single Transaction By Receipt ID
 const getSingleTransactionByReceiptId = catchAsyncErrors(async (req, res, next) => {
-    console.log(req.params)
+
     const { id } = req.params
 
     const SingleTransaction = await transaction.findOne({
@@ -134,17 +133,26 @@ const getSingleTransactionByReceiptId = catchAsyncErrors(async (req, res, next) 
                     model: emi,
                     include: [{
                         model: purchase,
-                        include: [customer, installment, {
-                            model: phone,
-                            include: [
-                                company
-                            ]
-                        }]
+                        include: [
+                            customer, 
+                            installment,
+                            {
+                                model: specification,
+                                include:{
+                                    model: phone,
+                                    include: [
+                                        company
+                                    ]
+                                }
+                            }
+                        ]
                     }]
                 }]
             }
         ]
     })
+
+    console.log(SingleTransaction)
 
     const PendingAmount = await emi.findAll({
         where: {

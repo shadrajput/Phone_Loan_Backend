@@ -1,14 +1,7 @@
 const catchAsyncErrors = require("../../middlewares/catchAsyncErrors");
 const ErrorHandler = require("../../utils/ErrorHandler");
 const formidable = require("formidable")
-const { receipt } = require("../../../models")
-const { emi } = require("../../../models")
-const { purchase } = require("../../../models")
-const { customer } = require("../../../models")
-const { phone } = require("../../../models")
-const { installment } = require("../../../models")
-const { company } = require("../../../models")
-const { admin } = require("../../../models")
+const { receipt, emi, purchase, customer, phone, installment, company, admin, specification } = require("../../../models")
 const { Op } = require('sequelize');
 
 
@@ -104,8 +97,11 @@ const onerecieptDetailsbyNumber = catchAsyncErrors(async (req, res, next) => {
                             model: purchase,
                             include: [
                                 {
-                                    model: phone,
-                                    include: [company]
+                                    model: specification,
+                                    include: {
+                                        model: phone,
+                                        include: [company]
+                                    }
                                 },
                                 customer,
                                 installment

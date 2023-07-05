@@ -38,8 +38,6 @@ module.exports = (sequelize, DataTypes) => {
 
   User.associate = function (models) {
     User.hasOne(models.customer, { foreignKey: 'user_id' })
-    User.hasMany(models.admin, { foreignKey: 'admin_id' })
-
   };
 
   return User
