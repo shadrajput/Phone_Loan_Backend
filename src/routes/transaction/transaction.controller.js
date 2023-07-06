@@ -2,7 +2,7 @@ const catchAsyncErrors = require("../../middlewares/catchAsyncErrors");
 const ErrorHandler = require("../../utils/ErrorHandler");
 const formidable = require("formidable")
 const { transaction, emi, receipt, purchase, customer, phone, company, installment, specification, admin } = require("../../../models")
-
+const db = require('../../../models')
 
 // // 1 . Add Transaction
 const AddTransaction = async (req, res, next) => {
@@ -58,11 +58,19 @@ const AddTransaction = async (req, res, next) => {
             is_by_cheque: req.body.is_by_cheque,
             is_by_cash: req.body.is_by_cash,
             is_by_upi: req.body.is_by_upi,
-            cheque_no: req.body.chequeNo,
-            cheque_date: req.body.chequeDate,
-            upi_no: req.body.upi_number,
+            cheque_no: req.body.cheque_no,
+            cheque_date: req.body.cheque_date,
+            upi_no: req.body.upi_no,
             amount: req.body.amount
         });
+
+        await purchase.update({
+            pending_amount: db.sequelize.literal(`pending_amount - ${req.body.amount}`)
+        },{
+            where:{
+                id: EMI.purchase_id
+            },
+        })
 
         res.status(201).json({
             data: data,
@@ -152,6 +160,21 @@ const getSingleTransactionByReceiptId = catchAsyncErrors(async (req, res, next) 
         ]
     })
 
+    const allEMI = await emi.findAll({
+        where:{
+            purchase_id: SingleTransaction?.receipt?.emi.purchase.id
+        },
+        order: [['due_date', 'ASC']]
+    })
+
+    let emiCount = null
+    for(let i=0; i<allEMI.length; i++) {
+        if (allEMI[i].id == SingleTransaction?.receipt?.emi.id){
+            emiCount = i + 1;
+            break;
+        }
+    }
+
     const PendingAmount = await emi.findAll({
         where: {
             id: SingleTransaction.receipt.emi.id
@@ -159,13 +182,13 @@ const getSingleTransactionByReceiptId = catchAsyncErrors(async (req, res, next) 
         include: [
             purchase
         ]
-    })
+    });
 
     res.status(200).json({
         SingleTransaction: SingleTransaction,
         PendingAmount: PendingAmount,
-        success: true,
-        message: "One Transaction Details"
+        emiCount,
+        success: true
     })
 })
 

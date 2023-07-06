@@ -30,7 +30,7 @@ module.exports = (sequelize, DataTypes) => {
             }
         },
         pending_amount: {
-            type: DataTypes.STRING,
+            type: DataTypes.INTEGER,
             allowNull: false,
         },
         iemi: {
@@ -38,7 +38,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false,
         },
         net_amount: {
-            type: DataTypes.STRING,
+            type: DataTypes.INTEGER,
             allowNull: false,
         },
     },{

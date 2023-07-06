@@ -408,7 +408,7 @@
                 "pending_amount": {
                     "allowNull": false,
                     "field": "pending_amount",
-                    "seqType": "Sequelize.STRING"
+                    "seqType": "Sequelize.INTEGER"
                 },
                 "iemi": {
                     "allowNull": false,
@@ -418,7 +418,7 @@
                 "net_amount": {
                     "allowNull": false,
                     "field": "net_amount",
-                    "seqType": "Sequelize.STRING"
+                    "seqType": "Sequelize.INTEGER"
                 },
                 "createdAt": {
                     "allowNull": false,
@@ -660,5 +660,5 @@
             "indexes": []
         }
     },
-    "revision": 5
+    "revision": 6
 }

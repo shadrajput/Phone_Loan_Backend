@@ -31,7 +31,7 @@ const AddReceipt = async (req, res, next) => {
             res.status(201).json({
                 data: data,
                 success: true,
-                message: "Purchase added successfully",
+                message: "Receipt added successfully",
             });
         } catch (error) {
             next(error)
