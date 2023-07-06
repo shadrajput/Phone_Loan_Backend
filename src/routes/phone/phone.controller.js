@@ -8,6 +8,7 @@ const { company, specification } = require("../../../models")
 // 1 . Add Model
 const AddModel = async (req, res, next) => {
 
+    console.log(req.body)
 
     const Company = await company.findOne({
         where: {

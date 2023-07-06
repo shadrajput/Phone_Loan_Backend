@@ -94,8 +94,6 @@ const userDetail = catchAsyncErrors(async (req, res, next) => {
         }
     }
 
-    console.log(User)
-
     res.status(200).json({ success: true, User })
 })
 

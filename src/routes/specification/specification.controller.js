@@ -36,8 +36,6 @@ const getallSpecification = catchAsyncErrors(async (req, res, next) => {
         }]
     })
 
-    console.log(AllSpecification)
-
     res.status(200).json({
         AllSpecification: AllSpecification,
         success: true,
@@ -48,6 +46,13 @@ const getallSpecification = catchAsyncErrors(async (req, res, next) => {
 const getallSpecificationById = catchAsyncErrors(async (req, res, next) => {
     const { id } = req.params
 
+    const phoneDetails = await phone.findOne({
+        where:{
+            id: Number(id)
+        },
+        include: company
+    })
+
     const AllSpecification = await specification.findAll({
         where: {
             phone_id: Number(id)
@@ -56,7 +61,7 @@ const getallSpecificationById = catchAsyncErrors(async (req, res, next) => {
     })
 
     res.status(200).json({
-        AllSpecification: AllSpecification,
+        specificationDetails: { AllSpecification, phoneDetails},
         success: true,
         message: "All Specification"
     })
