@@ -482,6 +482,12 @@
                 "admin_id": {
                     "allowNull": false,
                     "field": "admin_id",
+                    "references": {
+                        "model": "admin",
+                        "key": "id"
+                    },
+                    "onDelete": "NO ACTION",
+                    "onUpdate": "CASCADE",
                     "seqType": "Sequelize.INTEGER"
                 },
                 "is_deleted": {
@@ -665,5 +671,5 @@
             "indexes": []
         }
     },
-    "revision": 3
+    "revision": 4
 }

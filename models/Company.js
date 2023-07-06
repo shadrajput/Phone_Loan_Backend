@@ -26,7 +26,7 @@ module.exports = (sequelize, DataTypes) => {
     )
 
     Company.associate = function (models) {
-        Company.hasMany(models.phone, { foreignKey: 'phone_id' })
+        Company.hasMany(models.phone, { foreignKey: 'company_id' })
     };
 
     return Company

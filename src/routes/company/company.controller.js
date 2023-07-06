@@ -36,7 +36,9 @@ const AddCompany = async (req, res, next) => {
 // 2 . Get all Company
 const getallCompany = catchAsyncErrors(async (req, res, next) => {
 
-    const all_companies = await company.findAll()
+    const all_companies = await company.findAll({
+        include: phone
+    })
 
     res.status(200).json({
         all_companies: all_companies,
