@@ -6,8 +6,6 @@ const { Op } = require('sequelize');
 
 // 1 . Add Purchase
 const AddPurchase = async (req, res, next) => {
-    
-    console.log(req.body)
     let Down_Payment = req.body.Down_Payment
 
     try {
@@ -46,8 +44,6 @@ const AddPurchase = async (req, res, next) => {
             ) * req.body.month
         );
 
-        console.log('#pending amount ',pending_amount)
-
         const data = await purchase.create({
             customer_id: req.body.customer_id,
             specification_id: Specification.id,
@@ -59,8 +55,6 @@ const AddPurchase = async (req, res, next) => {
 
         let Payable_amount = req.body.net_payable - (Down_Payment == '' ? 0 : Number(Down_Payment))
         let Emi_Amount = Math.round(Payable_amount / (Number(req.body.month) + (Down_Payment == '' ? 1 : 0)))
-
-        console.log('#payable amount ', Payable_amount)
 
         //entry of DP
         if(Down_Payment == ''){

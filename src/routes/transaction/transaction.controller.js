@@ -152,8 +152,6 @@ const getSingleTransactionByReceiptId = catchAsyncErrors(async (req, res, next) 
         ]
     })
 
-    console.log(SingleTransaction)
-
     const PendingAmount = await emi.findAll({
         where: {
             id: SingleTransaction.receipt.emi.id
