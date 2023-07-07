@@ -5,69 +5,26 @@ var Sequelize = require('sequelize');
 /**
  * Actions summary:
  *
-<<<<<<< HEAD
- * addColumn "admin_id" to table "receipt"
- * changeColumn "full_name" on table "customer"
- * changeColumn "reference_name" on table "customer"
-=======
- * changeColumn "reference_name" on table "customer"
- * changeColumn "full_name" on table "customer"
->>>>>>> refs/remotes/origin/master
+ * changeColumn "net_amount" on table "purchase"
+ * changeColumn "pending_amount" on table "purchase"
  *
  **/
 
 var info = {
     "revision": 6,
     "name": "noname",
-<<<<<<< HEAD
-    "created": "2023-06-27T07:37:24.627Z",
-=======
-    "created": "2023-06-27T10:15:33.333Z",
->>>>>>> refs/remotes/origin/master
+    "created": "2023-07-06T14:06:10.499Z",
     "comment": ""
 };
 
 var migrationCommands = [{
-<<<<<<< HEAD
-        fn: "addColumn",
+        fn: "changeColumn",
         params: [
-            "receipt",
-            "admin_id",
+            "purchase",
+            "net_amount",
             {
                 "type": Sequelize.INTEGER,
-                "field": "admin_id",
-                "references": {
-                    "model": "admin",
-                    "key": "id"
-                }
-=======
-        fn: "changeColumn",
-        params: [
-            "customer",
-            "reference_name",
-            {
-                "type": Sequelize.STRING,
-                "field": "reference_name",
-                "validate": {
-                    "is": {}
-                },
-                "allowNull": true
->>>>>>> refs/remotes/origin/master
-            }
-        ]
-    },
-    {
-        fn: "changeColumn",
-        params: [
-            "customer",
-            "full_name",
-            {
-                "type": Sequelize.STRING,
-                "field": "full_name",
-<<<<<<< HEAD
-                "validate": {
-                    "notEmpty": true
-                },
+                "field": "net_amount",
                 "allowNull": false
             }
         ]
@@ -75,19 +32,14 @@ var migrationCommands = [{
     {
         fn: "changeColumn",
         params: [
-            "customer",
-            "reference_name",
+            "purchase",
+            "pending_amount",
             {
-                "type": Sequelize.STRING,
-                "field": "reference_name",
-                "allowNull": true
-            }
-        ]
-=======
+                "type": Sequelize.INTEGER,
+                "field": "pending_amount",
                 "allowNull": false
             }
         ]
->>>>>>> refs/remotes/origin/master
     }
 ];
 

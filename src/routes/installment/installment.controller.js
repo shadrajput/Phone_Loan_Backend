@@ -160,7 +160,6 @@ const updateInstallmentDetails = catchAsyncErrors(async (req, res, next) => {
 // 5 . Delete Installment
 
 const deleteInstallmentDetails = catchAsyncErrors(async (req, res, next) => {
-    console.log(req)
     const { id } = req.params
     const DeleteInstallmentDetails = await installment.destroy({
         where: {

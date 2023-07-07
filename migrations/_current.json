@@ -59,17 +59,6 @@
                     "allowNull": false,
                     "field": "updatedAt",
                     "seqType": "Sequelize.DATE"
-                },
-                "admin_id": {
-                    "allowNull": true,
-                    "references": {
-                        "model": "user",
-                        "key": "id"
-                    },
-                    "onDelete": "SET NULL",
-                    "onUpdate": "CASCADE",
-                    "field": "admin_id",
-                    "seqType": "Sequelize.INTEGER"
                 }
             },
             "indexes": []
@@ -356,7 +345,7 @@
                     },
                     "field": "company_id",
                     "allowNull": true,
-                    "onDelete": "NO ACTION",
+                    "onDelete": "CASCADE",
                     "onUpdate": "CASCADE",
                     "seqType": "Sequelize.INTEGER"
                 },
@@ -369,17 +358,6 @@
                     "allowNull": false,
                     "field": "updatedAt",
                     "seqType": "Sequelize.DATE"
-                },
-                "phone_id": {
-                    "allowNull": true,
-                    "references": {
-                        "model": "company",
-                        "key": "id"
-                    },
-                    "onDelete": "SET NULL",
-                    "onUpdate": "CASCADE",
-                    "field": "phone_id",
-                    "seqType": "Sequelize.INTEGER(11)"
                 }
             },
             "indexes": []
@@ -430,7 +408,7 @@
                 "pending_amount": {
                     "allowNull": false,
                     "field": "pending_amount",
-                    "seqType": "Sequelize.STRING"
+                    "seqType": "Sequelize.INTEGER"
                 },
                 "iemi": {
                     "allowNull": false,
@@ -440,7 +418,7 @@
                 "net_amount": {
                     "allowNull": false,
                     "field": "net_amount",
-                    "seqType": "Sequelize.STRING"
+                    "seqType": "Sequelize.INTEGER"
                 },
                 "createdAt": {
                     "allowNull": false,
@@ -451,17 +429,6 @@
                     "allowNull": false,
                     "field": "updatedAt",
                     "seqType": "Sequelize.DATE"
-                },
-                "phone_id": {
-                    "allowNull": true,
-                    "references": {
-                        "model": "phone",
-                        "key": "id"
-                    },
-                    "onDelete": "SET NULL",
-                    "onUpdate": "CASCADE",
-                    "field": "phone_id",
-                    "seqType": "Sequelize.INTEGER(11)"
                 }
             },
             "indexes": []
@@ -499,6 +466,17 @@
                     },
                     "allowNull": false,
                     "field": "extra_charge",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "admin_id": {
+                    "allowNull": false,
+                    "field": "admin_id",
+                    "references": {
+                        "model": "admin",
+                        "key": "id"
+                    },
+                    "onDelete": "NO ACTION",
+                    "onUpdate": "CASCADE",
                     "seqType": "Sequelize.INTEGER"
                 },
                 "is_deleted": {
@@ -682,5 +660,5 @@
             "indexes": []
         }
     },
-    "revision": 2
+    "revision": 6
 }

@@ -85,7 +85,7 @@ const userDetail = catchAsyncErrors(async (req, res, next) => {
             where: {
                 user_id: userDetails.id
             },
-            attributes: ['first_name', 'last_name', 'pin']
+            attributes: ['id', 'first_name', 'last_name', 'pin']
         })
         
         User = {
@@ -93,10 +93,10 @@ const userDetail = catchAsyncErrors(async (req, res, next) => {
             username: userDetails.username,
             password: userDetails.password,
             is_admin: userDetails.is_admin,
-            pin: adminDetails.pin
+            pin: adminDetails.pin,
+            admin_id: adminDetails.id
         }
     }
-
 
     res.status(200).json({ success: true, User })
 })

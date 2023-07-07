@@ -5,69 +5,36 @@ var Sequelize = require('sequelize');
 /**
  * Actions summary:
  *
- * addColumn "photo" to table "customer"
- * changeColumn "reference_name" on table "customer"
- * changeColumn "price" on table "specification"
- * changeColumn "ram" on table "specification"
+ * removeColumn "admin_id" from table "admin"
+ * removeColumn "phone_id" from table "purchase"
+ * addColumn "admin_id" to table "receipt"
  *
  **/
 
 var info = {
     "revision": 3,
     "name": "noname",
-    "created": "2023-06-11T07:30:11.516Z",
+    "created": "2023-07-05T19:11:18.777Z",
     "comment": ""
 };
 
 var migrationCommands = [{
+        fn: "removeColumn",
+        params: ["admin", "admin_id"]
+    },
+    {
+        fn: "removeColumn",
+        params: ["purchase", "phone_id"]
+    },
+    {
         fn: "addColumn",
         params: [
-            "customer",
-            "photo",
+            "receipt",
+            "admin_id",
             {
-                "type": Sequelize.STRING,
-                "field": "photo",
-                "defaultValue": "default",
+                "type": Sequelize.INTEGER,
+                "field": "admin_id",
                 "allowNull": false
-            }
-        ]
-    },
-    {
-        fn: "changeColumn",
-        params: [
-            "customer",
-            "reference_name",
-            {
-                "type": Sequelize.STRING,
-                "field": "reference_name",
-                "validate": {
-                    "is": {}
-                },
-                "allowNull": true
-            }
-        ]
-    },
-    {
-        fn: "changeColumn",
-        params: [
-            "specification",
-            "price",
-            {
-                "type": Sequelize.INTEGER,
-                "field": "price",
-                "allowNull": true
-            }
-        ]
-    },
-    {
-        fn: "changeColumn",
-        params: [
-            "specification",
-            "ram",
-            {
-                "type": Sequelize.INTEGER,
-                "field": "ram",
-                "allowNull": true
             }
         ]
     }

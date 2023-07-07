@@ -7,8 +7,6 @@ const { company, specification } = require("../../../models")
 
 // 1 . Add Model
 const AddModel = async (req, res, next) => {
-
-
     const Company = await company.findOne({
         where: {
             company_name: req.body.company_name
@@ -89,7 +87,6 @@ const updateModelDetails = catchAsyncErrors(async (req, res, next) => {
         },
     });
 
-    console.log(Company.id);
     const updateModelDetails = await phone.update(
         {
             model_name: req.body.model_name,
@@ -115,7 +112,7 @@ const updateModelDetails = catchAsyncErrors(async (req, res, next) => {
 const deleteModelDetails = catchAsyncErrors(async (req, res, next) => {
 
     const { id } = req.params
-    console.log(id)
+
     const DeleteModelDetails = await phone.destroy({
         where: {
             id: Number(id)

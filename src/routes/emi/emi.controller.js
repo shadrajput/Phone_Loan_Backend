@@ -157,9 +157,9 @@ const getEmiByPurchaseId = catchAsyncErrors(async (req, res, next) => {
                     }
                 ]
             },
-            // {
-            //     model: receipt
-            // }
+            {
+                model: receipt
+            }
         ]
     })
 
