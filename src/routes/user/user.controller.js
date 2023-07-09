@@ -43,7 +43,7 @@ const userSignup = catchAsyncErrors(async (req, res, next) => {
 })
 
 const userLogin = catchAsyncErrors(async (req, res, next) => {
-
+    console.log(req.body)
     const { username, password } = req.body
 
     const User = await user.findOne({
@@ -66,7 +66,7 @@ const userDetail = catchAsyncErrors(async (req, res, next) => {
     const token = req.headers.authorization;
 
     console.log(req.headers)
-    
+
     const JWTSign = process.env.JWT_SIGN;
 
     if (!token) {
@@ -80,14 +80,14 @@ const userDetail = catchAsyncErrors(async (req, res, next) => {
     });
 
     let User = userDetails;
-    if (userDetails.is_admin){
+    if (userDetails.is_admin) {
         const adminDetails = await admin.findOne({
             where: {
                 user_id: userDetails.id
             },
             attributes: ['id', 'first_name', 'last_name', 'pin']
         })
-        
+
         User = {
             id: userDetails.id,
             username: userDetails.username,
