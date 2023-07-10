@@ -137,6 +137,9 @@ const getSingleTransactionByReceiptId = catchAsyncErrors(async (req, res, next) 
         include: [
             {
                 model: receipt,
+                where:{
+                    is_deleted: false
+                },
                 include: [{
                     model: emi,
                     include: [{
