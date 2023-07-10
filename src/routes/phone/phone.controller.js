@@ -137,7 +137,7 @@ const searchPhone = catchAsyncErrors(async (req, res, next) => {
                 [Op.like]: `%${model}%`
             }
         },
-        include: [company]
+        include: [company, specification]
     })
 
     res.status(200).json({

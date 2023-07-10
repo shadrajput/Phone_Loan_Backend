@@ -41,23 +41,23 @@ const AddCustomer = catchAsyncErrors(async (req, res, next) => {
         }
 
         let adhar_front = "";
-        adhar_front = await upload_Adhar_front(files, adhar_front);
+        adhar_front = await upload_image(files?.adhar_front, adhar_front, adharFrontDefaultImage, 'phone_document');
         let adhar_back = "";
-        adhar_back = await upload_Adhar_back(files, adhar_back);
+        adhar_back = await upload_image(files?.adhar_back, adhar_back, adharBackDefaultImage, 'phone_document');
         let pancard = "";
-        pancard = await upload_pancard(files, pancard);
+        pancard = await upload_image(files?.pancard, pancard, pancardDefaultImage, 'phone_document');
         let lightbill = "";
-        lightbill = await upload_lightbill(files, lightbill);
+        lightbill = await upload_image(files?.light_bill, lightbill, lightBillDefaultImage, 'phone_document');
 
         const Document = await document.create({
-            adhar_front: adhar_front == '' ? adharFrontDefaultImage : adhar_front,
-            adhar_back: adhar_back == '' ? adharBackDefaultImage  : adhar_back ,
-            pancard: pancard == '' ? pancardDefaultImage : pancard,
-            lightbill: lightbill == '' ? lightBillDefaultImage : lightbill
+            adhar_front: adhar_front,
+            adhar_back: adhar_back,
+            pancard: pancard,
+            light_bill: lightbill
         });
 
         let photo = "";
-        photo = await upload_photo(files, photo);
+        photo = await upload_image(files?.photo, photo, customerProfileDefaultImage, 'phone_document')
 
         const data = await customer.create({
             photo: photo == '' ? customerProfileDefaultImage : photo,

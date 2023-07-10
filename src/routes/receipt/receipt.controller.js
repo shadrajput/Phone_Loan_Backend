@@ -123,8 +123,11 @@ const onerecieptDetailsbyNumber = catchAsyncErrors(async (req, res, next) => {
                             model: purchase,
                             include: [
                                 {
-                                    model: phone,
-                                    include: [company]
+                                    model: specification,
+                                    include: {
+                                        model: phone,
+                                        include: [company]
+                                    }
                                 },
                                 {
                                     model: customer,
@@ -151,8 +154,11 @@ const onerecieptDetailsbyNumber = catchAsyncErrors(async (req, res, next) => {
                             model: purchase,
                             include: [
                                 {
-                                    model: phone,
-                                    include: [company]
+                                    model: specification,
+                                    include: {
+                                        model: phone,
+                                        include: [company]
+                                    }
                                 },
                                 {
                                     model: customer,
