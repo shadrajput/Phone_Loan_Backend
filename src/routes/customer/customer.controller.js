@@ -50,17 +50,17 @@ const AddCustomer = catchAsyncErrors(async (req, res, next) => {
         lightbill = await upload_lightbill(files, lightbill);
 
         const Document = await document.create({
-            adhar_front: adhar_front,
-            adhar_back: adhar_back,
-            pancard: pancard,
-            lightbill: lightbill
+            adhar_front: adhar_front == '' ? adharFrontDefaultImage : adhar_front,
+            adhar_back: adhar_back == '' ? adharBackDefaultImage  : adhar_back ,
+            pancard: pancard == '' ? pancardDefaultImage : pancard,
+            lightbill: lightbill == '' ? lightBillDefaultImage : lightbill
         });
 
         let photo = "";
         photo = await upload_photo(files, photo);
 
         const data = await customer.create({
-            photo: photo,
+            photo: photo == '' ? customerProfileDefaultImage : photo,
             full_name: CustomerInfo.full_name,
             mobile: CustomerInfo.mobile,
             alternate_no: CustomerInfo.alternate_no,
