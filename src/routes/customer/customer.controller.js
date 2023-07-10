@@ -50,14 +50,18 @@ const AddCustomer = catchAsyncErrors(async (req, res, next) => {
         lightbill = await upload_image(files?.light_bill, lightbill, lightBillDefaultImage, 'phone_document');
 
         const Document = await document.create({
-            adhar_front: adhar_front == '' ? adharFrontDefaultImage : adhar_front,
-            adhar_back: adhar_back == '' ? adharBackDefaultImage  : adhar_back ,
-            pancard: pancard == '' ? pancardDefaultImage : pancard,
-            lightbill: lightbill == '' ? lightBillDefaultImage : lightbill
+            adhar_front: adhar_front,
+            adhar_back: adhar_back,
+            pancard: pancard,
+            light_bill: lightbill
         });
 
         let photo = "";
+<<<<<<< HEAD
         photo = await upload_image(files?.photo, photo, customerProfileDefaultImage, 'phone_customer_profile');
+=======
+        photo = await upload_image(files?.photo, photo, customerProfileDefaultImage, 'phone_document')
+>>>>>>> refs/remotes/origin/master
 
         const data = await customer.create({
             photo: photo == '' ? customerProfileDefaultImage : photo,
