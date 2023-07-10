@@ -159,9 +159,6 @@ const getEmiByPurchaseId = catchAsyncErrors(async (req, res, next) => {
             },
             {
                 model: receipt,
-                where:{
-                    is_deleted: false
-                }
             }
         ]
     })
