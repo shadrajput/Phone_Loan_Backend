@@ -11,7 +11,9 @@ const { user, admin } = require("../../../models")
 const userSignup = catchAsyncErrors(async (req, res, next) => {
 
     try {
-        const password = "1234"
+
+        const password = req.body.password
+
         // checking mobile number already exist
         const result = await user.findOne({
             where: {
@@ -43,7 +45,7 @@ const userSignup = catchAsyncErrors(async (req, res, next) => {
 })
 
 const userLogin = catchAsyncErrors(async (req, res, next) => {
-    console.log(req.body)
+
     const { username, password } = req.body
 
     const User = await user.findOne({

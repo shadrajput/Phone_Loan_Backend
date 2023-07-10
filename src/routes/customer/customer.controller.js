@@ -6,8 +6,8 @@ const { customer } = require("../../../models")
 const { document } = require("../../../models")
 const { installment } = require("../../../models")
 
-const { 
-    uploadImage, 
+const {
+    uploadImage,
     deleteImage,
     customerProfileDefaultImage,
     adharFrontDefaultImage,
@@ -41,13 +41,13 @@ const AddCustomer = catchAsyncErrors(async (req, res, next) => {
         }
 
         let adhar_front = "";
-        adhar_front = await upload_Adhar_front(files, adhar_front);
+        adhar_front = await upload_image(files?.adhar_front, adhar_front, adharFrontDefaultImage, 'phone_document');
         let adhar_back = "";
-        adhar_back = await upload_Adhar_back(files, adhar_back);
+        adhar_back = await upload_image(files?.adhar_back, adhar_back, adharBackDefaultImage, 'phone_document');
         let pancard = "";
-        pancard = await upload_pancard(files, pancard);
+        pancard = await upload_image(files?.pancard, pancard, pancardDefaultImage, 'phone_document');
         let lightbill = "";
-        lightbill = await upload_lightbill(files, lightbill);
+        lightbill = await upload_image(files?.light_bill, lightbill, lightBillDefaultImage, 'phone_document');
 
         const Document = await document.create({
             adhar_front: adhar_front,
@@ -57,7 +57,7 @@ const AddCustomer = catchAsyncErrors(async (req, res, next) => {
         });
 
         let photo = "";
-        photo = await upload_photo(files, photo);
+        photo = await upload_image(files?.photo, photo, customerProfileDefaultImage, 'phone_customer_profile');
 
         const data = await customer.create({
             photo: photo,
@@ -80,15 +80,15 @@ const AddCustomer = catchAsyncErrors(async (req, res, next) => {
 
 // // 2 . Get all Customers
 const getallCustomers = catchAsyncErrors(async (req, res, next) => {
-    const {pageNo, searchedValue} = req.params
+    const { pageNo, searchedValue } = req.params
     const itemsPerPage = 10;
-    const {count, rows: AllCustomer} = await customer.findAndCountAll({
+    const { count, rows: AllCustomer } = await customer.findAndCountAll({
         skip: pageNo * itemsPerPage,
         take: itemsPerPage,
-        where:{
-            [Op.or]:[
+        where: {
+            [Op.or]: [
                 {
-                    full_name:{
+                    full_name: {
                         [Op.like]: `%${searchedValue}%`
                     }
                 },
@@ -101,7 +101,7 @@ const getallCustomers = catchAsyncErrors(async (req, res, next) => {
 
     res.status(200).json({
         AllCustomer: AllCustomer,
-        totalPages: Math.ceil( count/itemsPerPage),
+        totalPages: Math.ceil(count / itemsPerPage),
         success: true,
         message: "All Customer"
     })

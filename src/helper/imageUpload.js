@@ -10,6 +10,7 @@ const imagekit = new ImageKit({
 
 
 async function uploadImage(file, folder) {
+  console.log(file)
   return new Promise((resolve, reject) => {
     const ext = file.mimetype.split("/")[1].trim();
 
@@ -78,10 +79,10 @@ const adharBackDefaultImage = "https://ik.imagekit.io/uz4hsgydu/Phone_loan_defau
 const pancardDefaultImage = "https://ik.imagekit.io/uz4hsgydu/Phone_loan_default/pan.webp?updatedAt=1687869492900"
 const lightBillDefaultImage = "https://ik.imagekit.io/uz4hsgydu/Phone_loan_default/bill.webp?updatedAt=1687869492791"
 
-module.exports = { 
-  uploadImage, 
-  deleteImage, 
-  customerProfileDefaultImage, 
+module.exports = {
+  uploadImage,
+  deleteImage,
+  customerProfileDefaultImage,
   adharFrontDefaultImage,
   adharBackDefaultImage,
   pancardDefaultImage,

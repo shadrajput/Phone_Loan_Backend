@@ -37,44 +37,44 @@ const AddInstallment = async (req, res, next) => {
 const getallInstallment = catchAsyncErrors(async (req, res, next) => {
 
     const AllInstallment = await installment.findAll({
-        // include:[
-        //     {
-        //         model: purchase,
-        //         include:[
-        //             {
-        //                 model: customer
-        //             }
-        //         ]
-        //     }
-        // ],
+        include: [
+            {
+                model: purchase,
+                include: [
+                    {
+                        model: customer
+                    }
+                ]
+            }
+        ],
     })
-    
+
     let filteredCustomers = JSON.parse(JSON.stringify(AllInstallment));
-    filteredCustomers = filteredCustomers.filter((item)=>{
+    filteredCustomers = filteredCustomers.filter((item) => {
         item.purchases.splice(0);
         return true;
     });
-    
 
-    const findCustomerInArray = (data)=>{
-        for(let i=0; i<filteredCustomers.length; i++){
+
+    const findCustomerInArray = (data) => {
+        for (let i = 0; i < filteredCustomers.length; i++) {
             let flag = 0;
-            for(let j=0; j<filteredCustomers[i].purchases.length; j++){
-                if( filteredCustomers[i].purchases[j].customer.id == data.customer.id ) flag = 1;
-            } 
-            
-            if(flag){
+            for (let j = 0; j < filteredCustomers[i].purchases.length; j++) {
+                if (filteredCustomers[i].purchases[j].customer.id == data.customer.id) flag = 1;
+            }
+
+            if (flag) {
                 return true
             }
-            else{
+            else {
                 return false
             }
         }
     }
 
-    AllInstallment.map((item, i)=>{
-        item.purchases.map((data)=>{
-            if(!findCustomerInArray(data)){
+    AllInstallment.map((item, i) => {
+        item.purchases.map((data) => {
+            if (!findCustomerInArray(data)) {
                 filteredCustomers[i].purchases.push(data)
             }
         })
@@ -89,12 +89,12 @@ const getallInstallment = catchAsyncErrors(async (req, res, next) => {
 })
 
 const getCustomersByInstallment = catchAsyncErrors(async (req, res, next) => {
-    const {installment_id} = req.params
+    const { installment_id } = req.params
     const customers = await purchase.findAll({
-        include:[
-            { 
+        include: [
+            {
                 model: installment,
-                where:{
+                where: {
                     id: installment_id
                 }
             },
@@ -113,7 +113,7 @@ const getCustomersByInstallment = catchAsyncErrors(async (req, res, next) => {
                 }
             }
         ]
-    })  
+    })
 
     res.status(200).json({
         allCustomers: customers,
@@ -143,7 +143,7 @@ const getSingleInstallment = catchAsyncErrors(async (req, res, next) => {
 const updateInstallmentDetails = catchAsyncErrors(async (req, res, next) => {
 
     const { id } = req.params
-    
+
     const updateInstallmentDetails = await installment.update(req.body, {
         where: {
             id: Number(id)
