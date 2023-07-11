@@ -57,11 +57,7 @@ const AddCustomer = catchAsyncErrors(async (req, res, next) => {
         });
 
         let photo = "";
-<<<<<<< HEAD
-        photo = await upload_image(files?.photo, photo, customerProfileDefaultImage, 'phone_customer_profile');
-=======
         photo = await upload_image(files?.photo, photo, customerProfileDefaultImage, 'phone_document')
->>>>>>> refs/remotes/origin/master
 
         const data = await customer.create({
             photo: photo == '' ? customerProfileDefaultImage : photo,
