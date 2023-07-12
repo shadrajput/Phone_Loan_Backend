@@ -9,13 +9,13 @@ var Sequelize = require('sequelize');
  * createTable "document", deps: []
  * createTable "installment", deps: []
  * createTable "user", deps: []
- * createTable "admin", deps: [user, user]
+ * createTable "admin", deps: [user]
  * createTable "customer", deps: [document, user]
- * createTable "phone", deps: [company, company]
- * createTable "purchase", deps: [customer, phone, installment]
- * createTable "emi", deps: [purchase]
- * createTable "receipt", deps: [emi]
+ * createTable "phone", deps: [company]
  * createTable "specification", deps: [phone]
+ * createTable "purchase", deps: [customer, specification, installment]
+ * createTable "emi", deps: [purchase]
+ * createTable "receipt", deps: [emi, admin]
  * createTable "transaction", deps: [receipt]
  *
  **/
@@ -23,7 +23,7 @@ var Sequelize = require('sequelize');
 var info = {
     "revision": 1,
     "name": "noname",
-    "created": "2023-07-02T07:28:09.563Z",
+    "created": "2023-07-12T10:16:20.637Z",
     "comment": ""
 };
 
@@ -176,7 +176,7 @@ var migrationCommands = [{
                     "validate": {
                         "min": {
                             "args": 3,
-                            "msg": "Please enter alleast 3 characters"
+                            "msg": "Please enter atleast 3 characters"
                         }
                     },
                     "allowNull": false
@@ -262,17 +262,6 @@ var migrationCommands = [{
                     "type": Sequelize.DATE,
                     "field": "updatedAt",
                     "allowNull": false
-                },
-                "admin_id": {
-                    "type": Sequelize.INTEGER,
-                    "field": "admin_id",
-                    "onUpdate": "CASCADE",
-                    "onDelete": "SET NULL",
-                    "references": {
-                        "model": "user",
-                        "key": "id"
-                    },
-                    "allowNull": true
                 }
             },
             {}
@@ -380,7 +369,7 @@ var migrationCommands = [{
                 "company_id": {
                     "type": Sequelize.INTEGER,
                     "onUpdate": "CASCADE",
-                    "onDelete": "NO ACTION",
+                    "onDelete": "CASCADE",
                     "allowNull": true,
                     "field": "company_id",
                     "references": {
@@ -397,17 +386,58 @@ var migrationCommands = [{
                     "type": Sequelize.DATE,
                     "field": "updatedAt",
                     "allowNull": false
+                }
+            },
+            {}
+        ]
+    },
+    {
+        fn: "createTable",
+        params: [
+            "specification",
+            {
+                "id": {
+                    "type": Sequelize.INTEGER(11),
+                    "field": "id",
+                    "autoIncrement": true,
+                    "primaryKey": true,
+                    "allowNull": false
+                },
+                "ram": {
+                    "type": Sequelize.INTEGER,
+                    "field": "ram",
+                    "allowNull": true
+                },
+                "storage": {
+                    "type": Sequelize.INTEGER,
+                    "field": "storage",
+                    "allowNull": true
+                },
+                "price": {
+                    "type": Sequelize.INTEGER,
+                    "field": "price",
+                    "allowNull": true
                 },
                 "phone_id": {
-                    "type": Sequelize.INTEGER(11),
-                    "field": "phone_id",
+                    "type": Sequelize.INTEGER,
                     "onUpdate": "CASCADE",
-                    "onDelete": "SET NULL",
+                    "onDelete": "CASCADE",
+                    "allowNull": true,
+                    "field": "phone_id",
                     "references": {
-                        "model": "company",
+                        "model": "phone",
                         "key": "id"
-                    },
-                    "allowNull": true
+                    }
+                },
+                "createdAt": {
+                    "type": Sequelize.DATE,
+                    "field": "createdAt",
+                    "allowNull": false
+                },
+                "updatedAt": {
+                    "type": Sequelize.DATE,
+                    "field": "updatedAt",
+                    "allowNull": false
                 }
             },
             {}
@@ -436,14 +466,14 @@ var migrationCommands = [{
                         "key": "id"
                     }
                 },
-                "phone_id": {
+                "specification_id": {
                     "type": Sequelize.INTEGER,
                     "onUpdate": "CASCADE",
-                    "onDelete": "CASCADE",
+                    "onDelete": "NO ACTION",
                     "allowNull": true,
-                    "field": "phone_id",
+                    "field": "specification_id",
                     "references": {
-                        "model": "phone",
+                        "model": "specification",
                         "key": "id"
                     }
                 },
@@ -459,7 +489,7 @@ var migrationCommands = [{
                     }
                 },
                 "pending_amount": {
-                    "type": Sequelize.STRING,
+                    "type": Sequelize.INTEGER,
                     "field": "pending_amount",
                     "allowNull": false
                 },
@@ -469,7 +499,7 @@ var migrationCommands = [{
                     "allowNull": false
                 },
                 "net_amount": {
-                    "type": Sequelize.STRING,
+                    "type": Sequelize.INTEGER,
                     "field": "net_amount",
                     "allowNull": false
                 },
@@ -584,63 +614,22 @@ var migrationCommands = [{
                     "allowNull": false,
                     "defaultValue": 0
                 },
+                "admin_id": {
+                    "type": Sequelize.INTEGER,
+                    "onUpdate": "CASCADE",
+                    "onDelete": "NO ACTION",
+                    "references": {
+                        "model": "admin",
+                        "key": "id"
+                    },
+                    "field": "admin_id",
+                    "allowNull": false
+                },
                 "is_deleted": {
                     "type": Sequelize.BOOLEAN,
                     "field": "is_deleted",
                     "allowNull": false,
                     "defaultValue": false
-                },
-                "createdAt": {
-                    "type": Sequelize.DATE,
-                    "field": "createdAt",
-                    "allowNull": false
-                },
-                "updatedAt": {
-                    "type": Sequelize.DATE,
-                    "field": "updatedAt",
-                    "allowNull": false
-                }
-            },
-            {}
-        ]
-    },
-    {
-        fn: "createTable",
-        params: [
-            "specification",
-            {
-                "id": {
-                    "type": Sequelize.INTEGER(11),
-                    "field": "id",
-                    "autoIncrement": true,
-                    "primaryKey": true,
-                    "allowNull": false
-                },
-                "ram": {
-                    "type": Sequelize.INTEGER,
-                    "field": "ram",
-                    "allowNull": true
-                },
-                "storage": {
-                    "type": Sequelize.INTEGER,
-                    "field": "storage",
-                    "allowNull": true
-                },
-                "price": {
-                    "type": Sequelize.INTEGER,
-                    "field": "price",
-                    "allowNull": true
-                },
-                "phone_id": {
-                    "type": Sequelize.INTEGER,
-                    "onUpdate": "CASCADE",
-                    "onDelete": "CASCADE",
-                    "allowNull": true,
-                    "field": "phone_id",
-                    "references": {
-                        "model": "phone",
-                        "key": "id"
-                    }
                 },
                 "createdAt": {
                     "type": Sequelize.DATE,

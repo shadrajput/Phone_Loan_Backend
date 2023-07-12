@@ -1,6 +1,6 @@
 const catchAsyncErrors = require("../../middlewares/catchAsyncErrors");
 const ErrorHandler = require("../../utils/ErrorHandler");
-const { admin } = require("../../../models")
+const { admin, user } = require("../../../models")
 const bcrypt = require('bcrypt')
 
 
@@ -58,8 +58,13 @@ const getSingleAdmin = catchAsyncErrors(async (req, res, next) => {
 
 // // 4 . Update Admin
 const updateAdminDetails = catchAsyncErrors(async (req, res, next) => {
-
     const id = req.body.id
+
+    const adminData = await admin.findOne({
+        where:{
+            id: Number(id)
+        }
+    })
 
     const updateAdminDetails = await admin.update({
         first_name: req.body.first_name,
@@ -71,10 +76,27 @@ const updateAdminDetails = catchAsyncErrors(async (req, res, next) => {
         },
     })
 
+    const updateData = {
+        username: req.body.username,
+    };
+
+    if (req.body.password !== '') {
+        const hashedPassword = await bcrypt.hash(req.body.password.trim(), 10)
+        updateData.password = hashedPassword;
+    }
+
+    await user.update(updateData,
+    {
+        where:{
+            id: adminData.user_id
+        }
+    }
+    )
+
     res.status(200).json({
         updateAdminDetails: updateAdminDetails,
         success: true,
-        message: "Admin details updated"
+        message: "Profile details updated"
     })
 })
 
