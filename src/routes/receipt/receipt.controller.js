@@ -1,7 +1,8 @@
 const catchAsyncErrors = require("../../middlewares/catchAsyncErrors");
 const ErrorHandler = require("../../utils/ErrorHandler");
 const formidable = require("formidable")
-const { receipt, emi, purchase, customer, phone, installment, company, admin, specification } = require("../../../models")
+const { receipt, emi, purchase, customer, phone, installment, company, admin, transaction, specification } = require("../../../models")
+const db = require('../../../models')
 const { Op } = require('sequelize');
 
 
@@ -46,6 +47,9 @@ const getallReceipt = catchAsyncErrors(async (req, res, next) => {
     const AllReceipt = await receipt.findAll({
         skip: page * itemsPerPage,
         take: itemsPerPage,
+        where:{
+            is_deleted: false
+        },
         include: [
             {
                 model: emi,
@@ -88,7 +92,8 @@ const onerecieptDetailsbyNumber = catchAsyncErrors(async (req, res, next) => {
                 skip: page * itemsPerPage,
                 take: itemsPerPage,
                 where: {
-                    receipt_id: searchedValue
+                    receipt_id: searchedValue,
+                    is_deleted: false
                 },
                 include: [
                     {
@@ -116,6 +121,9 @@ const onerecieptDetailsbyNumber = catchAsyncErrors(async (req, res, next) => {
             SingleReceiptDetails = await receipt.findAll({
                 skip: page * itemsPerPage,
                 take: itemsPerPage,
+                where:{
+                    is_deleted: false
+                },
                 include: [
                     {
                         model: emi,
@@ -147,6 +155,9 @@ const onerecieptDetailsbyNumber = catchAsyncErrors(async (req, res, next) => {
             SingleReceiptDetails = await receipt.findAll({
                 skip: page * itemsPerPage,
                 take: itemsPerPage,
+                where:{
+                    is_deleted: false
+                },
                 include: [
                     {
                         model: emi,
@@ -195,14 +206,14 @@ const getReceiptbyPurchaseId = catchAsyncErrors(async (req, res, next) => {
 
     const SingleReceiptByPurchaseId = await receipt.findOne({
         where: {
-            id: Number(id)
+            id: Number(id),
+            is_deleted: false
         }
     })
 
     res.status(200).json({
         SingleReceiptByPurchaseId: SingleReceiptByPurchaseId,
         success: true,
-        message: "One Receipt Details By Purchase Id"
     })
 
 });
@@ -295,14 +306,45 @@ const deleteReceiptDetails = catchAsyncErrors(async (req, res, next) => {
 
     const { id } = req.params
 
-    const DeleteReceiptDetails = await receipt.destroy({
+    const receipt_details = await receipt.findOne({
+        where:{id: Number(id)},
+        include: transaction
+    })
+
+    const DeleteReceiptDetails = await receipt.update({is_deleted: true},{
         where: {
             id: Number(id)
         }
     })
+    
+    //updating EMI status
+    await emi.update(
+        {
+            paid_date: null,
+            status: 'pending',
+        },
+        {
+            where: {
+                id: receipt_details.emi_id,
+            }
+        }
+    );
+
+    const emi_details = await emi.findOne({
+        where:{
+            id: receipt_details.emi_id
+        }
+    })
+
+    await purchase.update({
+        pending_amount: db.sequelize.literal(`pending_amount + ${receipt_details.transaction.amount}`)
+    }, {
+        where: {
+            id: emi_details.purchase_id
+        },
+    })
 
     res.status(200).json({
-        DeleteReceiptDetails: DeleteReceiptDetails,
         success: true,
         message: "Receipt deleted successfully"
     })

@@ -49,7 +49,7 @@ const AddTransaction = async (req, res, next) => {
                 emi_id: EMI.id,
                 admin_id: Admin.id,
                 receipt_id,
-                extra_charge: req.body.Charge_amount
+                extra_charge: req.body.Charge_amount == '' ? 0 : Number(req.body.Charge_amount)
             }
         );
 
@@ -58,9 +58,9 @@ const AddTransaction = async (req, res, next) => {
             is_by_cheque: req.body.is_by_cheque,
             is_by_cash: req.body.is_by_cash,
             is_by_upi: req.body.is_by_upi,
-            cheque_no: req.body.cheque_no,
+            cheque_no: req.body.cheque_no == '' ? -1 : Number(req.body.cheque_no),
             cheque_date: req.body.cheque_date,
-            upi_no: req.body.upi_no,
+            upi_no: req.body.upi_no == '' ? -1 : Number(req.body.upi_no),
             amount: req.body.amount
         });
 
@@ -137,6 +137,9 @@ const getSingleTransactionByReceiptId = catchAsyncErrors(async (req, res, next) 
         include: [
             {
                 model: receipt,
+                where:{
+                    is_deleted: false
+                },
                 include: [{
                     model: emi,
                     include: [{
