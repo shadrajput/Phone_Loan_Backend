@@ -39,7 +39,7 @@ const AddModel = async (req, res, next) => {
 
 // 2 . Get all Models
 const getallModel = catchAsyncErrors(async (req, res, next) => {
-  
+
     let page = req.params.pageNo
     const itemsPerPage = 10
 
@@ -48,12 +48,31 @@ const getallModel = catchAsyncErrors(async (req, res, next) => {
         take: itemsPerPage,
         include: [company, specification]
     })
-   
+
     const totalModel = await phone.count();
 
     res.status(200).json({
         AllModel: AllModel,
         pageCount: Math.ceil(totalModel / itemsPerPage),
+        success: true,
+        message: "All Models"
+    })
+})
+// 2 . Get Models By Company_Id
+const getModelByCompany = catchAsyncErrors(async (req, res, next) => {
+
+    const Company_Id = req.params.id
+
+    const AllModel = await phone.findAll({
+        where: {
+            company_id: Number(Company_Id)
+        },
+        include : [specification , company]
+    })
+
+    res.status(200).json({
+        AllModel: AllModel,
+        AllSpecification : AllModel.specification,
         success: true,
         message: "All Models"
     })
@@ -155,5 +174,6 @@ module.exports = {
     getSingleModel,
     updateModelDetails,
     deleteModelDetails,
-    searchPhone
+    searchPhone,
+    getModelByCompany
 };

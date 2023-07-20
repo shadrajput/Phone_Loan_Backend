@@ -12,7 +12,7 @@ const AddAdmin = async (req, res, next) => {
             first_name: req.body.first_name,
             last_name: req.body.last_name,
             pin: req.body.pin,
-            user_id : "3"
+            user_id: "3"
         });
 
         res.status(201).json({
@@ -20,7 +20,7 @@ const AddAdmin = async (req, res, next) => {
             success: true,
             message: "Admin added successfully",
         });
-        
+
     } catch (error) {
         next(error)
     }
@@ -46,7 +46,8 @@ const getSingleAdmin = catchAsyncErrors(async (req, res, next) => {
     const SingleAdmin = await admin.findOne({
         where: {
             id: Number(id)
-        }
+        },
+        include: [user]
     })
 
     res.status(200).json({
