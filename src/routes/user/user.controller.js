@@ -44,21 +44,35 @@ const userSignup = catchAsyncErrors(async (req, res, next) => {
 })
 
 const userLogin = catchAsyncErrors(async (req, res, next) => {
-    const { username, password } = req.body
+    // const { username, password } = req.body
 
-    const User = await user.findOne({
-        where: db.sequelize.literal(`BINARY username = '${username}'`),
-    });
+    // const User = await user.findOne({
+    //     where: db.sequelize.literal(`BINARY username = '${username}'`),
+    // });
 
-    if (!User || !await comparePassword(password, User.password)) {
-        return next(new ErrorHandler('Invalid username or password', 400));
+    // if (!User || !await comparePassword(password, User.password)) {
+    //     return next(new ErrorHandler('Invalid username or password', 400));
+    // }
+
+    // delete User.password
+    // const token = generateToken(User.id);
+
+    // res.status(200).json({ success: true, message: 'Login successful', token, User })
+
+    const {pin} = req.body;
+
+    const User = await admin.findOne({
+        where:{pin},
+        include: user
+    })
+
+    if (!User) {
+        return next(new ErrorHandler('Invalid Pin', 400));
     }
 
-    delete User.password
-    const token = generateToken(User.id);
+    const token = generateToken(User.user_id);
 
     res.status(200).json({ success: true, message: 'Login successful', token, User })
-
 })
 
 const userDetail = catchAsyncErrors(async (req, res, next) => {
