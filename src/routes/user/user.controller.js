@@ -72,7 +72,7 @@ const userLogin = catchAsyncErrors(async (req, res, next) => {
 
     const token = generateToken(User.user_id);
 
-    res.status(200).json({ success: true, message: 'Login successful', token, User })
+    res.status(200).json({ success: true, message: 'Login successfull', token, User })
 })
 
 const userDetail = catchAsyncErrors(async (req, res, next) => {
