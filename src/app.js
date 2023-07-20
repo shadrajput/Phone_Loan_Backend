@@ -22,6 +22,7 @@ app.use(express.json());
 app.use(cors());
 app.use(express.static("public/images"));
 app.use(express.urlencoded({ extended: false }));
+app.use(express.static(path.join(__dirname, "..", "client")));
 
 app.use("/admin", adminRouter);
 app.use("/user", userRouter);

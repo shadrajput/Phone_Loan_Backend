@@ -1,9 +1,9 @@
 {
   "development": {
-    "username": "root",
-    "password": "",
-    "database": "phone_loan",
-    "host": "localhost",
+    "username": "freedb_sultan",
+    "password": "P*7x4PZmQEQXtgf",
+    "database": "freedb_sultan_mobile",
+    "host": "sql.freedb.tech",
     "dialect": "mysql",
     "logging": false
   },
@@ -16,10 +16,10 @@
     "logging": false
   },
   "production": {
-    "username": "root",
-    "password": null,
-    "database": "database_production",
-    "host": "127.0.0.1",
+    "username": "freedb_sultan",
+    "password": "P*7x4PZmQEQXtgf",
+    "database": "freedb_sultan_mobile",
+    "host": "sql.freedb.tech",
     "dialect": "mysql"
   }
 }
