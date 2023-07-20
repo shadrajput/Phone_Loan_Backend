@@ -6,8 +6,8 @@ const { customer } = require("../../../models")
 const { document } = require("../../../models")
 const { installment } = require("../../../models")
 
-const { 
-    uploadImage, 
+const {
+    uploadImage,
     deleteImage,
     customerProfileDefaultImage,
     adharFrontDefaultImage,
@@ -80,15 +80,15 @@ const AddCustomer = catchAsyncErrors(async (req, res, next) => {
 
 // // 2 . Get all Customers
 const getallCustomers = catchAsyncErrors(async (req, res, next) => {
-    const {pageNo, searchedValue} = req.params
+    const { pageNo, searchedValue } = req.params
     const itemsPerPage = 10;
-    const {count, rows: AllCustomer} = await customer.findAndCountAll({
+    const { count, rows: AllCustomer } = await customer.findAndCountAll({
         skip: pageNo * itemsPerPage,
         take: itemsPerPage,
-        where:{
-            [Op.or]:[
+        where: {
+            [Op.or]: [
                 {
-                    full_name:{
+                    full_name: {
                         [Op.like]: `%${searchedValue}%`
                     }
                 },
@@ -101,7 +101,7 @@ const getallCustomers = catchAsyncErrors(async (req, res, next) => {
 
     res.status(200).json({
         AllCustomer: AllCustomer,
-        totalPages: Math.ceil( count/itemsPerPage),
+        totalPages: Math.ceil(count / itemsPerPage),
         success: true,
         message: "All Customer"
     })
