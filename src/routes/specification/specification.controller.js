@@ -93,7 +93,10 @@ const updateSpecificationDetails = catchAsyncErrors(async (req, res, next) => {
 
     const { id } = req.body
 
-    const updateSpecificationDetails = await specification.update(req.body, {
+    const updateSpecificationDetails = await specification.update({
+        ...req.body,
+        colour: req.body.colour.toLowerCase()   
+    }, {
         where: {
             id: Number(id)
         },
