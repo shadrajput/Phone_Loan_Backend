@@ -13,6 +13,7 @@ const AddSpecification = async (req, res, next) => {
             ram: req.body.ram,
             storage: req.body.storage,
             price: req.body.price,
+            colour: req.body.colour.toLowerCase(),
             phone_id: req.body.phone_id
         });
 
