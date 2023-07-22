@@ -6,7 +6,7 @@ const formidable = require("formidable")
 
 // 1 . Add Installment
 const AddInstallment = async (req, res, next) => {
-    console.log(req.body)
+
     try {
         const result = await installment.findOne({
             where: {
