@@ -13,11 +13,7 @@
                 "first_name": {
                     "allowNull": false,
                     "validate": {
-                        "notEmpty": true,
-                        "isAlpha": {
-                            "args": true,
-                            "msg": "Please enter only letters"
-                        }
+                        "notEmpty": true
                     },
                     "field": "first_name",
                     "seqType": "Sequelize.STRING"
@@ -25,11 +21,7 @@
                 "last_name": {
                     "allowNull": false,
                     "validate": {
-                        "notEmpty": true,
-                        "isAlpha": {
-                            "args": true,
-                            "msg": "Please enter only letters"
-                        }
+                        "notEmpty": true
                     },
                     "field": "last_name",
                     "seqType": "Sequelize.STRING"
@@ -520,6 +512,11 @@
                     "field": "storage",
                     "seqType": "Sequelize.INTEGER"
                 },
+                "colour": {
+                    "allowNull": true,
+                    "field": "colour",
+                    "seqType": "Sequelize.STRING"
+                },
                 "price": {
                     "allowNull": true,
                     "field": "price",
@@ -660,5 +657,5 @@
             "indexes": []
         }
     },
-    "revision": 1
+    "revision": 2
 }

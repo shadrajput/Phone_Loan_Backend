@@ -37,6 +37,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             allowNull: false,
         },
+        colour: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
         net_amount: {
             type: DataTypes.INTEGER,
             allowNull: false,

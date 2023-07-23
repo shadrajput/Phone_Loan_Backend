@@ -407,6 +407,11 @@
                     "field": "iemi",
                     "seqType": "Sequelize.STRING"
                 },
+                "colour": {
+                    "allowNull": false,
+                    "field": "colour",
+                    "seqType": "Sequelize.STRING"
+                },
                 "net_amount": {
                     "allowNull": false,
                     "field": "net_amount",
@@ -511,11 +516,6 @@
                     "allowNull": true,
                     "field": "storage",
                     "seqType": "Sequelize.INTEGER"
-                },
-                "colour": {
-                    "allowNull": true,
-                    "field": "colour",
-                    "seqType": "Sequelize.STRING"
                 },
                 "price": {
                     "allowNull": true,
@@ -657,5 +657,5 @@
             "indexes": []
         }
     },
-    "revision": 2
+    "revision": 3
 }
