@@ -1,5 +1,5 @@
 {
-  "development": {
+  "test": {
     "username": "freedb_sultan",
     "password": "P*7x4PZmQEQXtgf",
     "database": "freedb_sultan_mobile",
@@ -7,7 +7,7 @@
     "dialect": "mysql",
     "logging": false
   },
-  "test": {
+  "development": {
     "username": "root",
     "password": null,
     "database": "phone_loan",
