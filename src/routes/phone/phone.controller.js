@@ -72,9 +72,7 @@ const getModelByCompany = catchAsyncErrors(async (req, res, next) => {
 
     res.status(200).json({
         AllModel: AllModel,
-        AllSpecification : AllModel.specification,
         success: true,
-        message: "All Models"
     })
 })
 

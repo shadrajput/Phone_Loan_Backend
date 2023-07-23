@@ -6,9 +6,6 @@ const { Op } = require('sequelize');
 
 // 1 . Add Purchase
 const AddPurchase = async (req, res, next) => {
-
-    console.log(req.body)
-
     let Down_Payment = req.body.Down_Payment
 
     try {

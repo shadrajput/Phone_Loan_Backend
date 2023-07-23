@@ -13,6 +13,7 @@ const AddSpecification = async (req, res, next) => {
             ram: req.body.ram,
             storage: req.body.storage,
             price: req.body.price,
+            colour: req.body.colour.toLowerCase(),
             phone_id: req.body.phone_id
         });
 
@@ -92,7 +93,10 @@ const updateSpecificationDetails = catchAsyncErrors(async (req, res, next) => {
 
     const { id } = req.body
 
-    const updateSpecificationDetails = await specification.update(req.body, {
+    const updateSpecificationDetails = await specification.update({
+        ...req.body,
+        colour: req.body.colour.toLowerCase()   
+    }, {
         where: {
             id: Number(id)
         },

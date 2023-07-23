@@ -10,7 +10,6 @@ const imagekit = new ImageKit({
 
 
 async function uploadImage(file, folder) {
-  console.log(file)
   return new Promise((resolve, reject) => {
     const ext = file.mimetype.split("/")[1].trim();
 
