@@ -48,6 +48,7 @@ const AddPurchase = async (req, res, next) => {
             specification_id: Specification.id,
             installment_id: Installment.id,
             pending_amount: pending_amount,
+            colour: req.body.colour.toLowerCase(),
             net_amount: req.body.net_payable,
             iemi: req.body.iemi
         });
