@@ -7,7 +7,6 @@ const { Op } = require('sequelize');
 // 1 . Add Purchase
 const AddPurchase = async (req, res, next) => {
     let Down_Payment = req.body.Down_Payment
-
     try {
 
         const Company = await company.findOne({
@@ -38,8 +37,8 @@ const AddPurchase = async (req, res, next) => {
             (
                 (
                     req.body.net_payable - (Down_Payment == '' ? 0 : Number(Down_Payment))
-                ) 
-                / 
+                )
+                /
                 req.body.month
             ) * req.body.month
         );
@@ -58,7 +57,7 @@ const AddPurchase = async (req, res, next) => {
         let Emi_Amount = Math.round(Payable_amount / (Number(req.body.month) + (Down_Payment == '' ? 1 : 0)))
 
         //entry of DP
-        if(Down_Payment == ''){
+        if (Down_Payment == '') {
             const emiDetails = await emi.create({
                 amount: Emi_Amount,
                 due_date: req.body.date,
@@ -67,7 +66,7 @@ const AddPurchase = async (req, res, next) => {
                 purchase_id: data.id,
             });
         }
-        else{
+        else {
             const emiDetails = await emi.create({
                 amount: Down_Payment,
                 due_date: req.body.date,
@@ -80,7 +79,7 @@ const AddPurchase = async (req, res, next) => {
             // DP Receipt
             const allReceipts = await receipt.count();
             const receipt_id = allReceipts + 1 + 1000
-            
+
             const Receipt = await receipt.create(
                 {
                     emi_id: emiDetails.id,
@@ -144,7 +143,7 @@ const getallPurchase = catchAsyncErrors(async (req, res, next) => {
             installment,
             {
                 model: specification,
-                include:{
+                include: {
                     model: phone,
                     include: [company],
                 }
@@ -190,7 +189,7 @@ const getSinglePurchasebyCustomerId = catchAsyncErrors(async (req, res, next) =>
                 required: false,
             },
         ],
-        
+
     })
 
     res.status(200).json({
@@ -210,8 +209,8 @@ const getSinglePurchase = catchAsyncErrors(async (req, res, next) => {
             id: Number(id)
         },
         include: [
-            customer, 
-            installment, 
+            customer,
+            installment,
             {
                 model: specification,
                 include: {
@@ -299,6 +298,12 @@ const updatePurchase = catchAsyncErrors(async (req, res, next) => {
 const deletePurchaseDetails = catchAsyncErrors(async (req, res, next) => {
 
     const { id } = req.params
+
+    const DeleteEMIDetails = await emi.destroy({
+        where: {
+            purchase_id: Number(id)
+        }
+    })
 
     const DeletePurchaseDetails = await purchase.destroy({
         where: {
