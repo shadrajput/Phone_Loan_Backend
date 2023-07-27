@@ -13,6 +13,7 @@ const receiptRouter = require("./routes/receipt/receipt.route")
 const transactionRouter = require("./routes/transaction/transection.route")
 const emiRouter = require("./routes/emi/emi.route")
 const specificationRouter = require("./routes/specification/specification.route")
+const reportRouter = require("./routes/report/report.route")
 const errorMiddleware = require("./middlewares/errors");
 const cors = require("cors");
 const path = require("path");
@@ -38,15 +39,8 @@ app.use("/purchase", purchaseRouter);
 app.use("/receipt", receiptRouter);
 app.use("/transaction", transactionRouter);
 app.use("/emi", emiRouter);
+app.use("/report", reportRouter);
 
-
-// if(process.env.NODE_ENV == 'development'){
-// app.use(express.static('client/dist'))
-// app.get("/*", (req, res) => 
-//   res.sendFile(path.resolve(__dirname,'..','client','dist','index.html'))
-// )
-// }
-//Middleware for errors
 app.use(errorMiddleware);
 
 

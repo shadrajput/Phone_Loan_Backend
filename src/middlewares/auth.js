@@ -3,8 +3,9 @@ const jwt = require("jsonwebtoken");
 const catchAsyncErrors = require("./catchAsyncErrors");
 const ErrorHandler = require("../utils/ErrorHandler");
 const bcrypt = require("bcrypt");
+const { JWT_SIGN } = require("../../constant")
 
-const JWTSign = process.env.JWT_SIGN;
+const JWTSign = JWT_SIGN;
 
 //Generate auth token
 exports.generateToken = (userID) => {

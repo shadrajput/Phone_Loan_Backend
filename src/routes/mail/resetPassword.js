@@ -1,10 +1,11 @@
 const SendEmail = require('../../utils/SendEmail')
+const {EMAIL} = require('../../../constant')
 
 // send email
 const resetPassword = async ({ name, email, link }) => {
   
   const options = {
-    from: `Corporate Basketball League <${process.env.EMAIL}>`,
+    from: `Corporate Basketball League <${EMAIL}>`,
     to: `${email}`,
     subject: "Reset Password",
     html: `

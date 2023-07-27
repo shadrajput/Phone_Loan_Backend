@@ -6,6 +6,7 @@ const ErrorHandler = require("../../utils/ErrorHandler");
 const jwt = require("jsonwebtoken");
 const db = require('../../../models')
 const { user, admin } = require("../../../models")
+const { JWT_SIGN } = require('../../../constant')
 
 
 const userSignup = catchAsyncErrors(async (req, res, next) => {
@@ -79,7 +80,7 @@ const userLogin = catchAsyncErrors(async (req, res, next) => {
 const userDetail = catchAsyncErrors(async (req, res, next) => {
 
     const token = req.headers.authorization;
-    const JWTSign = process.env.JWT_SIGN;
+    const JWTSign = JWT_SIGN;
 
     if (!token) {
         return next(new ErrorHandler("Please login to access this resource", 401));
