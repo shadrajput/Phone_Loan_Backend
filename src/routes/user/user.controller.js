@@ -64,8 +64,7 @@ const userLogin = catchAsyncErrors(async (req, res, next) => {
     const {pin} = req.body;
 
     const User = await admin.findOne({
-        where:{pin},
-        include: user
+        where:{pin},  include: user
     })
 
     if (!User) {
