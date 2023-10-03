@@ -25,7 +25,7 @@ exports.comparePassword = async function (enteredPassword, dbPassword) {
 
 //Authenticate user
 exports.isAuthenticatedUser = catchAsyncErrors(async (req, res, next) => {
-  const token = req.headers.authentication;
+  const token = req.headers.authorization;
 
   if (!token) {
     return next(new ErrorHandler("Please login to access this resource", 401));
@@ -53,9 +53,18 @@ exports.isAuthenticatedAdmin = catchAsyncErrors(async (req, res, next) => {
   //   where: { id: req.user.id, is_admin: true },
   // });
 
+  const token = req.headers.authorization;
+
+  if (!token) {
+    return next(new ErrorHandler("Please login again", 401));
+  }
+
+  const admin = jwt.verify(token, JWTSign);
   if (!admin) {
     return next(new ErrorHandler("Only admin can access this resouce", 401));
   }
+
+  console.log(admin)
 
   next();
 });

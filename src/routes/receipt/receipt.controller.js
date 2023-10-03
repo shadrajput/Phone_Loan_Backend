@@ -9,6 +9,12 @@ const { Op } = require('sequelize');
 // 1 . Add Receipt
 const AddReceipt = async (req, res, next) => {
 
+    const adminData = await admin.findOne({ where: { user_id, pin: security_pin } })
+
+    if (!adminData) {
+        return next(new ErrorHandler("Incorrect PIN", 401));
+    }
+
     const form = new formidable.IncomingForm();
 
     form.parse(req, async function (err, fields, files) {
@@ -16,7 +22,7 @@ const AddReceipt = async (req, res, next) => {
 
             const ReceiptInfo = (fields);
             const allReceipts = await receipt.count();
-            const receipt_id = allReceipts + 1 + 1000
+            const receipt_id = allReceipts + 1
 
             if (err) {
                 return res.status(500).json({ success: false, message: err.message });
@@ -286,16 +292,118 @@ const getSingleReceipt = catchAsyncErrors(async (req, res, next) => {
 // 6 . Update receipt
 const updateReceipt = catchAsyncErrors(async (req, res, next) => {
 
-    const { id } = req.params
+    const { 
+        is_by_cash,
+        is_by_cheque,
+        is_by_upi,
+        cheque_no,
+        cheque_date,
+        upi_no,
+        user_id,
+        purchase_id,
+        Emi_id,
+        Charge_amount,
+        amount,
+        security_pin,
+        customer_id,
+        date,
+        emi_id 
+    } = req.body
 
-    const updateReceiptDetails = await receipt.update(req.body, {
+
+    const adminData = await admin.findOne({ where: {user_id, pin: security_pin}})
+
+    if(!adminData){
+        return next(new ErrorHandler("Incorrect PIN", 401));
+    }
+
+    //fetching emi amount
+    const emi_details = await emi.findOne({
         where: {
-            id: Number(id)
+            id: emi_id
+        }
+    })
+
+    const oldEMIAmount = emi_details.amount;
+
+    const surplusEMIAmount = oldEMIAmount - amount
+
+    //adjusting surplus amount
+    const upcomingEMI = await emi.findOne({
+        where: {
+            status: 'pending'
+        },
+        order: [['due_date', 'ASC']]
+    })
+
+    //If paying less than the actual EMI amount and this is the last EMI
+    if (surplusEMIAmount > 0 && !upcomingEMI){
+        res.status(401).json({
+            success: false,
+            message: "Please enter the complete amount"
+        })
+    }
+
+    //fetching receipt details
+    const receiptDetails = await receipt.findOne({where:{emi_id}})
+
+    //updating in receipt table
+    await receipt.update({
+        extra_charge: Charge_amount,
+        admin_id: user_id
+    }, {
+        where: {
+            emi_id
         },
     })
 
+    //updating transaction table
+    await transaction.update({
+        is_by_cash,
+        is_by_cheque,
+        is_by_upi,
+        cheque_no,
+        cheque_date,
+        upi_no,
+        amount
+    },{
+        where:{
+            receipt_id: receiptDetails.id
+        }
+    })
+
+    //updating in emi table
+    await emi.update({
+        amount: amount
+    },
+    {
+        where:{
+            id: emi_id
+        }
+    })
+
+    if (surplusEMIAmount != 0){
+        //updating upcoming EMI amount
+        await emi.update({
+            amount: db.sequelize.literal(`amount + ${surplusEMIAmount}`)
+        },{
+            where:{
+                id: upcomingEMI.id
+            }
+        })
+
+        //updating pending amount in purchase table
+        await purchase.update({
+            pending_amount: db.sequelize.literal(`pending_amount + ${surplusEMIAmount}`)
+        },{
+            where:{
+                id: emi_details.purchase_id
+            }
+        })
+    }
+
+
     res.status(200).json({
-        updateReceiptDetails: updateReceiptDetails,
         success: true,
         message: "Receipt details updated"
     })

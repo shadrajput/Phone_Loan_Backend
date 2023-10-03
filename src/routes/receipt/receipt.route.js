@@ -18,7 +18,7 @@ router.get("/search/:id", getReceiptbyPurchaseId)
 router.get("/searchbyEmi/:id", getReceiptbyEmiId)
 router.get("/List/:pageNo", getallReceipt)
 router.get("/details/:id", getSingleReceipt)
-router.put("/update/:id", updateReceipt)
+router.put("/update", updateReceipt)
 router.delete("/delete/:id", deleteReceiptDetails)
 
 
