@@ -23,7 +23,7 @@ var Sequelize = require('sequelize');
 var info = {
     "revision": 1,
     "name": "noname",
-    "created": "2023-07-12T10:16:20.637Z",
+    "created": "2023-10-03T18:11:23.241Z",
     "comment": ""
 };
 
@@ -217,11 +217,7 @@ var migrationCommands = [{
                     "type": Sequelize.STRING,
                     "field": "first_name",
                     "validate": {
-                        "notEmpty": true,
-                        "isAlpha": {
-                            "args": true,
-                            "msg": "Please enter only letters"
-                        }
+                        "notEmpty": true
                     },
                     "allowNull": false
                 },
@@ -229,11 +225,7 @@ var migrationCommands = [{
                     "type": Sequelize.STRING,
                     "field": "last_name",
                     "validate": {
-                        "notEmpty": true,
-                        "isAlpha": {
-                            "args": true,
-                            "msg": "Please enter only letters"
-                        }
+                        "notEmpty": true
                     },
                     "allowNull": false
                 },
@@ -498,9 +490,19 @@ var migrationCommands = [{
                     "field": "iemi",
                     "allowNull": false
                 },
+                "colour": {
+                    "type": Sequelize.STRING,
+                    "field": "colour",
+                    "allowNull": false
+                },
                 "net_amount": {
                     "type": Sequelize.INTEGER,
                     "field": "net_amount",
+                    "allowNull": false
+                },
+                "bill_number": {
+                    "type": Sequelize.STRING,
+                    "field": "bill_number",
                     "allowNull": false
                 },
                 "createdAt": {

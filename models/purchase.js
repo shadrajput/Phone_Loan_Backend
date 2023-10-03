@@ -45,6 +45,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             allowNull: false,
         },
+        bill_number:{
+            type: DataTypes.STRING,
+            allowNull: true,
+        }
     },{
         freezeTableName: true,
     })

@@ -5,62 +5,29 @@ var Sequelize = require('sequelize');
 /**
  * Actions summary:
  *
- * addColumn "colour" to table "specification"
- * changeColumn "first_name" on table "admin"
- * changeColumn "last_name" on table "admin"
+ * changeColumn "bill_number" on table "purchase"
  *
  **/
 
 var info = {
     "revision": 2,
     "name": "noname",
-    "created": "2023-07-22T13:38:11.788Z",
+    "created": "2023-10-03T18:17:54.042Z",
     "comment": ""
 };
 
 var migrationCommands = [{
-        fn: "addColumn",
-        params: [
-            "specification",
-            "colour",
-            {
-                "type": Sequelize.STRING,
-                "field": "colour",
-                "allowNull": true
-            }
-        ]
-    },
-    {
-        fn: "changeColumn",
-        params: [
-            "admin",
-            "first_name",
-            {
-                "type": Sequelize.STRING,
-                "field": "first_name",
-                "validate": {
-                    "notEmpty": true
-                },
-                "allowNull": false
-            }
-        ]
-    },
-    {
-        fn: "changeColumn",
-        params: [
-            "admin",
-            "last_name",
-            {
-                "type": Sequelize.STRING,
-                "field": "last_name",
-                "validate": {
-                    "notEmpty": true
-                },
-                "allowNull": false
-            }
-        ]
-    }
-];
+    fn: "changeColumn",
+    params: [
+        "purchase",
+        "bill_number",
+        {
+            "type": Sequelize.STRING,
+            "field": "bill_number",
+            "allowNull": true
+        }
+    ]
+}];
 
 module.exports = {
     pos: 0,
