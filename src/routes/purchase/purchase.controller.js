@@ -7,6 +7,7 @@ const { Op } = require('sequelize');
 // 1 . Add Purchase
 const AddPurchase = async (req, res, next) => {
     let Down_Payment = req.body.Down_Payment
+
     try {
 
         const Company = await company.findOne({
@@ -50,7 +51,8 @@ const AddPurchase = async (req, res, next) => {
             pending_amount: pending_amount,
             colour: req.body.colour.toLowerCase(),
             net_amount: req.body.net_payable,
-            iemi: req.body.iemi
+            iemi: req.body.iemi,
+            bill_number: req.body.bill_number
         });
 
         let Payable_amount = req.body.net_payable - (Down_Payment == '' ? 0 : Number(Down_Payment))
