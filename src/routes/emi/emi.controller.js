@@ -1,7 +1,7 @@
 const catchAsyncErrors = require("../../middlewares/catchAsyncErrors");
 const ErrorHandler = require("../../utils/ErrorHandler");
 const formidable = require("formidable")
-const {Op } = require('sequelize');
+const {Op} = require('sequelize');
 const db = require('../../../models')
 const { emi, purchase, customer, specification, phone, company,  receipt, installment, transaction } = require("../../../models")
 
@@ -124,12 +124,18 @@ const getPendingEmi = catchAsyncErrors(async (req, res, next) => {
 
     const sumAmount = todaysCollection[0].amount || 0;
 
-    const totalCustomer = await emi.count();
+    const runningModels = await purchase.findAll({
+        where:{
+            pending_amount: {
+                [Op.gt]: 0
+            }
+        }
+    })
 
     res.status(200).json({
         todaysCollection: sumAmount,
         totalPendingCustomers: filteredCustomers.length,
-        totalModels: pendingEmi.length,
+        totalModels: runningModels.length,
         totalPendingPayment: totalPendingEMI.totalPendingAmount,
         pendingEmiCustomers: filteredCustomers,
         success: true,

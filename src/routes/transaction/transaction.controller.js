@@ -7,6 +7,8 @@ const db = require('../../../models')
 // // 1 . Add Transaction
 const AddTransaction = async (req, res, next) => {
     try {
+        const { amount, Emi_id, purchase_id, date, Charge_amount } = req.body
+
         const Admin = await admin.findOne(
             {
                 where: {
@@ -17,39 +19,96 @@ const AddTransaction = async (req, res, next) => {
         );
 
         if (!Admin) {
-            return res.status(500).json({ success: false, message: "Invalid Security Pin" });
+            return next(new ErrorHandler("Incorrect PIN", 401));
         }
 
-        const PayEMI = await emi.update(
+
+        await emi.update(
             {
-                paid_date: req.body.date,
+                paid_date: date,
                 status: 'paid',
             },
             {
                 where: {
-                    id: req.body.Emi_id,
-                    purchase_id: req.body.purchase_id
+                    id: Emi_id,
+                    purchase_id: purchase_id
                 }
             }
         );
 
-        const EMI = await emi.findOne(
+        //fetching emi amount
+        const emi_details = await emi.findOne({
+            where: {
+                id: Emi_id
+            }
+        })
+
+        const oldEMIAmount = emi_details.amount;
+
+        const surplusEMIAmount = oldEMIAmount - amount
+
+        //adjusting surplus amount
+        const upcomingEMI = await emi.findOne({
+            where: {
+                status: 'pending'
+            },
+            order: [['due_date', 'ASC']]
+        })
+
+        //If paying less than the actual EMI amount and this is the last EMI
+        if (surplusEMIAmount > 0 && !upcomingEMI) {
+            await emi.update(
+                {
+                    paid_date: null,
+                    status: 'pending',
+                },
+                {
+                    where: {
+                        id: Emi_id,
+                        purchase_id: purchase_id
+                    }
+                }
+            );
+
+            return res.status(401).json({
+                success: false,
+                message: "Please enter the complete amount"
+            })
+        }
+
+        //updating in emi table
+        await emi.update(
+            {
+            amount: amount
+            },
             {
                 where: {
-                    id: req.body.Emi_id
+                    id: Emi_id
                 }
             }
         );
 
+        if (surplusEMIAmount != 0) {
+            //updating upcoming EMI amount
+            await emi.update({
+                amount: db.sequelize.literal(`amount + ${surplusEMIAmount}`)
+            }, {
+                where: {
+                    id: upcomingEMI.id
+                }
+            })
+        }
+
+
         const allReceipts = await receipt.count();
-        const receipt_id = allReceipts + 1 + 1000
+        const receipt_id = allReceipts + 1 
 
         const Receipt = await receipt.create(
             {
-                emi_id: EMI.id,
+                emi_id: emi_details.id,
                 admin_id: Admin.id,
                 receipt_id,
-                extra_charge: req.body.Charge_amount == '' ? 0 : Number(req.body.Charge_amount)
+                extra_charge: Charge_amount == '' ? 0 : Number(Charge_amount)
             }
         );
 
@@ -61,21 +120,21 @@ const AddTransaction = async (req, res, next) => {
             cheque_no: req.body.cheque_no == '' ? -1 : Number(req.body.cheque_no),
             cheque_date: req.body.cheque_date,
             upi_no: req.body.upi_no == '' ? -1 : Number(req.body.upi_no),
-            amount: req.body.amount
+            amount: amount
         });
 
         await purchase.update({
-            pending_amount: db.sequelize.literal(`pending_amount - ${req.body.amount}`)
+            pending_amount: db.sequelize.literal(`pending_amount - ${amount}`)
         },{
             where:{
-                id: EMI.purchase_id
+                id: emi_details.purchase_id
             },
         })
 
-        res.status(201).json({
+        return res.status(201).json({
             data: data,
             success: true,
-            message: "Purchase added successfully",
+            message: "EMI paid successfully",
         });
 
     } catch (error) {

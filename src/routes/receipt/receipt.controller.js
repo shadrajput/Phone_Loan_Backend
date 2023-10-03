@@ -15,35 +15,29 @@ const AddReceipt = async (req, res, next) => {
         return next(new ErrorHandler("Incorrect PIN", 401));
     }
 
-    const form = new formidable.IncomingForm();
+    try {
+        const allReceipts = await receipt.count();
+        const receipt_id = allReceipts + 1
 
-    form.parse(req, async function (err, fields, files) {
-        try {
-
-            const ReceiptInfo = (fields);
-            const allReceipts = await receipt.count();
-            const receipt_id = allReceipts + 1
-
-            if (err) {
-                return res.status(500).json({ success: false, message: err.message });
-            }
-
-            const data = await receipt.create({
-                receipt_id,
-                emi_id: "3",
-                admin_id: "1",
-                extra_charge: ReceiptInfo.extra_charge
-            });
-
-            res.status(201).json({
-                data: data,
-                success: true,
-                message: "Receipt added successfully",
-            });
-        } catch (error) {
-            next(error)
+        if (err) {
+            return res.status(500).json({ success: false, message: err.message });
         }
-    });
+
+        const data = await receipt.create({
+            receipt_id,
+            emi_id: "3",
+            admin_id: "1",
+            extra_charge: req.body.extra_charge
+        });
+
+        res.status(201).json({
+            data: data,
+            success: true,
+            message: "Receipt added successfully",
+        });
+    } catch (error) {
+        next(error)
+    }
 }
 
 // 2 . Get all Receipt
@@ -300,13 +294,9 @@ const updateReceipt = catchAsyncErrors(async (req, res, next) => {
         cheque_date,
         upi_no,
         user_id,
-        purchase_id,
-        Emi_id,
         Charge_amount,
         amount,
         security_pin,
-        customer_id,
-        date,
         emi_id 
     } = req.body
 
@@ -338,7 +328,7 @@ const updateReceipt = catchAsyncErrors(async (req, res, next) => {
 
     //If paying less than the actual EMI amount and this is the last EMI
     if (surplusEMIAmount > 0 && !upcomingEMI){
-        res.status(401).json({
+        return res.status(401).json({
             success: false,
             message: "Please enter the complete amount"
         })
@@ -403,7 +393,7 @@ const updateReceipt = catchAsyncErrors(async (req, res, next) => {
     }
 
 
-    res.status(200).json({
+    return res.status(200).json({
         success: true,
         message: "Receipt details updated"
     })
