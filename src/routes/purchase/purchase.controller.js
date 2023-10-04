@@ -80,7 +80,7 @@ const AddPurchase = async (req, res, next) => {
 
             // DP Receipt
             const allReceipts = await receipt.count();
-            const receipt_id = allReceipts + 1 + 1000
+            const receipt_id = allReceipts + 1
 
             const Receipt = await receipt.create(
                 {
